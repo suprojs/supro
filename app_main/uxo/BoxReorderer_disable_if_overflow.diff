@@ -1,0 +1,73 @@
+--- BoxReorderer.js.orig	Thu May 16 14:55:28 2013
++++ BoxReorderer.js	Thu Oct 10 21:27:36 2013
+@@ -1,9 +1,9 @@
+ /**
+  * Base class from Ext.ux.TabReorderer.
+  */
+-Ext.define('Ext.ux.BoxReorderer', {
++Ext.define('Ext.uxo.BoxReorderer', {
+     mixins: {
+         observable: 'Ext.util.Observable'
+     },
+ 
+     /**
+@@ -72,15 +72,17 @@
+  
+         // Set our animatePolicy to animate the start position (ie x for HBox, y for VBox)
+         me.animatePolicy = {};
+         me.animatePolicy[container.getLayout().names.x] = true;
+         
+-        
++        // Disable if overflow
++        me.__overflow = false
+ 
+         // Initialize the DD on first layout, when the innerCt has been created.
+         me.container.on({
+             scope: me,
++            overflowchange: me.overflowChange,
+             boxready: me.afterFirstLayout,
+             beforedestroy: me.onContainerDestroy
+         });
+     },
+ 
+@@ -93,21 +95,26 @@
+             dd.unreg();
+             this.dd = null;
+         }
+     },
+ 
++    overflowChange: function(){
++        //lastHiddenCount, hiddenCount, The, eOpts
++        this.__overflow = !!arguments[1];
++    },
++
+     afterFirstLayout: function() {
+         var me = this,
+             layout = me.container.getLayout(),
+             names = layout.names,
+             dd;
+             
+         // Create a DD instance. Poke the handlers in.
+         // TODO: Ext5's DD classes should apply config to themselves.
+         // TODO: Ext5's DD classes should not use init internally because it collides with use as a plugin
+         // TODO: Ext5's DD classes should be Observable.
+-        // TODO: When all the above are trus, this plugin should extend the DD class.
++        // TODO: When all the above are true, this plugin should extend the DD class.
+         dd = me.dd = Ext.create('Ext.dd.DD', layout.innerCt, me.container.id + '-reorderer');
+         Ext.apply(dd, {
+             animate: me.animate,
+             reorderer: me,
+             container: me.container,
+@@ -136,11 +143,11 @@
+     // check if the clicked component is reorderable
+     clickValidator: function(e) {
+         var cmp = this.getDragCmp(e);
+ 
+         // If cmp is null, this expression MUST be coerced to boolean so that createInterceptor is able to test it against false
+-        return !!(cmp && cmp.reorderable !== false);
++        return !this.__overflow && !!(cmp && cmp.reorderable !== false);
+     },
+ 
+     onMouseDown: function(e) {
+         var me = this,
+             container = me.container,

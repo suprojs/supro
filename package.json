@@ -1,0 +1,50 @@
+{
+    "name": "supro",
+    "license": "MIT",
+    "version": "1.0.001",
+    "description": "v001@2014-10-01: SUPro",
+    "repository": {
+        "type": "git",
+        "url": "ssh://git@github.com/olecom/supro"
+    },
+    "maintainers": [{
+        "name": "Oleg Verych",
+        "email": "olecom@gmail.com"
+    }],
+    "keywords": [
+        "erp",
+        "desktop",
+        "extjs",
+        "nodejs",
+        "node.js",
+        "node-webkit"
+    ],
+    "webkit": {
+        "plugin": false,
+        "page-cache": false,
+        "java": false
+    },
+    "window": {
+        "title": "Loading application...",
+        "toolbar": true,
+        "position": "center",
+        "width": 999,
+        "height": 555,
+        "resizable": true,
+        "show": true,
+        "frame": true
+    },
+    "main": "app_main/app.htm",
+    "engines": {
+        "cygwin": "1.7.15",
+        "node": "0.10.32",
+        "node-webkit": "0.10.4 (node: '0.11.13', Chromium: '35.0.1916.157')"
+    },
+    "extjs": {
+        "version": "4.2.1.883-GPL"
+    },
+    "dependencies": {
+        "mkdirp": "0.3.5",
+        "connect": "2.9.2-supro (low fat)"
+    }
+}

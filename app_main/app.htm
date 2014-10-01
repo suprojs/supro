@@ -1,0 +1,117 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="google" value="notranslate" />
+    <title>SUPro v001&copy;2014-10-01</title>
+    <!-- "Yellow dollar sign" from Feifei http://www.favicon.cc/?action=icon&file_id=586714 -->
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,AAABAAEAEBAAAAAAAABoAwAAFgAAACgAAAAQAAAAIAAAAAEAGAAAAAAAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/lDo/lDo6izRPqkyFhYU9DQA9DQAAAAAAAAAsdiYobSEyfiwAAAAAAAAAAAA+kTlAlTtXu1U9kDc6gzSFhYU9DQA9DQA4ijI+kzkMNgFCADMbwhYAAAAAAAAAAAA/lDo/lDo1gi5CEAE9DQA9DQA9DQA9DQA9DQA9DQBCEAE4ijImniEgeBsqliY9kTc/kzo1gi5CEAE9DQAH+vIH+vI9DQAH+vIH+vIEz949DQAuCgA4ijJZg1EWmxM9kTc5eTJCEAE9DQAH+vJPEgEH+vI9DQAH+vIH+vIH+vI4DQE4DQGhoaExjiwWmxMycis9kTehoaE9DQAICAg9kTeFhYU9DQA9DQCHh4cH+vIH+vI9DQBCEAE1gi4yky1CnT49kTc9kTc9kTc9kTc9kTeFhYU9DQBHR0c5iTSHh4cH+vIFBQVCEAE1gi5AkDs9kTdFnT9ImkM4ijLU0s89DQA9DQA9DQA9DQCHh4cH+vIH+vI9DQChoaEthygulCo9kTc9kTc1gi5CEAE9DQAH+vIH+vIH+vIH+vIH+vIH+vIEz95CEAE4ijI2izEA1wA9kTcAAAChoaE9DQAEz94H+vKHh4c9DQA9DQA9DQA9DQBCEAE4ijI7kzYviyp6gnI9kTc1gi4uCgA9DQAH+vIFAQA1gi49DQA9DQA5iTQ/jDo8ijdXUU83bjE2ezA5iTQ9kTc1gi4uCgA9DQAH+vIFAQAAAAA9DQA9DQBCEAHU0s9CEAF9e3o1gi4AAAA9jzc9kTcAAAChoaE9DQBCEAEH+vKHh4c9DQBCEAEH+vIH+vIFBQVCEAGFhYUAAAAyfCw9kTc9kTcoeCFCEAE9DQAH+vIH+vI9DQBCEAEH+vIH+vIFBQU9DQA1gi4ANAAzfi0ANAA9kTcbaBNNnkpCEAE9DQA9DQA9DQA9DQA9DQA9DQBCEAE1gi40fy8+kzoxeysqdyMkcR0ANAAANAAANAA1gi4uCgA9DQA9DQA4ijI4ijIANAAANAAANAA+kTkAAAD8fwAA/H8AAPAPAADgBwAAwAMAAMQDAAD8QwAA8AMAAOAHAADADwAAwn8AAMIHAADAAwAA4AcAAPAPAAD8fwAA" />
+    <link rel="stylesheet" href="app.css" />
+    <!-- l10n can be configured and/or changed by server side view engine and template
+         for now it's static: -->
+    <script type="text/javascript" src="l10n/ru.js" charset="utf-8"></script>
+    <script type="text/javascript">(
+    function pre_load(w, d, con){
+    var b, s = "FATAL ERROR: no language! File './l10n/ru.js' or similar."
+
+        if(!w.l10n) return d.write(s) && w.alert(s)
+
+        w.addEventListener('error', window_error)// show any errors early
+
+        con.log('checking `localStorage.l10n`...')
+        if((s = localStorage.l10n) && s !== l10n.lang){
+            con.log('loading `localStorage.l10n`: ' + s)
+            b = d.head.getElementsByTagName('script')
+            d.head.removeChild(b[1])
+            d.head.removeChild(b[0])
+            b = d.createElement('script')
+            b.setAttribute('type', 'application/javascript')
+            b.setAttribute('charset', 'utf-8')
+            b.setAttribute('src', 'l10n/' + s + '.js')
+            d.head.appendChild(b)
+        }
+
+
+        w.addEventListener('load', function pre_onload(e){
+        var b = d.createElement('b')
+
+            b.innerHTML = l10n.loading
+            d.getElementById('startup').appendChild(b)
+            e.target.removeEventListener(e.type, pre_onload)
+            startup(true)// preload ExtJS stuff from "extjs_load.js"
+            startup()// load {"nw": "app_front.js", "web": "app_front_http.js"}
+        })
+
+        return
+
+        function window_error(errEvent){
+            con.error(errEvent)
+            if(w.Ext){
+                if(app.btn){// desktop app module quick launch button fail
+                    app.btn.setLoading(false)
+                    app.btn = null
+                }
+                return Ext.Msg.show({
+                   title: l10n.errun_title,
+                   buttons: Ext.Msg.OK,
+                   icon: Ext.Msg.ERROR,
+                   msg: '<b>' +
+l10n.errun_file + (errEvent.filename || 'app_front.js" || "extjs_load.js') + '<br><br>' +
+(errEvent.error ? errEvent.error.stack ? l10n.errun_stack + '</b>' + errEvent.error.stack
+                  .replace(/</g, '&lt;').replace(/\r*\n/g, '<br>')
+                  : errEvent.error + '</b>' : errEvent.message + '</b>')
+                })
+            }
+            d.write(
+'<pre><div style="color:white;background-color:red;">' +
+'filename: "' + (errEvent.filename || 'app_front.js" or "extjs_load.js') + '"\n' +
+(errEvent.error ? errEvent.error.stack ? errEvent.error.stack.replace(/</g, '&lt;')
+                : errEvent.error : errEvent.message) +
+'</div></pre>'
+            )
+            w.alert && w.alert(l10n.uncaughtException  + errEvent.message)
+            w.alert = null// show fatal error once
+        }
+
+        function startup(extjs){
+        var b = new XMLHttpRequest
+
+            b.open('GET', (extjs ? 'extjs_load.js' : 'app_front.js'), false)
+            b.send()
+            if(b.responseText){
+                d.head.removeChild(d.head.getElementsByTagName('script')[0])
+                b = d.createElement('script')
+                     .appendChild(d.createTextNode(b.responseText))
+                     .parentNode
+                b.setAttribute('type', 'application/javascript')
+                b.setAttribute('charset', 'utf-8')
+                d.head.appendChild(b)
+            } else {
+                d.write(l10n.errload_no_app + '<br>' + l10n.errload)
+            }
+        }
+    })(window, document, window.console)
+    </script>
+    <script type="text/javascript" src="test.js" charset="utf-8"></script>
+</head>
+<body style="color:black;background-color:white;margin:0;">
+<center id='startup'>
+<noscript><br/>
+<h2 style="color:red">
+Error: NO JavaScript. Sorry!<br/>
+Без включенного JavaScript ждать нечего!
+</h2></noscript>
+<a href="http://www.sencha.com/products/extjs/">
+<img src="css/powered.gif" title="ExtJS" alt="ExtJS"/>
+</a><br/>
+<img src='css/loading.gif'/><br/>
+<a href='credits_node-webkit.html'>node-webkit credits</a><br/><br/>
+<center id="e" style="background-color:red;color:white;display:none">
+<h2 id="d"></h2><br>
+</center>
+</center>
+<textarea id="grid_copy_buffer" onfocus="this.select()" style="position:absolute; top:-8px; width:1px;height:1px;">
+copy|paste
+</textarea>
+</body>
+</html>

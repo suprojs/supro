@@ -1,0 +1,65 @@
+#login-view {
+background: url(login.png) no-repeat right 68px;
+position: relative; top: -50px; height: 244px;
+}
+
+#login-dd {
+cursor: move;
+text-shadow: #CCC 2px 3px 0;
+font: 3em serif;
+}
+
+.login-shutdown {
+background: url(shutdown.png) no-repeat !important;/* +hover trigger */
+border: 0 !important;
+width: 22px !important;
+height: 22px !important;
+}
+
+.ru{
+background: url(flags/ru.gif) no-repeat;
+cursor: pointer;
+}
+.en{
+background: url(flags/us.gif) no-repeat;
+cursor: pointer;
+}
+.l10n-reset{
+background: url(l10n-reset.png) no-repeat;
+background-size: 11px;
+cursor: pointer;
+}
+
+.userman {
+background-image: url(um32x32.gif);
+}
+
+.appbar-shutdown {
+background-image: url(shutdown.png);
+width: 22px!important;
+height: 22px!important;
+}
+.appbar-user-onli {
+background-image: url(user-online.png);
+width: 22px!important;
+height: 22px!important;
+padding-left: 18px;
+}
+.appbar-user-offl {/* require('fs').readFileSync('app_modules/userman/css/user-offline.png').toString('base64') */
+background-image: url("data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAE4SURBVCjPZdBLSwIBGIXh/lHQb4guyza1CEIqpNoIQdHKXEQQrkS6IUSLFhYFtpCIwUAG07IstTTnqjNTjnSRZmPg4m3lpYZvd84DB74BBjq36zkXk07CORB9nl7aVydtkwZ1NKL2tMcFYqLJOxYGb1QIiC5w5dhYGOgo6EQcFxCcOjV0VCRUdtxgX1R4RaZClTzz7okF/2FLo0SRChvtkdA/sDl1Wk6RQuASAYHg54S/D6wPnjzrNLAwqVJBJsfax/BoFwQjZWw0LEx0SmQocsGk2AVHko6MhoGByhMZEqSZ++qCs5bBLSo1qkgUSBMny1K7C45/qtwho6NQ4oFr4mRZ7IGwmqWAjMILee65IUWMmd6Ed3xlL4qEjkqZR9KE8X2PDf151Kq9ZW03Q+1Ae7np1WZznfwXGfNkzblrzUIAAAAASUVORK5CYII=");
+width: 22px!important;
+height: 22px!important;
+padding-left: 18px;
+}
+.appbar-user-busy {
+background-image: url(user-busy.png);
+width: 22px!important;
+height: 22px!important;
+padding-left: 18px;
+}
+.appbar-user-away {
+background-image: url(user-away.png);
+width: 22px!important;
+height: 22px!important;
+padding-left: 18px;
+}

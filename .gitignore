@@ -1,0 +1,10 @@
+bin/*.exe
+bin/*.dll
+*.exe
+*.dll
+*.dat
+*.pak
+log
+tmp
+extjs.txt
+nbproject

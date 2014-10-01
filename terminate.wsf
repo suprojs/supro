@@ -1,0 +1,14 @@
+<package><job id="nodejs-management"><script language="JScript">
+//  http://stackoverflow.com/questions/2214379/javascript-killing-a-process
+    var ps
+    if(WScript.Arguments.length){
+        //WScript.Echo('Terminate PID: ' + WScript.Arguments(0))
+        try{
+            ps = GetObject("winmgmts:")
+                   .Get("Win32_Process.Handle='" + WScript.Arguments(0) + "'")
+        } catch(ex){
+            //WScript.Echo('Error PID: ' + WScript.Arguments(0))
+        }
+        if(ps) ps.Terminate()
+    }
+</script></job></package>

@@ -1,0 +1,9 @@
+#!ls -1 *exe *dll *pak *dat | sort >.files
+ffmpegsumo.dll
+icudtl.dat
+libEGL.dll
+libGLESv2.dll
+node.exe
+nw.exe
+nw.pak
+nwsnapshot.exe

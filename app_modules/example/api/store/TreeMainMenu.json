@@ -1,0 +1,124 @@
+{
+children:[
+{
+    "text": l10n.ex.orders,
+    "id": "orders",
+    "iconCls": "icon-ord",
+    "children": [{
+        "text": "#26",
+        "id": "o26",
+        "iconCls": "icon-ord-leaf",
+        //"checked": true,
+        "leaf": true
+    },{
+        "text": "#27",
+        "id": "o27",
+        "iconCls": "icon-ord-leaf",
+        //"checked": true,
+        "leaf": true
+    },{
+        "text": "#28",
+        "id": "o28",
+        "iconCls": "icon-ord-leaf",
+        //"checked": true,
+        "leaf": true
+    }]
+},
+{
+    "text": l10n.ex.income,
+    "iconCls": "icon-inc",
+    "children": [{
+        "text": "#26",
+        "id": "i26",
+        "iconCls": "icon-inc-leaf",
+        //"checked": true,
+        "leaf": true
+    },{
+        "text": "#27",
+        "id": "i27",
+        "iconCls": "icon-inc-leaf",
+        //"checked": true,
+        "leaf": true
+    },{
+        "text": "#28",
+        "id": "i28",
+        "iconCls": "icon-inc-leaf",
+        //"checked": true,
+        "leaf": true
+    }]
+},
+{
+    "text": l10n.ex.remain,
+    "iconCls": "icon-rem",
+    "children": [{
+        "text": "GLOBal",
+        "id": "rGLOB",
+        "iconCls": "icon-rem",
+        "leaf": true,
+        "checked": true
+    },{
+        "text": "Shop #1",
+        "id": "rS1",
+        "iconCls": "icon-rem",
+        "leaf": true,
+        "checked": false
+    },{
+        "text": "Shop #2",
+        "id": "rS2",
+        "iconCls": "icon-rem",
+        "leaf": true,
+        "checked": false
+    }]
+},
+{
+    "text": l10n.ex.sel,
+    "iconCls": "icon-sel",
+    "children": [{
+        "text": "GLOBal",
+        "id": "sGLOB",
+        "iconCls": "icon-sel-leaf",
+        "leaf": true,
+        "checked": true
+    },{
+        "text": "Shop #1",
+        "id": "sS1",
+        "iconCls": "icon-sel-leaf",
+        "leaf": true,
+        "checked": false
+    },{
+        "text": "Shop #2",
+        "id": "sS2",
+        "iconCls": "icon-sel-leaf",
+        "leaf": true,
+        "checked": false
+    }]
+},
+{
+    "text": l10n.ex.dict,
+    "iconCls": "icon-cfg",
+    "children": [{
+        "text": "dictCurr",
+        "iconCls": "icon-cfg-leaf",
+        "leaf": true,
+        "checked": true
+    },{
+        "text": "dictManufacturers",
+        "iconCls": "icon-cfg-leaf",
+        "leaf": true,
+        "checked": false
+    },{
+        "text": "dictModels",
+        "iconCls": "icon-cfg-leaf",
+        "leaf": true,
+        "checked": false
+    }]
+},
+{
+    "text": l10n.ex.report,
+    "children": [{
+        "text": "Report1",
+        "leaf": true
+    }]
+}
+]
+}
