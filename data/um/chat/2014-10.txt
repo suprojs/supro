@@ -1,2 +1,0 @@
-{"d":"2014-10-01T02:22:37.141Z","usr":"onlidev@127.0.0.1 QypjPxGTFpzQ9BIB4PY7IaI_","msg":"hi!!!"}
-{"d":"2014-10-01T02:22:56.992Z","usr":"awaydev@127.0.0.1 z3idvqKk2cvDXkWNSW69iqM9","msg":"hisfsdf"}
