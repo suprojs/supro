@@ -2,7 +2,7 @@
  * user authentication and resource authorization
  * provide frontend UI files and backend logic
  *
- * `backend.waitEvents`: per-user/session division allows UI to receive events
+ * `App.um.wes`: per-user/session division allows UI to receive events
  * from backend via long pooling (i.e. XHR with long timeout)
  *
  * otherwise UI must do XHR frequently
@@ -268,12 +268,12 @@ log('.allow "' + perm + '" by can.API: ' + can.API[i])
             // all other falls thru
         }
 
-        /*
-         * Default policy "deny" means:
-         * - URL to be NOT listed in `Can.Static` (protected list of files)
-         * then
-         * -- for API calls (URL other than *.js) to be NOT listed in `Can.API`
-         **/
+       /*
+        * Default policy "deny" means: ACCEPT URL
+        * - it is NOT listed in `Can.Static` (protected list of files)
+        * then
+        * -- for API calls (URL other than *.js) is NOT listed in `Can.API`
+        **/
         if(!Can.Static.hasOwnProperty(perm)){
             // not *.js files -- all API must heve permission
             if(!~idx) for(i = 0; i < Can.API.length; ++i){
