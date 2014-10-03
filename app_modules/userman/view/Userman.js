@@ -15,28 +15,9 @@ l10n.um.users +
     var tb = Ext.getCmp('wm').items.getByKey('um.view.Userman')
         if(tb){
             tb.toggle(true)
-        } else App.backend.req(
-            '/um/lib/rbac/all', '',
-            function(err, json){
-            var i, j, d, a = [ ]
-
-                if(err) return console.error(json)
-                // stringify data && create stores
-                for(j in { can: '', roles:'', users:'' }){
-                    d = json.data[j]
-                    for(i in d){
-                        a.push([i, JSON.stringify(d[i])])
-                    }
-                    Ext.create(Ext.data.ArrayStore,{
-                        storeId: 'um_' + j,
-                        fields:['name', 'v'],
-                        data: a
-                    })
-                    a.splice(0)
-                }
-                return App.create('um.controller.Userman', btn)
-            }
-        )
+        } else {
+            App.create('um.controller.Userman', btn)
+        }
     }
 }
 ])

@@ -10,13 +10,34 @@ var id = 'App.um.controller.Userman'
     init:
     function controllerUsermanInit(){
     var me = this
-       ,mainView = new App.um.view.Userman
 
-        mainView.on({
-            destroy: destroyUserman
-        })
+        App.backend.req(
+            '/um/lib/rbac/all', '',
+            function(err, json){
+            var i, j, d, a = [ ]
 
-        me.mainView = mainView// for development in devtools
+                if(err) return console.error(json)
+                // stringify data && create stores
+                for(j in { can: '', roles:'', users:'' }){
+                    d = json.data[j]
+                    for(i in d){
+                        a.push([i, JSON.stringify(d[i])])
+                    }
+                    Ext.create(Ext.data.ArrayStore,{
+                        storeId: 'um_' + j,
+                        fields:['name', 'v'],
+                        data: a
+                    })
+                    a.splice(0)
+                }
+                me.mainView = new App.um.view.Userman
+                me.mainView.on({
+                    destroy: destroyUserman
+                })
+
+                return null
+            }
+        )
 
         return
 
