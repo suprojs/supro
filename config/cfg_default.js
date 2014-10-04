@@ -6,6 +6,7 @@ config = {
 
     lang: 'ru',// base localization, must be provided by any module as fallback
     log: 'log/',
+    //TODO: uid gid new ids for process after start or partial init
     modules:{// cfg for stack of things from 'app_modules'
     // order matters: before auth module there are no restrictions to config
     // auth module overwrites default and sets up per-user auth module loading
@@ -13,7 +14,7 @@ config = {
             store: 'fs' // TODO: fs || db
             //sess_maxage: //null: browser lifetime; default: ~9.3 hours one working day
            ,sess_puzl: 'puzzle-word$54321X'
-           ,data: '/data/um'// store fs: chat logs
+           ,data: '/data/um/'// store fs: chat logs
            ,rbac:{
                can:{// list of permissions with arbitrary positive value
                     'module.example': true
@@ -45,7 +46,7 @@ config = {
        ,example: true
     },
     extjs:{
-        path: 'ext-4.2.1.883/',// find and provide this path; 'extjs/' is for web
+        path: 'ext-4.2/',// find and provide this path; 'extjs/' is for web
         launch:  null,/*{ css:[ ], js:[ ]} loaded by `extjs_launch()` */
         modules: null,/*{ css:[ ], js:[ ]} */
         fading:  true// visual effects for content appearance
