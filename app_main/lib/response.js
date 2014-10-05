@@ -51,7 +51,7 @@ http.ServerResponse.prototype.txt =
 /*  res.txt('plain text')
  */
 function res_txt(txt){
-    if(!txt) txt = 'No text available'
+    if(!txt && txt !== '') txt = 'No text available'
     this.setHeader('Content-Length', Buffer.byteLength(txt))
     this.writeHead(this.statusCode, this.ContentTypes.TextPlain)
     this.end(txt)
