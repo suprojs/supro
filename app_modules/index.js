@@ -23,6 +23,7 @@ var m, mpath
         try {// to load the module
             modules[m] = require(mpath)(api, cfg.modules[m])
         } catch(ex){
+            pushUncaughtException(ex.stack)
             err += mpath.replace(/[.]js/, '[.js]') + ':\n!!!' + ex.stack + '\n'
         }
     }

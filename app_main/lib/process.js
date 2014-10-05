@@ -4,9 +4,12 @@ module.exports = processSETUP
 function processSETUP(global, process, uncaughtExceptions){
 
     global.__res = null// catch request to inform UI, see note in 'uncaughtException'
+    global.pushUncaughtException = function(that){
+        uncaughtExceptions.push(that)
+    }
 
     process.on('uncaughtException', function(err){
-        uncaughtExceptions.push(err.stack)
+        pushUncaughtException(err.stack)
         log('Caught exception: ' + err.stack)
 
         try { if(__res){
