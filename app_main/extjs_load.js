@@ -54,9 +54,6 @@ var path, extjs, t
         Ext.Loader.setPath('Ext.ux', path + '/../examples/ux')
 
         if(app.config.backend.url){// `nw` context`
-            app.config.extjs.appFolder = ('http://127.0.0.1:' +
-                app.config.backend.job_port
-            )
            /* patch ExtJS Loader to work from "file://" in `node-webkit`
             * also `debugSourceURL` removed in `ext-all-debug.js#loadScriptFile()`
             * it crushes `eval` there it's critical (plus there are more patches)

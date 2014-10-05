@@ -14,6 +14,7 @@ var xhr = new XMLHttpRequest
     var extjs_config, req = res.target
 
         if(4 != req.readyState) return
+
         if(200 != req.status) throw new Error(
             ~String(req.responseURL).indexOf('ext-all')?
             l10n.extjsNotFound : l10n.errload_config_read
@@ -24,15 +25,18 @@ var xhr = new XMLHttpRequest
             extjs_config = JSON.parse(req.responseText)
             if(url){
         // `nw` context
-                url = app.config.extjs.path
+                url = app.config.extjs.path// flip path
                 app.config.extjs = extjs_config
-                app.config.extjs.path = url
-                app.extjs_helper()
+                app.config.extjs.path = url// restore it back
+                app.config.extjs.appFolder = ('http://127.0.0.1:' +
+                    app.config.backend.job_port
+                )
+                check_backend()
                 return
             }
         // `browser` context
         } else {// load after HEAD check
-            app.extjs_helper()
+            check_backend()
             return
         }
 
@@ -44,11 +48,33 @@ var xhr = new XMLHttpRequest
                 op: l10n.stsCheck
             }
         }
+
         req.open(// check for network availability of ExtJS
             'HEAD'
            ,(url || '') + app.config.extjs.path + 'ext-all-nw.js'
            ,true
         )
         req.send()
+        return
+
+        function check_backend(){
+            req.open(// check if all is OK on backend startup
+                'GET'
+               ,(app.config.extjs.appFolder || '') + '/uncaughtExceptions'
+               ,true
+            )
+            req.onreadystatechange = run_extjs_helper
+            req.send()
+        }
+
+        function run_extjs_helper(res){
+            if(4 != res.target.readyState) return
+
+            if(res.target.responseText){// backend uncaughtExceptions
+                throw new Error('!' + res.target.responseText)
+            }
+            app.extjs_helper()
+            return
+        }
     }
 })(app.config && app.config.backend.url)
