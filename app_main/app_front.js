@@ -164,15 +164,13 @@ function spawn_backend(app, restart){
     log = app.config.log +
           app.config.backend.file.replace(/[\\/]/g ,'_') + '.log'
 
+    app.process.env.NODEJS_CONFIG = JSON.stringify(app.config)
     backend = app.c_p.spawn(
         'node'
         ,[ app.config.backend.file ]
         ,{
              detached: true
-            ,env: {
-                NODEJS_CONFIG: JSON.stringify(app.config)
-            }
-            ,stdio: [ 'ignore'
+            ,stdio:[ 'ignore'
                 ,fs.openSync(log ,'a+')
                 ,fs.openSync(log ,'a+')
             ]
