@@ -11,7 +11,7 @@
 
 module.exports = ctl_backend
 
-function ctl_backend(cfg, run_backend){
+function ctl_backend(cfg, uncaughtExceptions, run_backend){
 var ipt  = require('util').inspect
 var close_handlers = [ ], allow = true
 
@@ -34,7 +34,7 @@ var body = ''
 
     log('ctl req url:' + req.url)
     if ('/sts_running' == req.url){
-        // empty
+        body += uncaughtExceptions.join('\n====\n')
     } else if('/cmd_exit' == req.url){
         call_close_handlers(close_handlers)
         body += '$ is going down\n'
@@ -47,7 +47,7 @@ var body = ''
         '\n\n' +
         'application under control is at HTTP port: ' + cfg.backend.job_port + '\n'
     }
-
+    // use vanilla `res` (no `res.json` or `res.txt`)
     res.writeHead(200 ,{ 'Content-Length': body.length, 'Content-Type': 'text/plain' })
     return res.end(body)
 })

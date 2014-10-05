@@ -1,20 +1,20 @@
 
 module.exports = processSETUP
 
-function processSETUP(global, process){
+function processSETUP(global, process, uncaughtExceptions){
 
     global.__res = null// catch request to inform UI, see note in 'uncaughtException'
 
     process.on('uncaughtException', function(err){
-    try{
+        uncaughtExceptions.push(err.stack)
         log('Caught exception: ' + err.stack)
-        if(__res){
+
+        try { if(__res){
     // NOTE: with many users and high load this may send errors to
     //       the wrong end; thus this is mostly a development tool
-            __res.json({success:false, data: err.stack})
+            __res.json({ success:false, data: err.stack })
             __res = null
-        }
-    }catch(ex){ }
+        }} catch(ex){ }
     })
 
     process.on('exit', function process_exit(){

@@ -38,8 +38,9 @@
             b.innerHTML = l10n.loading
             d.getElementById('startup').appendChild(b)
             e.target.removeEventListener(e.type, pre_onload)
-            startup(true)// preload ExtJS stuff from "extjs_load.js"
-            startup()// load {"nw": "app_front.js", "web": "app_front_http.js"}
+            startup('uncaughtExceptions')// check if all is OK on backend startup
+            startup('extjs_load.js')// preload ExtJS stuff
+            startup('app_front.js')// via http this is 'app_front_http.js'
         })
 
         return
@@ -78,12 +79,19 @@ l10n.errun_file + (errEvent.filename || 'app_front.js" || "extjs_load.js') + '<b
             w.alert = null// show fatal error once
         }
 
-        function startup(extjs){
+        function startup(file){
         var b = new XMLHttpRequest
-
-            b.open('GET', (extjs ? 'extjs_load.js' : 'app_front.js'), false)
+            // sync loading of initial stuff
+            b.open('GET', file, false)
             b.send()
             if(b.responseText){
+                if('u' == file[0]){
+                    //throw new Error('!' + b.responseText)// backend
+                    return
+                }
+                if(200 != b.status){
+                    throw new Error('!' + b.responseText)// backend
+                }
                 d.head.removeChild(d.head.getElementsByTagName('script')[0])
                 b = d.createElement('script')
                      .appendChild(d.createTextNode(b.responseText))

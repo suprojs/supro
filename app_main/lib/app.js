@@ -5,7 +5,7 @@
 
 module.exports = runApp
 
-function runApp(cfg){
+function runApp(cfg, uncaughtExceptions){
 var api      = require('./api.js')
    ,sendFile = require('./middleware/sendFile.js')
    ,_404     = require('./middleware/404.js')
@@ -42,6 +42,7 @@ var api      = require('./api.js')
     /* backend static files for HTTP users */
     app.use('/', connect['static'](__dirname + '/../', { index: 'app.htm' }))
 
+    app.use('/uncaughtExceptions', mwUncaughtExceptions)
     app.use('/test.js', sendFile('test.js'))
     /* final stage: error path */
     app.use(require('./middleware/errorHandler.js'))
@@ -89,6 +90,10 @@ var api      = require('./api.js')
 
     function use_mwConfig(req, res, next){
         return mwConfig(req, res, next)
+    }
+
+    function mwUncaughtExceptions(req, res, next){
+        return res.txt(uncaughtExceptions.join('\n====\n'))
     }
 
     function remote_extjs_cfg(){
