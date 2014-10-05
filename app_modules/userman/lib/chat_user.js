@@ -2,7 +2,7 @@ api_user(ret, api, local, req, res, next)// for `new Function(...)`
 
 /*
  * Event(s):
- *   all heavy lifting of user management is done in `wait_events.js`
+ *   all heavy lifting of user management is done in `wes.js`
  *   as part of user auth/out and status event handling
  **/
 

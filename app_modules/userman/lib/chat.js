@@ -16,8 +16,8 @@ var chat_api = { 'user': null, 'text': null, 'deve': load_chat_api }
        ,log_file: null
        ,log_file_name: ''
     }
-   ,dir = process.cwd() + cfg.data + '/chat'
-
+   ,dir = __dirname + '/../../..' + cfg.data + '/chat'
+    //`cfg.data` must be written^ here as absolute path
     fs.stat(dir,
         function stat_um_data_chat_dir(err, d){
             if(err){
