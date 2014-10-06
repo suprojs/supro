@@ -184,10 +184,9 @@ function sub_app_create(ns, btn, cfg){
 /*
  * There are classes with run time development reloading for
  * - controllers (e.g. 'App.userman.Chat'),
- * - slow view:
- *     Ext.define('App.view.Chat',...)
  * - and fast view definitions (config only):
- *     App.cfg['App.view.Userman'] = { ... }
+ *     App.cfg['CarTracker.app.Application'] = { // fast init
+ *     }
  **/
     btn && (app.btn = btn).setLoading(true)
 
@@ -199,7 +198,7 @@ function sub_app_create(ns, btn, cfg){
                 run_module()
                 return
             }
-            Ext.syncRequire(ns)
+            Ext.syncRequire(ns)// initial loading
         }
     }
 
