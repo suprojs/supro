@@ -265,8 +265,7 @@ var url, url_l10n
         url: url_l10n
        ,onLoad: function l10n_reloaded(){
             Ext.Loader.removeScriptElement(url_l10n)
-            url = App.backendURL + '/' +
-                    panel.wmId.replace(/[.]/g, '/') + '.js'
+            url = App.backendURL + '/' + panel.wmId.replace(/[.]/g, '/') + '.js'
             Ext.Loader.loadScript({
                 url: url
                ,onLoad: view_loaded
@@ -278,18 +277,25 @@ var url, url_l10n
 
     function view_loaded(){
         Ext.Loader.removeScriptElement(url)
+
+        if(App.cfg['App.' + panel.wmId].__noctl){
+            ctl_not_loaded()
+            return
+        }
         Ext.Loader.loadScript({
             url: url = url.replace(/[/]view[/]/, '/controller/')
-           ,onLoad: function ctl_loaded(){
-                Ext.Loader.removeScriptElement(url)
-                App.create(panel.wmId.replace(/view[.]/, 'controller.'))
-            }
-           ,onError: function ctl_not_loaded(){
-                Ext.Loader.removeScriptElement(url)
-                App.create(panel.wmId, null,{
-                    constrainTo: Ext.getCmp('desk').getEl()
-                })
-            }
+           ,onLoad: ctl_loaded
+           ,onError: ctl_not_loaded
+        })
+    }
+    function ctl_loaded(){
+        Ext.Loader.removeScriptElement(url)
+        App.create(panel.wmId.replace(/view[.]/, 'controller.'))
+    }
+    function ctl_not_loaded(){
+        Ext.Loader.removeScriptElement(url)
+        App.create(panel.wmId, null,{
+            constrainTo: Ext.getCmp('desk').getEl()
         })
     }
 }
