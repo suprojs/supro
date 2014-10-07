@@ -1,6 +1,5 @@
-Ext.define ('App.view.desktop.BackendTools',{
+Ext.define('App.view.desktop.BackendTools',{
     extend: Ext.toolbar.Toolbar,
-    xtype: 'sg-ct',
     dock: 'bottom',
     items:[ '-','nodejs: ',{
         text: l10n.stsEcho
