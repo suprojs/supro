@@ -211,7 +211,7 @@ function sub_app_create(ns, btn, cfg){
     // define a Class *only* once
     // use `override` to redefine it (e.g. when developing) in run time
     if(App.cfg[ns]){
-        btn || (App.cfg[ns].override = ns)// no button -- development reload
+        btn || Ext.undefine(ns)// no button -- development reload
         Ext.define(ns, App.cfg[ns], run_module)
         App.cfg[ns] = null// GC
         return
