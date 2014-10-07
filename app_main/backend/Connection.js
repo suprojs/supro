@@ -68,8 +68,14 @@ function create_backend_request(conn){
         return conn.request(options)
 
         function callbackExtAjax(opts, success, xhr){
-        var json = Ext.decode(xhr.responseText)
+        var json
 
+            if(~String(xhr.getResponseHeader('Content-Type'))
+               .indexOf('application/json')){
+                json = Ext.decode(xhr.responseText)
+            } else {// string is valid JSON
+                json = xhr.responseText
+            }
             return callback(!success || !json, json, xhr)
         }
     }
