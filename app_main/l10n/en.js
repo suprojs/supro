@@ -6,6 +6,7 @@ l10n = { lang: 'en',
 
     loading: 'Loading...'
     ,oops_rcif: 'OOPS: restricted code in frontend'
+    ,errapi: 'Error loading data by API call:'
     ,errload: 'Loading failed due to errors.'
     ,errload_no_app:
         'Installation error! File not found: "app_front.js".\n' +
