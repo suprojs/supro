@@ -19,7 +19,7 @@ var dir, rbac_api, fs = require('fs')
     expand_can_unions()
     init_auth()// set default 'deny' authorization for all permissions
 
-    dir = process.cwd() + cfg.data + '/rbac'
+    dir = __dirname + '/../../..' + cfg.data + '/rbac'
 
     fs.stat(dir,
     function stat_um_data_rbac_dir(err, d){
@@ -35,7 +35,6 @@ var dir, rbac_api, fs = require('fs')
         if(!d.isDirectory()){
             throw new Error('Is not a directory: ' + dir)
         }
-        //load_api()// init api
     }
     )
 
@@ -360,7 +359,7 @@ log('rbac_api.can[p]: ' + p, rbac_api.can[p])
     var ret = { success: true, data: { }}//                             \.../
     var m = req.url.slice(1, 5)// UI call: App.backend.req('/um/lib/rbac/can')
 
-        switch (m){// API is protected, thus `req.session` must be valid
+        switch(m){// API is protected, thus `req.session` must be valid
             case 'can': req.session.can && (ret.data = req.session.can)
                 break
             case 'all': ret.data = rbac_api
