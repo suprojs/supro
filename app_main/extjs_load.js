@@ -278,7 +278,7 @@ var url, url_l10n
     function view_loaded(){
         Ext.Loader.removeScriptElement(url)
 
-        if(App.cfg['App.' + panel.wmId].__noctl){
+        if((url_l10n = App.cfg['App.' + panel.wmId]) && url_l10n.__noctl){
             ctl_not_loaded()
             return
         }
