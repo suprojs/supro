@@ -30,8 +30,6 @@ var app = api.app
     Roles = rbac.roles
     Users = rbac.users
 
-    initAuth()// set default 'deny' authorization for all permissions
-
     files = [// files as class names are loaded by `Ext.syncRequire()`
         '/um/crypto/SHA1',
         /* (l10n) M V C loading */
@@ -72,7 +70,7 @@ var app = api.app
     }))
 
     // high priority mw
-    app.use(mwBasicAuthorization)// apply default 'deny' from `initAuth()`
+    app.use(mwBasicAuthorization)// apply default 'deny' from `rbac.init_auth()`
 
     app.use('/um/lib/wes', wes.mwPutWaitEvents)// UI: 'App.um.wes'
     app.use('/um' + (n = '/wes.js'), api.connect.sendFile(__dirname + n, true))
@@ -122,77 +120,11 @@ log('TODO: drop priviledges so other app modules can not access anything')
         return res.json(Config.extjs)
     }
 
-    function initAuth(){
-   /*
-    ** types of permissions:
-    * 1) 'App.um.wes': Access class name as file name  == >> 'userman/wes.js'
-    * 2) '/um/lib/wes' || '/so/': backend URL (API calls)
-    * 3) 'App.view.Window->tools.refresh': UI subclass permission (nothing special)
-    * 4) 'module.pingback' || 'modules.*': allowed app modules
-    *
-    ** any permissions (allowing something) must be false (deny by default)
-    ** for any non relevant role/user
-    *
-    ** apply this logic here for:
-    *
-    * 1) Can.Static: hash of (static) files to check permission against
-    *        if address+file is here, then permission to access it is required
-    *        i.e. if not here then access is allowed by default
-    *
-    * 2) Can.API: array of URL prefixes to be checked as API calls
-    *        to access API full URL (or prefix as wildcard) must be listed here
-    *        i.e. if not here then access is denied by default
-    *
-    * -) Can.UI (not really as it is not a file/URL to serve)
-    * -) Can:Modules (not really as it is not a file/URL to serve)
-    *
-    * Permission/Role/User config example see `rbac.js`
-    **/
-    var p, r, i
 
-        for(p in Can){
-            if('boolean' == typeof Can[p]){
-                check_type_and_init_can(p)
-            }// skip all other, can arrays are expanded in `rbac_setup()`
-        }
-        for(p in Roles){
-            r = Roles[p]
-            if(!Array.isArray(r)){
-                log('Warning: role "' + p + '" is not an Array')
-                continue
-            }
-            for(i = 0; i < r.length; ++i){
-                if(Array.isArray(r[i])) continue// no array in Roles, just `can`s
-                check_type_and_init_can(r[i])
             }
         }
 
-        rbac.merge(cfg.rbac)// use after init
-//log('rbac initAuth: ', require('util').inspect(rbac, { depth : 6 }))
-    }
 
-    function check_type_and_init_can(can){
-        if(!can){
-            log('Warning: permission name is not defined or assigned `true`')
-            return
-        }
-        do {
-            if(0 == can.indexOf('module.')
-                 ||~can.indexOf('->')){
-            // it is not a file to serve, thus skip other types of cans
-                break
-            }
-            if('/' == can[0]){//#2
-                Can.API.push(can)// denied by default
-                break
-            }
-            //#1 'App.backend.JS' == >> '/backend/JS'
-            can = can.replace(/^[^.]*[.]/, '/').replace(/[.]/g, '/')
-            Can.Static[can] = false// denied by default
-        } while(0)
-        // secured permissions are being checked in `create_auth()` when
-        // `req.session.can` is created
-        Can[can] = true// such permission is available now
     }
 
     function mwLogin(req, res){
@@ -450,7 +382,7 @@ log('!deny cmp:', perm)
     *     __name: 'role.name'
     *     // access to static (Class) files
     *     // if file URL (i.e. with '*.js' postfix; stripped)  is in there
-    *     // then allow access (which is denied by default by `initAuth()`)
+    *     // then allow access (which is denied by default by `rbac.init_auth()`)
     *    ,Static: { '/backend/JS': true }
     *     // access to API calls
     *     // `mwBasicAuthorization` scans this array for every URL that is
@@ -518,7 +450,7 @@ log('perm apply:"' + j + '"; Can[j]: ', Can[j])
                         }
                     }
                     if(!is_api){// allow API or any other (new) perm-n from app modules
-                        check_type_and_init_can(j)
+                        rbac.init_can(j)
                     }
                 } else {
                     log('!Security `apply_permission`: skip secure permission "' + j + '"')

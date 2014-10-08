@@ -10,12 +10,14 @@ var dir, rbac_api, fs = require('fs')
         fuses_can: null,// permission fuses
         can: null, roles: null, users: null,// rbac data
         merge: merge_rbac_from_others,
+        init_can: init_can,
         // API: manager for UI
         mwRBAC: mwRBAC
     }
 
     default_access_data()
-    expand_can_arrays()
+    expand_can_unions()
+    init_auth()// set default 'deny' authorization for all permissions
 
     dir = process.cwd() + cfg.data + '/rbac'
 
@@ -53,10 +55,14 @@ var dir, rbac_api, fs = require('fs')
         fuse('module.*', true)
         /* set of permissions */
         rbac_api.can = {
-            backend:[// union of permissions to be expanded in role by auth
+            backend:[
+            // this can unions are sets of permissions for bulk/shortcut apply
+            // them into roles definitions only in this module, they are being
+            // expanded into `rbac_api.can` root by `expand_can_unions()`
                 'App.view.desktop.BackendTools'// UI classes
                 ,fuse(backend_js_class)// annotated secure permission used
                 ,fuse(backend_js_api)// annotated secure permission used
+                ,fuse('module.*')// annotated secure permission used
             ]
            ,'App.um.wes': true// `wes` UI + API are included by default in roles
            ,'/um/lib/wes': true
@@ -88,6 +94,7 @@ var dir, rbac_api, fs = require('fs')
                ,rbac_api.can.chat
                ,rbac_api.can.userman
                ,'App.view.Window->tools.refresh'// developer's stuff
+               /* NOTE: secured `can` must be defined in `rbac_api.can` already! */
                ,fuse('module.*')// allow any app module to load
             ]
            ,'admin.local':[
@@ -103,6 +110,7 @@ var dir, rbac_api, fs = require('fs')
            ]
            //,'developer':[ fuse(backend_js_class) ]
         }
+        /* blow fuses */
         fuse(backend_js_class, false)// deny access by this permission for others
         fuse(backend_js_api, false)// deny access by this permission for others
         fuse('module.*', false)
@@ -130,7 +138,7 @@ var dir, rbac_api, fs = require('fs')
         }
     }
 
-    function expand_can_arrays(){
+    function expand_can_unions(){
     var a, p, i, can
 
         can = rbac_api.can
@@ -271,6 +279,81 @@ log('!Security `merge_rbac`: reject role secure permission "' + m[k] + '"')
                 dst[j] = src[j]
             }
         }//TODO: merge l10n from config to global l10n
+    }
+
+    function init_auth(){
+   /*
+    ** types of permissions:
+    * 1) 'App.um.wes': Access class name as file name  == >> 'userman/wes.js'
+    * 2) '/um/lib/wes' || '/so/': backend URL (API calls)
+    * 3) 'App.view.Window->tools.refresh': UI subclass permission (nothing special)
+    * 4) 'module.pingback' || 'modules.*': allowed app modules
+    *
+    ** any permissions (allowing something) must be false (deny by default)
+    ** for any non relevant role/user
+    *
+    ** apply this logic here for:
+    *
+    * 1) rbac_api.can.Static: hash of (static) files to check permission against
+    *        if address+file is here, then permission to access it is required
+    *        i.e. if not here then access is allowed by default
+    *
+    * 2) rbac_api.can.API: array of URL prefixes to be checked as API calls
+    *        to access API full URL (or prefix as wildcard) must be listed here
+    *        i.e. if not here then access is denied by default
+    *
+    * -) rbac_api.can.UI (not really as it is not a file/URL to serve)
+    * -) rbac_api.can:Modules (not really as it is not a file/URL to serve)
+    *
+    * Permission/Role/User config example see `default_access_data()`
+    **/
+    var p, r, i
+
+        for(p in rbac_api.can){
+log('rbac_api.can[p]: ' + p, rbac_api.can[p])
+            if('boolean' == typeof rbac_api.can[p]){
+                init_can(p)
+            }// skip all other, can arrays are expanded in `rbac_setup()`
+        }
+        for(p in rbac_api.roles){
+            r = rbac_api.roles[p]
+            if(!Array.isArray(r)){
+                log('Warning: role "' + p + '" is not an Array')
+                continue
+            }
+            for(i = 0; i < r.length; ++i){
+                if(Array.isArray(r[i])) continue// no array in Roles, just `can`s
+                init_can(r[i])
+            }
+        }
+
+        //rbac.merge(cfg.rbac)// use after init, allow api additions (from config)
+//log('rbac init_auth: ', require('util').inspect(rbac, { depth : 6 }))
+    }
+
+    function init_can(can){
+        if(!can){
+            log('Warning: permission name is not defined or assigned `true`')
+            return
+        }
+        do {
+            if(0 == can.indexOf('module.')
+                 ||~can.indexOf('->')){
+            // it is not a file to serve, thus skip other types of cans
+                break
+            }
+            if('/' == can[0]){//#2
+                rbac_api.can.API.push(can)// denied by default
+                break
+            }
+            //#1 'App.backend.JS' == >> '/backend/JS'
+            can = can.replace(/^[^.]*[.]/, '/').replace(/[.]/g, '/')
+            rbac_api.can.Static[can] = false// denied by default
+        } while(0)
+        // secured permissions are being checked in `create_auth()` when
+        // `req.session.can` is created
+        rbac_api[can] = true// such permission is available now
+        return
     }
 
     function mwRBAC(req, res, next){// manage permissions, roles, users sets
