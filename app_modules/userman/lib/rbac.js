@@ -156,7 +156,7 @@ console.log('eca a: ', a)
     function rbac_api_fuses_can_setup(){
    /*
     * Fuse annotations of the permissions means they can be defined only in
-    * arrays of permissions i.e.:
+    * arrays (unions) of permissions i.e.:
     *
     *    fuse('permission_name', true)
     *    rbac_api.can = {
@@ -212,7 +212,7 @@ console.log('eca a: ', a)
             }
         }
      **/
-        if(!rbac) return
+        if(!rbac) throw new Error('!Error RBAC merging')
 
         if(0 == rbac_api.can.API.length){
             log(
@@ -220,7 +220,7 @@ console.log('eca a: ', a)
             )
         }
 
-        var i, j, k, m, ii, src, dst, secure
+        var i, j, k, m, src, dst, secure
 
         secure = rbac_api.fuses_can
         for(i in rbac){
@@ -244,7 +244,8 @@ log('`merge_rbac`: skip array can.' + j)
 log('!Security `merge_rbac`: skip secure permission "' + j + '"')
                         continue// there is such permission in `fuses_can`
                     }
-                } else if('roles' == i){// check perms thru `fuses_can`
+                    init_can(j)
+                } else if('roles' == i){// check perms thru `fuses_can` and API
                     if(!Array.isArray((m = src[j]))){
                         continue// skip
                     }// role_name: [ ]

@@ -24,6 +24,7 @@ var app = api.app
     }
 
     api.wes = wes = require('./lib/wes.js')(/*cfg*/)
+    api.rbac = moduleRBAC
     rbac = require('./lib/rbac.js')(cfg)
 
     Can = rbac.can
@@ -120,11 +121,15 @@ log('TODO: drop priviledges so other app modules can not access anything')
         return res.json(Config.extjs)
     }
 
+    function moduleRBAC(modules){
+    var m, n
 
+        for(n in modules){
+            m = modules[n]
+            if(m.cfg && m.cfg.rbac){
+                rbac.merge(m.cfg.rbac)
             }
         }
-
-
     }
 
     function mwLogin(req, res){
