@@ -225,14 +225,23 @@ console.log('eca a: ', a)
         secure = rbac_api.fuses_can
         for(i in rbac){
             if(!rbac_api.hasOwnProperty(i)){// check if `rbac_api` has such category
-log('!Security `merge_rbac`: overwrite attempt of "' + i + '"')
+log('!Security `merge_rbac`: write/insert attempt of "' + i + '"')
                 continue// don't allow anything from untrusted sources
             }
             src = rbac[i], dst = rbac_api[i]
             for(j in src){// from source to destination
                 if(dst.hasOwnProperty(j)){
-//log('!Security `merge_rbac`: overwrite attempt of `' + i + '["' + j + '"]`')
-                    // new: just skip `can` that exists already
+                    if('roles' == i && Array.isArray(m = src[j])){
+                    // merge module's cans from and into existing roles
+                        for(k = 0; k < m.length; ++k) if(m[k]){
+                            dst[j].push(
+                                init_can(m[k])
+                            )
+                        }
+                    } else {//              e.g.: `users["dev"]`
+log('!Security `merge_rbac`: overwrite attempt of `' + i + '["' + j + '"]`')
+                    }
+                    // new/added in role: just skip `can` that exists already
                     continue// don't allow overwrite anything
                 }
                 if('can' == i){
@@ -334,7 +343,7 @@ log('rbac_api.can[p]: ' + p, rbac_api.can[p])
     function init_can(can){
         if(!can){
             log('Warning: permission name is not defined or assigned `true`')
-            return
+            return can
         }
         do {
             if(0 == can.indexOf('module.')
@@ -352,8 +361,10 @@ log('rbac_api.can[p]: ' + p, rbac_api.can[p])
         } while(0)
         // secured permissions are being checked in `create_auth()` when
         // `req.session.can` is created
-        rbac_api[can] = true// such permission is available now
-        return
+        if(!rbac_api.can[can]){
+            rbac_api.can[can] = true// such permission is available now
+        }
+        return can
     }
 
     function mwRBAC(req, res, next){// manage permissions, roles, users sets

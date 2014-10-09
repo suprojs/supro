@@ -24,7 +24,6 @@ var app = api.app
     }
 
     api.wes = wes = require('./lib/wes.js')(/*cfg*/)
-    api.rbac = moduleRBAC
     rbac = require('./lib/rbac.js')(cfg)
 
     Can = rbac.can
@@ -100,6 +99,7 @@ var app = api.app
     Modules = api.getModules()// reference to all (being loaded now) modules
     Config  = api.set_mwConfig(mwAuthBasedConfig)// get app config here
     api.getModules = api.set_mwConfig = null// deny other modules to do it
+    api.rbac = moduleRBAC//`rbac.merge` for other modules
 
 log('TODO: drop priviledges so other app modules can not access anything')
 
@@ -401,7 +401,7 @@ log('!deny cmp:', perm)
     **/
     var can, d, p, i, roll
 
-        can = Roles[role_name] || { __name: 'no role name' }
+        can = Roles[role_name] || { __name: 'no role' }
         if(Array.isArray(can)){// compile permissions from role setup
             roll = can
             can = {
@@ -419,7 +419,9 @@ log('!deny cmp:', perm)
                     apply_permission(p)
                 }
             }
-            Roles[role_name] = can// rewrite role with complied list of perm-s
+            // DO NOT DO IT: for dynamic addition of cans into role which requires
+            //               relogin and new `create_auth()` anyway
+            //Roles[role_name] = can// rewrite role with complied list of perm-s
         }
         session.can = can
         return
