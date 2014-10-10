@@ -55,7 +55,7 @@ config = {
         file: 'app_main/app_back.js',
         job_port: 3007,
         ctl_port: 3008,
-        ctl_on_close: null,// set app module handlers for ctl close/app exit
+        ctl_on_done: null,// set app module handlers for ctl close/app exit
         init_timeout: 123
        ,extjs:{
             pathFile: 'extjs.txt'// search this file (extjs.txt)

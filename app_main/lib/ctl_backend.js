@@ -13,19 +13,6 @@ module.exports = ctl_backend
 
 function ctl_backend(cfg, uncaughtExceptions, run_backend){
 var ipt  = require('util').inspect
-var close_handlers = [ ], allow = true
-
-    cfg.backend.ctl_on_close = function(handler){
-        if(!handler || 'function' != typeof handler){
-            allow = false
-            return
-        }
-        if(allow){
-            close_handlers.push(handler)
-        }
-        return
-    }
-
 var ctl = require('http').createServer(
 function proc_ctl_http_serv(req, res){
 var body = ''
@@ -36,8 +23,8 @@ var body = ''
     if ('/sts_running' == req.url){
         body += uncaughtExceptions.join('\n====\n')
     } else if('/cmd_exit' == req.url){
-        call_close_handlers(close_handlers)
-        body += '$ is going down\n'
+        return call_done_handlers(req, res, done_handlers)
+        //body += '$ is going down\n'
     } else if ('/cmd_stat' == req.url){
         body += Math.ceil(process.uptime()) + '\n' + ctl.toISOString()
     } else {// show some info about this
@@ -85,31 +72,52 @@ function proc_ctl_res_unexpected_close(){
     log('! ERROR(ctl) aborted request')
 }
 
-ctl.listen(cfg.backend.ctl_port ,'127.0.0.1' ,run_backend)
-ctl.unref()// "allow the program to exit if this is the only active server in the event system"
-ctl = null// setup is over, waiting for 'listening' event, `ctl` is running flag
+var done_handlers = [ ], allow = true
 
-function call_close_handlers(arr){
+cfg.backend.ctl_on_done = function ctl_on_done(handler){
+    if(!handler || 'function' != typeof handler){
+        allow = false// stop accepting done callbacks
+        return
+    }
+    if(allow){
+        done_handlers.push(handler)
+    }
+    return
+}
+
+function call_done_handlers(req, res, arr){
 var i, code = 0, n = arr.length
 
-    if(0 == n) return the_end(0)
-
+    if(0 == n) return the_end(0, res)
+    // setup res, write partials in callbacks
+    res.writeHead(200 ,{ /*'Content-Length': body.length,*/
+                         'Content-Type': 'text/plain' }
+    )
+    res.write('$ application is going down\n')
     for(i = 0; i < n; ++i){
-        arr[i](parallel_callback)
+        arr[i](callback)
     }
-    return undefined
+    return null
 
-    function parallel_callback(err){
-        err && (code = n)
+    function callback(err, data){
+        err  && log('! end error at #' + (code = n) + ': ', err)
+        data && res.write(data) && res.write('\n')
         if(0 === --n){
-            the_end(code)
+            the_end(code, res)
         }
     }
 }
 
-function the_end(code){
+function the_end(code, res){
     process.nextTick(function(){
+        log('$ application exit with code: ' + (code ? code : 0))
         process.exit(code ? code : 0)
     })
+    return res.end()
 }
+
+ctl.listen(cfg.backend.ctl_port ,'127.0.0.1' ,run_backend)
+ctl.unref()// "allow the program to exit if this is the only active server in the event system"
+ctl = null// setup is over, waiting for 'listening' event, `ctl` is running flag
+
 }
