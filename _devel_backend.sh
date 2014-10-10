@@ -26,19 +26,28 @@ Normal Exit${1:- (backend is running)}
 trap 'normal_exit' HUP TERM INT
 
 echo '
-reading config in $ENV
-'
-NODEJS_CONFIG=`dd if=./config/cfg_default.js`
-echo 'exporting it for childs
-'
+^ reading config in $ENV'
+NODEJS_CONFIG=`dd if=./config/cfg_default.js 2>/dev/null`
+echo '^ exporting it for childs'
 export NODEJS_CONFIG
-BACKEND_PORT=`sed '/ctl_port/{s/^[^:]*: \([^,]*\),/\1/p};d' <<!
-$NODEJS_CONFIG
-!`
 
-echo "BACKEND_PORT: $BACKEND_PORT"'
+BACKEND_PORT=${NODEJS_CONFIG##*ctl_port:}
+BACKEND_PORT=${BACKEND_PORT## }
+BACKEND_PORT=${BACKEND_PORT%%,*}
 
-running first Node.JS backend
+A=${NODEJS_CONFIG##*backend:{}
+A=${A##*file:[ \'\"][\'\"]}
+A=${A%%[\'\"],*} # app_main/app_back.js
+
+BACKEND="node $A"
+
+A=${A##*/}
+A=${A%%.js*} # app_back
+
+echo '
+^ running Node.JS backend
+^ command: `'"$BACKEND"'`
+^ ctlport: "'"$BACKEND_PORT"'"
 '
 
 _lftp_http() { # $1=timeout $2=cmd
@@ -56,8 +65,7 @@ cd http://127.0.0.1:'"$BACKEND_PORT"'/ && cat '"$2"' && exit 0 || exit 1
     } 0</dev/null
     return $?
 }
-A='app_back'
-BACKEND="node ./app_main/${A}.js"
+
 [ "$1" ] && {
     echo 'Logging in "./log/"'
     [ -d './log/' ] || {
