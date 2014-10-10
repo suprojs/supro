@@ -24,7 +24,7 @@ config = {
                         'module.example'// select this `can`, etc.
                        ,'App.um.wes', '/um/lib/wes'// NOTE: include this for any role
                        ,'App.um.controller.Chat', 'App.um.view.Chat'
-                       ,'um/lib/chat'
+                       ,'/um/lib/chat'
                     ]
                 }
                ,users:{

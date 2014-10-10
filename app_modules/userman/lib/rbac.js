@@ -52,6 +52,7 @@ var dir, rbac_api, fs = require('fs')
         fuse(backend_js_class, true)// setup fuse permissions
         fuse(backend_js_api, true)
         fuse('module.*', true)
+        fuse('/*/lib', true)
         /* set of permissions */
         rbac_api.can = {
             backend:[
@@ -62,6 +63,7 @@ var dir, rbac_api, fs = require('fs')
                 ,fuse(backend_js_class)// annotated secure permission used
                 ,fuse(backend_js_api)// annotated secure permission used
                 ,fuse('module.*')// annotated secure permission used
+                ,fuse('/*/lib')// annotated secure permission used
             ]
            ,'App.um.wes': true// `wes` UI + API are included by default in roles
            ,'/um/lib/wes': true
@@ -89,12 +91,11 @@ var dir, rbac_api, fs = require('fs')
         /* set of roles */
         rbac_api.roles = {// 'role': new Array(of `can`s)
             'developer.local':[
+             /* NOTE: secured `can` must be defined in `rbac_api.can` already! */
                 rbac_api.can.backend// can do all from specified `can` block
                ,rbac_api.can.chat
                ,rbac_api.can.userman
                ,'App.view.Window->tools.refresh'// developer's stuff
-               /* NOTE: secured `can` must be defined in `rbac_api.can` already! */
-               ,fuse('module.*')// allow any app module to load
             ]
            ,'admin.local':[
                 'App.view.desktop.BackendTools',
@@ -113,6 +114,7 @@ var dir, rbac_api, fs = require('fs')
         fuse(backend_js_class, false)// deny access by this permission for others
         fuse(backend_js_api, false)// deny access by this permission for others
         fuse('module.*', false)
+        fuse('/*/lib', false)
         /* set of users */
         rbac_api.users = {
             dev:{
@@ -258,28 +260,27 @@ log('!Security `merge_rbac`: skip secure permission "' + j + '"')
                     if(!Array.isArray((m = src[j]))){
                         continue// skip
                     }// role_name: [ ]
-
 //log('merge role m: ' + m)
                     for(k = 0; k < m.length; ++k){
 //log('merge role m[k]: ' + m[k])
                         if(null !== secure(m[k])){
 log('!Security `merge_rbac`: reject role secure permission "' + m[k] + '"')
                             m[k] = ''// there is such permission in `fuses_can`
-                        }/* else {// check API subsets
+                        }/* else if(!allow){
+                        // check API subsets for all other modules
 //log('merge role API: ', rbac_api.can.API)
-                            for(ii = 0; ii < rbac_api.can.API.length; ++ii){
+                            for(var ii = 0; ii < rbac_api.can.API.length; ++ii){
                             // all API must heve permission
 //log('merge role API[ii]: ' + rbac_api.can.API[ii])
                                 if(0 == rbac_api.can.API[ii].indexOf(m[k])){
                                 // j: "/p", API[i]: '/pingback'
                                     log(
-'!Security `merge_rbac`: skip secure API subset "' +
+'!Security `merge_rbac`: skip existing API subset "' +
                                         m[k] + '" in role "'+ j + '"'
                                     )
-                                    m[k] = ''???
+                                    m[k] = ''
                                     break
                     // stop scan; deny subsets of API from app modules
-                    // ??? what app modules ???
                                 }
                             }
                         }*/

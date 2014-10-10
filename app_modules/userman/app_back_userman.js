@@ -191,7 +191,7 @@ log('basic auth:', req.url)
 log('.allow session Can.Static: ' + perm)
                     return next()// allow connect.static
                 }
-            } else {// API
+            } else if(!can['/*/lib']){// API
 log('perm: ' + perm)
                 for(i = 0; i < can.API.length; ++i){// scan all API
 log('check: ' + can.API[i])
@@ -201,6 +201,8 @@ log('.allow "' + perm + '" by can.API: ' + can.API[i])
                         return next()// allow API
                     }
                 }
+            } else {// secured permission for all API: '/*/lib'
+                return next()// allow API
             }
             // all other falls thru
         }
