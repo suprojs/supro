@@ -38,8 +38,7 @@ var path, extjs, t
 
         clearInterval(extjs)
         app.extjs_helper = css_load
-        path = Ext.Loader.getPath('Ext')//ExtJS 5: config is OK, remove this
-        extjs = path + '/../locale/ext-lang-' + l10n.lang + '.js'
+        extjs = path + 'locale/ext-lang-' + l10n.lang + '.js'
         Ext.Loader.loadScript({
             url: extjs,
             onError: function fail_load_locale(){
