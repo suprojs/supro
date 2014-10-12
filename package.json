@@ -37,6 +37,7 @@
     "main": "app_main/app.htm",
     "engines": {
         "cygwin": "1.7.15",
+        "lftp": "4.3.7",
         "node": "0.10.32",
         "node-webkit": "0.10.4 (node: '0.11.13', Chromium: '35.0.1916.157')"
     },
