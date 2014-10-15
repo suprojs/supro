@@ -6,7 +6,7 @@ Ext.define('App.view.desktop.StatusGrid',{
     title: l10n.stsSystem,
     /* config for stretching `grid` to fit container correctly: */
     height: '100%', width: 123, flex: 1,//+ { layout: 'hbox', align: 'stretch' }
-    viewConfig: {
+    viewConfig:{
         deferEmptyText: false
        ,emptyText: '--== ? ? ? ? ==--'
        ,getRowClass: function(record){
@@ -14,8 +14,8 @@ Ext.define('App.view.desktop.StatusGrid',{
         }
     },
     listeners:{
-       itemclick: function itemclickStatusGrid(grid, rec){
-           if(rec.get('n')) rec.set('n', false)
+       itemclick: function(g___, rec){
+           rec.get('n') && rec.set('n', false)
        }
     },
     dockedItems:[{
@@ -41,9 +41,9 @@ Ext.define('App.view.desktop.StatusGrid',{
     },
         Ext.create('App.view.desktop.BackendTools')
     ],
-    /* `columns` are going to be dynamicly configured, here is some experiment */
+    // combine two static column configs
     columns: Ext.Array.merge(App.cfg.modelBase.fields, App.cfg.modelStatus.fields),
-    store: App.store.Status
+    store: App.store.Status// is also singleton
 })
 
 Ext.define('App.view.desktop.Status',{
@@ -58,7 +58,7 @@ Ext.define('App.view.desktop.Status',{
     resizable: true,
 
     style: 'padding: 4px; box-shadow: 0px 10px 20px #111; text-align: center;',
-    items: [{
+    items:[{
         xtype: 'container'
         ,layout: 'vbox'
         ,width: 77
@@ -85,7 +85,7 @@ Ext.define('App.view.desktop.Status',{
 '</div><br><a target="blank" href="' + (
     App.cfg.backend.url ?
         App.cfg.backend.url + '">HTTP Remote Application' :
-        '/extjs/docs/index.html' + '">ExtJS Doc'
+        '/extjs/docs/index.html' + '">ExtJS Doc<br>w/o examples'
     ) +
 '</a>'
         }
