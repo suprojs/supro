@@ -50,7 +50,7 @@ var path, extjs, t
             'ExtJS locale: ' + l10n.lang + '\n ' +
             'ExtJS is at <' + path + '>'
         )
-        Ext.Loader.setPath('Ext.ux', path + '/../examples/ux')
+        Ext.Loader.setPath('Ext.ux', path + 'examples/ux')
 
         if(app.config.backend.url){// `nw` context`
            /* patch ExtJS Loader to work from "file://" in `node-webkit`
