@@ -1,3 +1,7 @@
+// local vars to share in hash (kind of macro preprocessing)
+var OBJ = 'GLOB'// differentiate instances of distributed SUPRO
+var DB  = 'supro_' + OBJ
+// global config
 config = {
 /* NOTE: this is not JSON just JavaScript
  *       idea is taken from github.com/louischatriot/mongo-edit
@@ -6,9 +10,18 @@ config = {
 
     lang: 'ru',// base localization, must be provided by any module as fallback
     log: 'log/',
+
     //TODO: uid gid new ids for process after start or partial init
     modules:{// cfg for stack of things from 'app_modules'
     // order matters: before auth module there are no restrictions to config
+
+    // NOTE config: one level copy of this properties into default settings
+        suprolftpd:{
+            OBJ:OBJ
+        },
+        supromongod:{
+            db_name: DB// as in depended modules
+        },
     // auth module overwrites default and sets up per-user auth module loading
         userman:{//#0: authentication and authorization (plus Chat)
             store: 'fs' // TODO: fs || db
