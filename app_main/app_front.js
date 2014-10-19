@@ -427,10 +427,11 @@ function load_config(app){// loaded only by main process -- node-webkit
         cfg = 'config/cfg_default.js'
 
     try {
-        app.config = (
-            new Function('var config ; return ' +
-                          fs.readFileSync(cfg ,'utf8'))
-        )()
+        app.config = (new Function(
+        'var config;/* one global variable, any local can be in read file */\n' +
+        fs.readFileSync(cfg ,'utf8') +
+        '; return config ;'
+        ))()
     } catch(ex){
         con.error('ERROR load_config:' + (cfg = (' ' + cfg + '\n' + ex)))
         cfg = l10n.errload_config_read + cfg
