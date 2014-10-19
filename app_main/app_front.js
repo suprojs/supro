@@ -433,10 +433,10 @@ function load_config(app){// loaded only by main process -- node-webkit
         '; return config ;'
         ))()
     } catch(ex){
-        con.error('ERROR load_config:' + (cfg = (' ' + cfg + '\n' + ex)))
+        con.error('ERROR load_config:' + (cfg = (' ' + cfg + '\n' + ex.stack)))
         cfg = l10n.errload_config_read + cfg
-        doc.write(cfg)
         app.w.window.alert(cfg)
+        doc.write(cfg.replace(/\n/g, '<br>'))
         return false
     }
 
