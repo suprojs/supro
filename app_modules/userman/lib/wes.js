@@ -24,6 +24,12 @@ var Waits = {// pool of waiting server events `req`uests from UI
  **/
     }
    ,num = 0// number of sessions
+   ,global_pushUncaughtException = global.pushUncaughtException
+
+    global.pushUncaughtException = function wes_pushUncaughtException(that){
+        global_pushUncaughtException(that)
+        broadcast('uncaught@global', 'check: "/uncaughtExceptions"')
+    }
 
     return {
          mwPutWaitEvents: mwPutWaitEvents

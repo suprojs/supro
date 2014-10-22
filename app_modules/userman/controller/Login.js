@@ -427,6 +427,20 @@ var evn, cmp, s
             }
         }
         break
+        case 'uncaught@global':
+            if('developer.local' == App.User.can.__name ||
+               'admin.local'     == App.User.can.__name) Ext.Msg.alert(
+                {
+                    buttons: Ext.Msg.OK,
+                    icon: Ext.Msg.ERROR,
+                    title: 'uncaught@global',
+                    msg: data[evn].json,
+                    fn: function(btn){
+                        //if('yes' == btn)...
+                    }
+                }
+            )
+        break
         case 'Disconnect':
             (cmp = Ext.getCmp('um.usts')) && cmp.setIconCls('appbar-user-offl')
         break

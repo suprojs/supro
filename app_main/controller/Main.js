@@ -92,6 +92,34 @@ Ext.define('App.controller.Main',{
             delete App.cfg.backend.op
             delete App.cfg.backend.msg
             delete App.cfg.backend.time
+
+            if(App.um.wes){// catch possible errors before events from `wes`
+                return check_uncaughtExceptions()
+            }// else check periodically
+            setInterval(check_uncaughtExceptions, 2048)
+        }
+
+        function check_uncaughtExceptions(){
+            App.backend.req('/uncaughtExceptions',{/* dummy hash to get JSON */},
+            function(err, data){
+                if('developer.local' != App.User.can.__name &&
+                   'admin.local'     != App.User.can.__name){
+                    return
+                }
+                console.log('uncaughtExceptions err: ', err)
+                if(data && data.length){
+                    console.table(data)
+                    Ext.Msg.alert({
+                        buttons: Ext.Msg.OK,
+                        icon: Ext.Msg.ERROR,
+                        title: 'uncaught@global on start',
+                        msg: Ext.encode(data).replace(/\\n/g, '<br>'),
+                        fn: function(btn){
+                            //if('yes' == btn)...
+                        }
+                    })
+                }
+            })
         }
     }
 })
