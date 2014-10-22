@@ -97,6 +97,9 @@ var api      = require('./api.js')
     }
 
     function mwUncaughtExceptions(req, res, next){
+        if(req.json){
+            return res.json(uncaughtExceptions)
+        }
         return res.txt(uncaughtExceptions.join('\n====\n'))
     }
 
