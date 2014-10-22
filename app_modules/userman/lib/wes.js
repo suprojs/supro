@@ -3,7 +3,7 @@
  * Request parameter (in `req.txt`) is user's status: 'online', 'away', etc.
  *
  * LIMITS: only one window/tab/context is suported per one session
- *
+ * `ev`: 'errdev@um', 'initwes@um', 'Usts@um', 'usts@um', 'uncaught@global'
  **/
 
 module.exports = wait_events
@@ -37,10 +37,11 @@ var Waits = {// pool of waiting server events `req`uests from UI
         ,list_ids: list_ids
         ,is_online: is_online
         ,reset_online: reset_online
-        ,broadcast: broadcast
-        //,singlecast: singlecast
         ,init: init
         ,cleanup: cleanup
+        // communication sub api
+        ,broadcast: broadcast
+        //,singlecast: singlecast
     }
 
     function init(req){
