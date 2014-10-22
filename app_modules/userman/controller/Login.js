@@ -379,13 +379,9 @@ Ext.define('App.um.controller.Login',{
         }
     },
     destroy: function destroy(){
-    /*
-     * is not used any more
-     * NOTE: this controller is handling events `me.listen()`
-     * TODO: in case of logout event from backend, this may show
-     *       `App.um.view.Login` again without reloading of all Viewport
+    /* in case of logout event from backend, this
+     * `App.um.view.Login` is shown again without reloading of all Viewport
      */
-        //App.um.view.Login.destroy()
         App.um.view.Login.destroy()
         App.um.view.Login = null// GC
         this.application.eventbus.unlisten(this.id)
@@ -403,9 +399,11 @@ var evn, cmp, s
        'backend events',
         success ? data.length : data,// data || res.statusText
         success ? l10n.stsOK : l10n.stsHE,
-        new Date
+        s = new Date
     )
-    console.log(data)//TODO: Ext,Msg on error
+
+    console.log('wes: ' + s)
+    console.log(data)
     console.table(data)
 
     if('string' == typeof data) switch (data){// simple event
