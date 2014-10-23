@@ -47,10 +47,10 @@ App.cfg.modelBase = {
     //         every model defines proxy with own `url` and `reader.root`
     //,validations : Object[]
 
-   ,c9r: function constructorModelBase(){
+   ,c9r: function constructorModelBase(cfg){
     var me = this
         me.idgen.getRecId = App.cfg.modelBase.idgen.getRecId
-        me.callParent(arguments)
+        me.callParent([cfg])
     }
 }
 
@@ -83,12 +83,12 @@ Ext.Array.insert(
 Ext.define('App.model.BaseR',{
     extend: Ext.data.Model,
     fields: App.cfg.modelBase.fields,
-    constructor: function(){
+    constructor: function(cfg){
         /* Before:
          * > id: "App.model.Status-ext-record-9
          * > internalId: "ext-record-9"
          **/
-        App.cfg.modelBase.c9r.apply(this, arguments)
+        App.cfg.modelBase.c9r.call(this, cfg)
         /* After:
          * > id: "ext-record-9"
          * > internalId: "ext-record-9"
@@ -116,7 +116,7 @@ Ext.define('App.model.BaseCRUD',{
     //url: Model operates on its own (without store)
     //fields: reconfigured by store/proxy/grid; or see below 'modelShoeItems'
 
-    constructor: function(){
+    constructor: function(cfg){
         if(this.url){
             // NOTE: Model's proxy doesn't play role in Store setup
             this.setProxy({
@@ -125,6 +125,6 @@ Ext.define('App.model.BaseCRUD',{
             })
         }
 
-        App.cfg.modelBase.c9r.apply(this, arguments)// use short view ids
+        App.cfg.modelBase.c9r.call(this, cfg)// use short view ids
     }
 })
