@@ -63,7 +63,7 @@ var defaults
     }
 
     function backend_events(o, success, res){
-    var data, i
+    var data, i, done
 
         if(success){
             // reset error state if any
@@ -95,6 +95,7 @@ var defaults
             if(!data || !data.length) return req()// nothing to do
             // handle own events
             i = data.length - 1
+            done = 0
             do {// scan from bottom up (our event are likely to be last in list)
                 switch(data[i].ev){
                 // broadcasts: 'login@um' 'initwes@um' 'usts@um' ....
@@ -110,12 +111,14 @@ var defaults
                     if('initwes@um' != data[0].ev &&// this is 1st event
                      !(data[2] && 'login@um' == data[2].ev)){// this is 3d one
                         o = null// do not setup twice if not init
+                        done += 2
                     }
+                    done++
                 }
             } while(i--)
             if(o) req()// setup wes for next events, if not manual status
-
-            return Ext.globalEvents.fireEventArgs(// broadcast !own event
+            // broadcast !own event if there are more events
+            return (done == data.length) ? undefined : Ext.globalEvents.fireEventArgs(
                 'wes4UI',
                 [ success, data ]
             )
