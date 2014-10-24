@@ -347,11 +347,10 @@ function terminate(){
         res.on('data'
        ,function(chunk){
             var pid  = chunk.slice(7).replace(/\n[\s\S]*/g, '')// remove '? pid: '
-               ,path = app.process.cwd()
 
-            path += path.indexOf('/') ? '/' : '\\'// add OS-specific slash
-            if(pid != app.config.backend.pid)
-                con.warn('current pid != app.config.backend.pid; kill anyway!'),
+            if(pid != app.config.backend.pid){
+                con.warn('current pid != app.config.backend.pid; kill anyway!')
+            }
             app.config.backend.pid = pid
             app.c_p.exec(
                'wscript terminate.wsf ' + pid,

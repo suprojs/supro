@@ -143,7 +143,6 @@ var dir, rbac_api, fs = require('fs')
     var a, p, i, can
 
         can = rbac_api.can
-        secure = rbac_api.fuses_can
         for(p in can){
 console.log('eca p: ' + p)
             if(Array.isArray(a = can[p])){

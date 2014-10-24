@@ -38,7 +38,7 @@ App.cfg.modelBase = {
     //,defaultProxyType : String ; Defaults to 'ajax'.
     //,hasMany : String/Object/String[]/Object[]
     //,idProperty : String/Object/Ext.data.Field; Defaults to 'id'.
-    ,idgen:{
+    ,idgen:{// see 'App.model.BaseR'
         getRecId: function(rec){
             return '' + rec.internalId
         }
