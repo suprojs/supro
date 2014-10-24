@@ -98,6 +98,20 @@ var defaults
             done = 0
             do {// scan from bottom up (our event are likely to be last in list)
                 switch(data[i].ev){
+                case 'wes4store':
+                    o = data[i].json
+                    if(o && o.store){
+                        res = Ext.StoreManager.lookup(o.store)// e.g.: 'lftpd'
+                        if(res){
+                            res.fireEventArgs('wes4store', [o])
+                            done++
+                        } else {
+                            console.warn('`wes4store` not found: ' + o.store)
+                        }
+                    } else {
+                        console.warn('`wes4store`: no `store` argument of event')
+                    }
+                break
                 // broadcasts: 'login@um' 'initwes@um' 'usts@um' ....
                 default: break
                 // == private events ==

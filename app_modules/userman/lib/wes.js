@@ -4,6 +4,7 @@
  *
  * LIMITS: only one window/tab/context is suported per one session
  * `ev`: 'errdev@um', 'initwes@um', 'Usts@um', 'usts@um', 'uncaught@global'
+ * external `ev`: 'wes4store'
  **/
 
 module.exports = wait_events
