@@ -103,7 +103,9 @@ var defaults
                     if(o && o.store){
                         res = Ext.StoreManager.lookup(o.store)// e.g.: 'lftpd'
                         if(res){
-                            res.fireEventArgs('wes4store', [o])
+                            setTimeout(function deferStore_fireEventArgs(){
+                                res.fireEventArgs('wes4store', [o])
+                            }, 0)
                             done++
                         } else {
                             console.warn('`wes4store` not found: ' + o.store)
