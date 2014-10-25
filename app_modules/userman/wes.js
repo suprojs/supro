@@ -165,3 +165,38 @@ var defaults
         return undefined
     }
 })(Ext.create(App.backend.Connection))
+
+/*
+ * Deliver server-pushed data to Ext.data.store's
+ * `ev`: wes4store
+ * @view:: highlight updated row(s)
+ **/
+Ext.define('App.store.WES',{
+    extend: Ext.data.ArrayStore,
+    view: null,// grid or panel with grid somewhere down
+    listeners:{
+        wes4store: function(json){//{ store: 'storeId', data:[{model}, {model}]}
+        var view, data, model, j
+
+            if(this.view){
+                if(!(view = this.view.view)){// is not grid with view
+                    view = this.view.down('grid') // look down for a grid
+                }
+                view = view.view
+            }
+            if(Array.isArray(data = json.data)){
+                for(j = 0; j < data.length; ++j){
+                    if((model = this.getById(data[j].id))){
+                        model.set(data[j])
+                        view && Ext.fly(
+                            view.getNode(view.getRowId(model))
+                        ).highlight('#77FF77',{
+                            attr: 'backgroundColor',
+                            duration: 512
+                        })
+                    }
+                }
+            }
+        }
+    }
+})
