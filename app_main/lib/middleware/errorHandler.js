@@ -4,7 +4,8 @@ var idx
     if(!err) return next()
     if (err.status) res.statusCode = err.status
     if (res.statusCode < 400) res.statusCode = 500
-    log('errorHandler: ', err.stack || err), log('URL: ' + req.url)
+    log('errorHandler: ', err.stack || err)
+    log('URL: ', req.url)
     log('data: ', req.json || 'null')// log JSON data (from stores, etc.)
 
     if('string' == typeof err){
@@ -19,6 +20,10 @@ var idx
         if(0 < (idx = err.indexOf('error index:'))){
             err = err.slice(idx)
         }
+    }
+
+    if(res._header || res.finished){// `res` was sent already
+        res.json = pushUncaughtException
     }
 
     return res.json({
