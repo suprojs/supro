@@ -1,5 +1,5 @@
 #!/bin/sh
-# cleanup whitespace and leaked in comments of out git version of `ext-all-debug.js`
+# cleanup whitespace and leaked in comments of our git version of `ext-all-debug.js`
 # save ~1.4M of file size
 
 set -e

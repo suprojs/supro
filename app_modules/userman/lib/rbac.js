@@ -374,7 +374,7 @@ log('rbac_api.can[p]: ' + p, rbac_api.can[p])
         switch(m){// API is protected, thus `req.session` must be valid
             case 'can': req.session.can && (ret.data = req.session.can)
                 break
-            case 'all': ret.data = rbac_api
+            case 'all': ret.data = rbac_api// FIXME: do not send passwords
                 break
             default:break
         }
