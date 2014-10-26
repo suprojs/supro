@@ -30,10 +30,9 @@ var d, f
          *       res.txt(data)
          *   }
         )*/
-        api.connect.sendFile(
+        return api.connect.sendFile(
             local.log_dir + '/' + req.url.query.file + '.txt', true
         )(req, res)// call middleware
-        return
     }
     // POST `req.txt`: <olecom>{\t}a simple chat message. (with some html around)
     //'http://localhost:3007/um/lib/chat/text'
@@ -53,9 +52,7 @@ var d, f
             return open_log()
         }
     }
-    append_log()
-
-    return
+    return append_log()
 
     function open_log(){
         local.log_file = local.require.fs.createWriteStream(
