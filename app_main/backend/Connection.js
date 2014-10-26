@@ -70,11 +70,16 @@ function create_backend_request(conn){
         function callbackExtAjax(opts, success, xhr){
         var json
 
-            if(~String(xhr.getResponseHeader('Content-Type'))
-               .indexOf('application/json')){
-                json = Ext.decode(xhr.responseText)
-            } else {// string is valid JSON
-                json = xhr.responseText
+            if(success){
+                if(~String(xhr.getResponseHeader('Content-Type'))
+                   .indexOf('application/json')){
+                    json = Ext.decode(xhr.responseText)
+                } else {// string is valid JSON
+                    json = xhr.responseText
+                }
+            } else {
+                json = { err: xhr.timedout ? 'timedout' : 'aborted' }
+                console.error(json, xhr)
             }
             return callback(!success || !json, json, xhr)
         }
