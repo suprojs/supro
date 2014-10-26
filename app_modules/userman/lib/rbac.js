@@ -64,6 +64,8 @@ var dir, rbac_api, fs = require('fs')
                 ,fuse(backend_js_api)// annotated secure permission used
                 ,fuse('module.*')// annotated secure permission used
                 ,fuse('/*/lib')// annotated secure permission used
+                ,'uncaught@global'// get UI alerts on 'uncaughtException' event
+                ,'App.view.Window->tools.refresh'// developer's stuff
             ]
            ,'App.um.wes': true// `wes` UI + API are included by default in roles
            ,'/um/lib/wes': true
@@ -95,15 +97,15 @@ var dir, rbac_api, fs = require('fs')
                 rbac_api.can.backend// can do all from specified `can` block
                ,rbac_api.can.chat
                ,rbac_api.can.userman
-               ,'App.view.Window->tools.refresh'// developer's stuff
             ]
            ,'admin.local':[
                 'App.view.desktop.BackendTools',
+                'uncaught@global',
                 'module.example',// if enabled in config will be allowed
                 'module.enjsms',
                 rbac_api.can.chat
            ]
-           ,'enjsms+chat':[
+           ,'test.default':[
                 'module.enjsms',// order is not followed in shortcuts
                 //'/um/lib/rbac', allow e.g. `App.backend.req('/um/lib/rbac/can')`
                 rbac_api.can.chat
@@ -133,7 +135,7 @@ var dir, rbac_api, fs = require('fs')
             ,test:{
                 id: 'test',
                 pass: '9d4e1e23bd5b727046a9e3b4b7db57bd8d6ee684',
-                roles:[ 'enjsms+chat' ],
+                roles:['test.default'],
                 name: 'test login'
             }
         }

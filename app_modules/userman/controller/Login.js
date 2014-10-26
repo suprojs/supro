@@ -428,8 +428,7 @@ var evn, cmp, s
         }
         break
         case 'uncaught@global':
-            if('developer.local' == App.User.can.__name ||
-               'admin.local'     == App.User.can.__name) Ext.Msg.alert(
+            if(App.User.can['uncaught@global'] && Ext.Msg.hidden) Ext.Msg.alert(
                 {
                     buttons: Ext.Msg.OK,
                     icon: Ext.Msg.ERROR,
