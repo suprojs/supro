@@ -15,7 +15,7 @@ http.ServerResponse.prototype.json =
  *  res.json('') -> valid JSON is empty string object: ""
  *  res.json(401, { msg: ' Authorization Required' })
  *
- *  res,json() -> blow up
+ *  res.json() -> blow up (no valid object provided) via `connect`s mw stack
  */
 function res_json(status, obj){
     if('undefined' != typeof obj){
@@ -23,13 +23,10 @@ function res_json(status, obj){
     } else {
         obj = status
     }
-    try {
-        obj = JSON.stringify(obj)
-    } catch(ex){
-        obj = '{"success": false}'
     if(this._header || this.finished){// error may have send `res` via next()
         return pushUncaughtException(obj)
     }
+    obj = JSON.stringify(obj)
     this.setHeader('Content-Length', Buffer.byteLength(obj))
     this.writeHead(this.statusCode, this.ContentTypes.AppJSON)
     return this.end(obj)
