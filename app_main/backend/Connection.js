@@ -62,10 +62,12 @@ function create_backend_request(conn){
 
         if('string' == typeof data){
             options.params = data// plain text or JavaScript for `App.backend.JS`
-        } else if('function' == typeof data){
-            callback = data
         } else {
-            options.jsonData = data
+            if('function' == typeof data){
+                callback = data
+            } else {// default data is JSON
+                options.jsonData = data
+            }
             options.headers = {
                 'Content-Type': 'application/json; charset=utf-8'
             }
@@ -84,7 +86,10 @@ function create_backend_request(conn){
                     json = xhr.responseText
                 }
             } else {
-                json = { err: xhr.timedout ? 'timedout' : 'aborted' }
+                json = {
+                    err: xhr.timedout ? 'timedout':
+                         xhr.timedout ? 'aborted' : xhr.statusText
+                    }
                 console.error(json, xhr)
             }
             return callback(!success || !json, json, xhr)
