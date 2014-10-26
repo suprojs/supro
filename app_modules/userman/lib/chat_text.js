@@ -16,6 +16,7 @@ return true// async anyway
 
 function api_text(ret, api, local, req, res, next){
 var d, f
+
     if(!local.log_dir){
         throw new Error('Chat: no `log_dir` available')// handled by `connect`
     }
@@ -44,15 +45,16 @@ var d, f
         if(local.log_file){// current log file is opened
             local.log_file.end(null,
                 function on_close_log_file(err){
-                    if(err) next(new Error(err))
-                    open_log()
+                    if(err) next(err)
+                    return open_log()
                 }
             )
         } else {
-            open_log()
+            return open_log()
         }
     }
     append_log()
+
     return
 
     function open_log(){
@@ -60,22 +62,24 @@ var d, f
             local.log_dir + local.log_file_name,
             { flags: 'a+' }// read && append
         )
-
+        local.log_file.on('open', append_log)
         local.log_file.on('error',
             function on_error_log_file(err){
-                if(err) next(new Error(err))
-                local.log_file.end()
                 local.log_file = null
+                next(err)
+                local.log_file.end()
             }
         )
     }
 
     function append_log(){// limit is '4mb' in `app_main\lib\middleware\postTextPlain.js`
     var msg = JSON.stringify(req.json) + '\n'
+
         api.wes.broadcast('chatmsg@um', msg)
         local.log_file.write('{"d":"' + d.toISOString() + '",' + msg.slice(1))
+
         ret.success = true
-        res.json(ret)
+        return res.json(ret)
     }
 
     function pad(n){
