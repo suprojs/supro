@@ -27,10 +27,12 @@ function res_json(status, obj){
         obj = JSON.stringify(obj)
     } catch(ex){
         obj = '{"success": false}'
+    if(this._header || this.finished){// error may have send `res` via next()
+        return pushUncaughtException(obj)
     }
     this.setHeader('Content-Length', Buffer.byteLength(obj))
     this.writeHead(this.statusCode, this.ContentTypes.AppJSON)
-    this.end(obj)
+    return this.end(obj)
 }
 
 http.ServerResponse.prototype.js =
