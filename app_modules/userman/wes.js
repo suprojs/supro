@@ -186,16 +186,20 @@ Ext.define('App.store.WES',{
             if(Array.isArray(data = json.data)){
                 for(j = 0; j < data.length; ++j){
                     if((model = this.getById(data[j].id))){
-                        model.set(data[j])
-                        view && Ext.fly(
-                            view.getNode(view.getRowId(model))
-                        ).highlight('#77FF77',{
-                            attr: 'backgroundColor',
-                            duration: 512
-                        })
+                        if(model.set(data[j])){
+                            // inform interested parties
+                            /*model.fireEventArgs('datachanged',[ model ])*/
+                            // if grid view available, highlight row
+                            view && Ext.fly(
+                                view.getNode(view.getRowId(model))
+                            ).highlight('#77FF77',{
+                                attr: 'backgroundColor',
+                                duration: 512
+                            })
+                        }
                     }
                 }
-                data.length && this.fireEventArgs('datachanged')
+                data && data.length && this.fireEventArgs('datachanged')
             }
         }
     }
