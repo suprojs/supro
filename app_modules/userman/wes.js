@@ -195,6 +195,7 @@ Ext.define('App.store.WES',{
                         })
                     }
                 }
+                data.length && this.fireEventArgs('datachanged')
             }
         }
     }
