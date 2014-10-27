@@ -57,6 +57,7 @@ config = {
         }
        /* after auth anything can go in no particular order */
        ,example: true
+       ,pingback: true
     },
     extjs:{
         path: 'ext-4.2/',// find and provide this path; 'extjs/' is for web
