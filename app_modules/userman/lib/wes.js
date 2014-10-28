@@ -226,16 +226,16 @@ var Waits = {// pool of waiting server events `req`uests from UI
         wes.queue.push(ev)
         if(!wes.timer){
             wes.timer = setTimeout(
-                function wait_queue_flush(){
-                    if(wes.res){// flush if next `res` is there
-                        wes.timer = 00
-                        wes.res.json(wes.queue.splice(0))// clean object in events
-                    } else {// wait for `res` to be ready a bit later
-                        setTimeout(wait_queue_flush, 512)
-                    }
+            function wait_queue_flush(){
+                if(wes.res){// flush if next `res` is there
+                    wes.timer = 0
+
+                    wes.res.json(wes.queue.splice(0))// clean object in events
+                } else {// wait for `res` to be ready a bit later
+                    setTimeout(wait_queue_flush, 512)
                 }
-                ,512
-            )
+            }
+            ,512)
         }
     }
 }
