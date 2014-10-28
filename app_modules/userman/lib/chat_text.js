@@ -62,9 +62,9 @@ var d, f
         local.log_file.on('open', append_log)
         local.log_file.on('error',
             function on_error_log_file(err){
+                local.log_file.end()
                 local.log_file = null
                 next(err)
-                local.log_file.end()
             }
         )
     }
