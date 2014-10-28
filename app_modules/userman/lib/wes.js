@@ -227,10 +227,17 @@ var Waits = {// pool of waiting server events `req`uests from UI
         if(!wes.timer){
             wes.timer = setTimeout(
             function wait_queue_flush(){
+            var i, e
+
                 if(wes.res){// flush if next `res` is there
                     wes.timer = 0
-
-                    wes.res.json(wes.queue.splice(0))// clean object in events
+                    wes.res.json(wes.queue)
+                    for(i = 0; i < wes.queue.length; ++i){
+                        if(Array.isArray(e = wes.queue[i].json.data)){
+                            e.splice(0)// clean data in global/multiplexed events
+                        }
+                    }
+                    wes.queue.splice(0)// clean object in events
                 } else {// wait for `res` to be ready a bit later
                     setTimeout(wait_queue_flush, 512)
                 }
