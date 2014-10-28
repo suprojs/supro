@@ -176,7 +176,7 @@ Ext.define('App.store.WES',{
     view: null,// grid or panel with grid somewhere down
     listeners:{
         wes4store: function(json){//{ store: 'storeId', data:[{model}, {model}]}
-        var view, data, model, j
+        var view, data, model, updated, j
 
             if(this.view){
                 if(!(view = this.view.view)){// is not grid with view
@@ -186,9 +186,9 @@ Ext.define('App.store.WES',{
             if(Array.isArray(data = json.data)){
                 for(j = 0; j < data.length; ++j){
                     if((model = this.getById(data[j].id))){
-                        if(model.set(data[j])){
+                        if((updated = model.set(data[j]))){
                             // inform interested parties
-                            /*model.fireEventArgs('datachanged',[ model ])*/
+                            model.fireEventArgs('datachanged',[ model, updated ])
                             // if grid view available, highlight row
                             view && Ext.fly(
                                 view.getNode(view.getRowId(model))
