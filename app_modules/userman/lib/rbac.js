@@ -358,8 +358,9 @@ log('rbac_api.can[p]: ' + p, rbac_api.can[p])
                 break
             }
             //#1 'App.backend.JS' == >> '/backend/JS'
-            can = can.replace(/^[^.]*[.]/, '/').replace(/[.]/g, '/')
-            rbac_api.can.Static[can] = false// denied by default
+            rbac_api.can.Static[
+                can.replace(/^[^.]*[.]/, '/').replace(/[.]/g, '/')
+            ] = false// denied by default
         } while(0)
         // secured permissions are being checked in `create_auth()` when
         // `req.session.can` is created
