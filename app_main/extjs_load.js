@@ -196,40 +196,43 @@ function sub_app_create(ns, btn, cfg){
 
         if(btn){// normal load && launch via button (not dev reload)
             if(Ext.ClassManager.classes[ns]){
-                run_module()
-                return
+                return run_module()
             }
-            Ext.syncRequire(ns)// initial loading
+            return Ext.require(ns, continueLoading)// initial loading
         }
     }
 
-    if(~ns.indexOf('.controller.')){
-        App.getApplication().getController(ns)
-        btn && btn.setLoading(false)
-        return
-    }
+    return continueLoading()
 
-    // define a Class *only* once
-    // use `override` to redefine it (e.g. when developing) in run time
-    if(App.cfg[ns]){
-        btn || Ext.undefine(ns)// no button -- development reload
-        Ext.define(ns, App.cfg[ns], run_module)
-        App.cfg[ns] = null// GC
-        return
-        /* Noticed: multiple `Ext.define('some.view')` is fine from (re)loaded JS file */
-    }
+    function continueLoading(){
+        if(~ns.indexOf('.controller.')){
+            App.getApplication().getController(ns)
+            btn && btn.setLoading(false)
+            return
+        }
 
-    Ext.Msg.show({
-       title: l10n.errun_title,
-       buttons: Ext.Msg.OK,
-       icon: Ext.Msg.ERROR,
-       msg:
+        // define a Class *only* once
+        // use `override` to redefine it (e.g. when developing) in run time
+        if(App.cfg[ns]){
+            btn || Ext.undefine(ns)// no button -- development reload
+            Ext.define(ns, App.cfg[ns], run_module)
+            App.cfg[ns] = null// GC
+            return
+            /* Noticed: multiple `Ext.define('some.view')` is fine from (re)loaded JS file */
+        }
+
+        Ext.Msg.show({
+           title: l10n.errun_title,
+           buttons: Ext.Msg.OK,
+           icon: Ext.Msg.ERROR,
+           msg:
 "Can't do <b style='color:#FF0000'>`App.create('" + ns + "')`</b>!<br><br>" +
 "<b>`App.create()` is only used with `App.cfg['Class.name']` definitions<br>" +
 "in app modules for fast initial App loading.</b>"
-    })
-    btn && btn.setLoading(false)
-    return
+        })
+        btn && btn.setLoading(false)
+        return
+    }
 
     function run_module(){
         if(~ns.indexOf('.app.')){
