@@ -96,7 +96,7 @@ var defaults
             // handle own events
             i = data.length - 1
             done = 0
-            do {// scan from bottom up (our event are likely to be last in list)
+            do {// scan from bottom up (our events are likely to be last in list)
                 switch(data[i].ev){
                 case 'wes4store':
                     o = data[i].json
@@ -167,9 +167,9 @@ var defaults
 })(Ext.create(App.backend.Connection))
 
 /*
- * Deliver server-pushed data to Ext.data.store's
+ * Deliver server-pushed data to Ext.data.Store's
  * `ev`: wes4store
- * @view:: highlight updated row(s)
+ * @view: highlight updated row(s)/model(s)/record(s)
  **/
 Ext.define('App.store.WES',{
     extend: Ext.data.ArrayStore,

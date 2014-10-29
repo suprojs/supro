@@ -183,7 +183,9 @@ function sub_app_create(ns, btn, cfg){
 /*
  * There are classes with run time development reloading for
  * - controllers (e.g. 'App.userman.Chat'),
- * - and fast view definitions (config only):
+ * - slow classes definitions (all requires are loaded on `App`):
+ *     Ext.define('App.view.Chat',...)
+ * - and fast class setup (config only, full require load by shortcut):
  *     App.cfg['CarTracker.app.Application'] = { // fast init
  *     }
  **/

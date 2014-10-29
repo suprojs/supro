@@ -33,7 +33,7 @@ App.backend.req = (
  * callback: function callback(err, json, res){...}
  * @err: connection or other low level error
  * @json: sometimes it can be text, but if 'Content-Type' is 'application/json'
- *        then  have result of app logic job
+ *        then it has result of app logic job
  * @json.success: must be checked by UI app logic code if needed
  *
  */
