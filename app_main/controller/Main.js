@@ -93,7 +93,7 @@ Ext.define('App.controller.Main',{
             delete App.cfg.backend.msg
             delete App.cfg.backend.time
 
-            if(App.um.wes){// catch possible errors before events from `wes`
+            if(App.um && App.um.wes){// catch possible errors before events from `wes`
                 return check_uncaughtExceptions()
             }// else check periodically
             setInterval(check_uncaughtExceptions, 2048)

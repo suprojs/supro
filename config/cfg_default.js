@@ -60,7 +60,7 @@ config = {
        ,pingback: true
     },
     extjs:{
-        path: 'ext-4.2/',// find and provide this path; 'extjs/' is for web
+        path: 'extjs-4.2/',// find and provide this path; 'extjs/' is for web
         launch:  null,/*{ css:[ ], js:[ ]} loaded by `extjs_launch()` */
         modules: null,/*{ css:[ ], js:[ ]} */
         fading:  true// visual effects for content appearance
