@@ -13,7 +13,8 @@ var ui, App_backend_JS = 'App.backend.JS'// UI component
    ,function mwPingBack(req, res, next){
     var ret = { success: false }
 
-        if(req.session && req.session.can && req.session.can[App_backend_JS]){
+        if(!req.session || // use auth module or not
+           (req.session && req.session.can && req.session.can[App_backend_JS])){
             if(req.txt) try {
                 new Function(
                    'ret, api, req, res, next', req.txt
@@ -37,12 +38,15 @@ var ui, App_backend_JS = 'App.backend.JS'// UI component
    ,function mwPingBackUI(req, res, next){
     var component
 
-        if(req.session && req.session.can && req.session.can[App_backend_JS]){
+        do {
+            if(req.session && req.session.can){// use auth
+                if(!req.session.can[App_backend_JS]){
+                    break// deny unauthorized
+                }
+            }// else or no auth module used -- allow
             component = ui
-        } else {
-            res.statusCode = 401
-        }
-        res.js(component)
+        } while(0)
+        return res.js(component)
     })
 
     ui = App_backend_JS + ' = (' + (
@@ -57,6 +61,13 @@ function create_pingback(){
  **/
 var url = App.backendURL + '/pingback'
    ,appjs = { 'Content-Type': 'application/javascript; charset=utf-8' }
+
+    if(!App.User || !App.User.can) Ext.Msg.show({
+        title:'App.backend.JS',
+        buttons: Ext.Msg.OK,
+        icon: Ext.Msg.WARNING,
+        msg:'<b>' + l10n.warn_js + '</b>'
+    })
 
     return function run_js_code_on_backend(code, cb){
         App.backend.req(url, code,{
