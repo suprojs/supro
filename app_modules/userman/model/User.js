@@ -31,9 +31,14 @@ Ext.define('App.um.model.User',{
         App.backend.req('/auth',
             user + '\n' + role + '\n' + App.um.crypto.SHA1.hash(pass),
             function auth_cb(err, ret, res){
+            var opt
+
                 if(!err){
-                    me.can = ret.can
+                    for(opt in ret.modules.extjs){// short and no auth cfg
+                        App.cfg.modules[opt] = { extjs: ret.modules.extjs[opt]}
+                    }
                     me.modules = ret.modules
+                    me.can = ret.can
                     me.set('id', ret.user.id)
                     me.set('name', ret.user.name)
                     me.set('Roles', ret.user.roles)

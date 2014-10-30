@@ -73,6 +73,7 @@ var api      = require('./api.js')
         var i, j, k
 
             if(Modules){// default all-for-all setup (auth module overwrites this)
+                cfg.extjs.modules = { }
                 for(i in Modules){
                     k = Modules[i]
                     if(k.css) for(j = 0; j < k.css.length; ++j){
@@ -81,8 +82,9 @@ var api      = require('./api.js')
                     if(k.js)  for(j = 0; j < k.js.length; ++j){
                         cfg.extjs.launch.js .push(k.js[j])
                     }
+                    cfg.extjs.modules[i] = { extjs:{ }}
                     for(j in k.cfg.extjs){
-                        cfg.extjs[j] = k.cfg.extjs[i]
+                        cfg.extjs.modules[i].extjs[j] = k.cfg.extjs[j]
                     }
                 }
                 Modules = null

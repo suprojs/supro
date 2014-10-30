@@ -145,6 +145,8 @@ var t
         'App.view.Viewport',
         'App.view.desktop.Status'  // provide status
     ], App.cfg.extjs.launch.js || [ ])// more stuff from backend, if exists
+    // create shorter ref. for extjs/ui config options of all app modules
+    App.cfg.modules = App.cfg.extjs.modules
 
     var j, i = 0, l = Ext.fly('startup').dom.lastChild
 
@@ -154,9 +156,9 @@ var t
     } while(++i < t.length)
 
     if(false !== App.cfg.createViewport){// if no auth app_module
+        App.User = { can: { }}// dummy auth object
         app.extjs_helper = null// mark for GC
         Ext.globalEvents.fireEvent('createViewport')
-        App.User = { can: { }}// dummy auth object
     }// else userman's: `App.um.controller.Login->createViewportAuth()`
 
     con.log('ExtJS + App launch: OK')

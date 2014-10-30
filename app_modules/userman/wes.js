@@ -32,7 +32,7 @@ var defaults
     /* channel#2: receive events from backend, send user status */
     conn.suspendEvents(false)// `this` fires own signal in callback()
     conn.url = App.backendURL + '/um/lib/wes'
-    conn.timeout = App.cfg.extjs.wes.timeout || (1 << 22)// ~ hour
+    conn.timeout = App.cfg.modules.userman.extjs.wes.timeout || (1 << 22)// ~ hour
     conn.defer = null
     defaults = {
     // `wes` has only one polling `res` per `req.session`,
@@ -155,7 +155,7 @@ var defaults
         }
         conn.defer = Ext.defer(// retry a bit later
             req,
-            App.cfg.extjs.wes.defer || (1 << 17)// ~ two minutes
+            App.cfg.modules.userman.extjs.wes.defer || (1 << 17)// ~ two minutes
         )
         Ext.globalEvents.fireEventArgs(
             'wes4UI',

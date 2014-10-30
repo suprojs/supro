@@ -105,7 +105,9 @@ log('TODO: drop priviledges so other app modules can not access anything')
 
     return { css:[ n ], js: files, cfg: cfg }
 
-    function mwAuthBasedConfig(req, res, i){
+    function mwAuthBasedConfig(req, res){
+    var i, m
+
         if(Modules.userman){// one time setup after loading of all modules
             for(i = 0; i < Modules.userman.css.length; ++i){
                 Config.extjs.launch.css.push(Modules.userman.css[i])
@@ -113,8 +115,11 @@ log('TODO: drop priviledges so other app modules can not access anything')
             for(i = 0; i < Modules.userman.js.length; ++i){
                 Config.extjs.launch.js.push(Modules.userman.js[i])
             }
-            if(Modules.userman.cfg.extjs) for(i in Modules.userman.cfg.extjs){
-                Config.extjs[i] = Modules.userman.cfg.extjs[i]
+            if(Modules.userman.cfg.extjs){
+                m = Config.extjs.modules = { userman:{ extjs: { }}}
+                for(i in Modules.userman.cfg.extjs){
+                    m.userman.extjs[i] = Modules.userman.cfg.extjs[i]
+                }
             }
             delete Modules.userman// no need, eveything is here
         }
@@ -342,8 +347,11 @@ log('!deny cmp:', perm)
                         if(data) for(u = 0; u < data.length; ++u){
                             ret.modules.js.push(data[u])
                         }
-                        if((data = Modules[r].cfg.extjs)) for(u in data){
-                            ret.modules.extjs[u] = (data[u])
+                        if((data = Modules[r].cfg.extjs)){
+                            ret.modules.extjs[r] = { }
+                            for(u in data){
+                                ret.modules.extjs[r][u] = (data[u])
+                            }
                         }
                     }
                     res.json(ret)
