@@ -142,6 +142,7 @@ var t
         'App.backend.Connection',  // `req`<->`res` with backend
         'App.store.CRUD',          // our CRUD for `Ext.data.*`
         'App.view.Window',         // provide core View Class(es)
+        'App.view.Viewport',
         'App.view.desktop.Status'  // provide status
     ], App.cfg.extjs.launch.js || [ ])// more stuff from backend, if exists
 
@@ -149,7 +150,7 @@ var t
 
     do {
         l.innerHTML += '<br>' + (j = t[i])// show progress
-        Ext.syncRequire(j)
+        Ext.Loader.syncRequire(j)
     } while(++i < t.length)
 
     if(false !== App.cfg.createViewport){// if no auth app_module
@@ -199,7 +200,7 @@ function sub_app_create(ns, btn, cfg){
             if(Ext.ClassManager.classes[ns]){
                 return run_module()
             }
-            return Ext.require(ns, continueLoading)// initial loading
+            return Ext.Loader.require(ns, continueLoading)// initial loading
         }
     }
 

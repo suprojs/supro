@@ -11,7 +11,8 @@ Ext.define('App.view.desktop.Shortcuts',{
     ,defaults: {
         reorderable: true
     }
-    ,plugins : [ { xclass: 'Ext.uxo.BoxReorderer' } ]
+    ,requires:['Ext.uxo.BoxReorderer']
+    ,plugins :[{ xclass:'Ext.uxo.BoxReorderer'}]
     ,initComponent: function shortcuts_dynamic_init(){
         var me = this
 
