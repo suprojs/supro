@@ -155,6 +155,7 @@ var t
     if(false !== App.cfg.createViewport){// if no auth app_module
         app.extjs_helper = null// mark for GC
         Ext.globalEvents.fireEvent('createViewport')
+        App.User = { can: { }}// dummy auth object
     }// else userman's: `App.um.controller.Login->createViewportAuth()`
 
     con.log('ExtJS + App launch: OK')
