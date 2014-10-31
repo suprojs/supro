@@ -1,6 +1,3 @@
-// local vars to share in hash (kind of macro preprocessing)
-var OBJ = 'GLOB'// differentiate instances of distributed SUPRO
-var DB  = 'supro_' + OBJ
 // global config
 config = {
 /* NOTE: this is not JSON just JavaScript
@@ -15,17 +12,9 @@ config = {
     modules:{// cfg for stack of things from 'app_modules'
     // order matters: before auth module there are no restrictions to config
 
-    // NOTE config: one level copy of this properties into default settings
-        suprolftpd:{
-            OBJ:OBJ
-        },
-        supromongod:{
-            db_name: DB// as in depended modules
-        },
     // auth module overwrites default and sets up per-user auth module loading
         userman:{//#0: authentication and authorization (plus Chat)
             store: 'fs' // TODO: fs || db
-            //sess_maxage: //null: browser lifetime; default: ~9.3 hours one working day
            ,sess_puzl: 'puzzle-word$54321X'
            ,data: '/data/um/'// store fs: chat logs
            ,rbac:{
