@@ -146,9 +146,7 @@ var dir, rbac_api, fs = require('fs')
 
         can = rbac_api.can
         for(p in can){
-console.log('eca p: ' + p)
             if(Array.isArray(a = can[p])){
-console.log('eca a: ', a)
                 for(i = 0; i < a.length; ++i){
                     can[a[i]] = true// secured permissions are in general list also
                 }
@@ -224,6 +222,7 @@ console.log('eca a: ', a)
         }
 
         var i, j, k, m, src, dst, secure
+//log('new merge:', rbac)!!!dev
 
         secure = rbac_api.fuses_can
         for(i in rbac){
@@ -319,6 +318,8 @@ log('!Security `merge_rbac`: reject role secure permission "' + m[k] + '"')
     * Permission/Role/User config example see `default_access_data()`
     **/
     var p, r, i
+
+function log(){}//!!!dev skip check noise
 
         for(p in rbac_api.can){
 log('rbac_api.can[p]: ' + p, rbac_api.can[p])

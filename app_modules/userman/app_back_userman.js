@@ -168,6 +168,8 @@ log('TODO: drop priviledges so other app modules can not access anything')
     // see `create_auth()`
     var i, idx, can, perm
 
+function log(){}//!!!dev skip check noise
+
         /* protect namespace of this from any no auth access */
         if(0 == req.url.indexOf('/um/')){// TODO: configure other protected namespaces
             do {
@@ -438,7 +440,8 @@ log('!deny cmp:', perm)
 
         function apply_permission(j){
         var i, is_api = false
-log('perm apply:"' + j + '"; Can[j]: ', Can[j])
+
+//log('perm apply:"' + j + '"; Can[j]: ', Can[j])
             if(true === Can[j]){// single available permission name
             // secured permissions true here and blocked from others in `rbac.merge`
                 can[j] = true
