@@ -27,7 +27,7 @@ trap 'normal_exit' HUP TERM INT
 
 echo '
 ^ reading config in $ENV'
-NODEJS_CONFIG=`dd if=./config/cfg_default.js 2>/dev/null`
+NODEJS_CONFIG=`dd <./config/cfg_mongo_lftp.js 2>/dev/null`
 echo '^ exporting it for childs'
 export NODEJS_CONFIG
 
