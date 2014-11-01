@@ -88,7 +88,7 @@ function create_backend_request(conn){
             } else {
                 json = {
                     err: xhr.timedout ? 'timedout':
-                         xhr.timedout ? 'aborted' : xhr.statusText
+                         xhr.timedout ? 'aborted' : xhr.responseText
                     }
                 console.error(json, xhr)
             }
