@@ -180,22 +180,24 @@ Ext.define('App.store.WES',{
 
             if(this.view){
                 if(!(view = this.view.view)){// is not grid with view
-                    view = this.view.down('grid').view // look down for a grid
+                    view = this.view.down('grid')// look down for a grid
+                    view && (view = view.view)
                 }
             }
             if(Array.isArray(data = json.data)){
                 for(j = 0; j < data.length; ++j){
                     if((model = this.getById(data[j].id))){
                         if((updated = model.set(data[j]))){
-                            // inform interested parties
-                            model.fireEventArgs('datachanged',[ model, updated ])
-                            // if grid view available, highlight row
-                            view && Ext.fly(
-                                view.getNode(view.getRowId(model))
-                            ).highlight('#77FF77',{
-                                attr: 'backgroundColor',
-                                duration: 512
-                            })
+                            // inform interested parties, go in if event is OK
+                            if(model.fireEventArgs('datachanged',[model, updated])){
+                                // if grid view available, highlight row
+                                view && Ext.fly(
+                                    view.getNode(view.getRowId(model))
+                                ).highlight('#77FF77',{
+                                    attr: 'backgroundColor',
+                                    duration: 512
+                                })
+                            }
                         }
                     }
                 }
