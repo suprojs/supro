@@ -10,16 +10,25 @@ applications that help an organization running its business.
 
 developer's POV:
 
-* Node.JS 0.10, connect 2.9, ExtJS 4.2
+* Full stack JavaScript: Node.JS 0.10, connect 2.9, ExtJS 4.2
+  - connect 2.9: with many usability enhancements
+  - ExtJS 4.2/GPL: many optimizations and fix patches
 
 * simple config and robust start/stop scripts
  (on MS Windows via `node-webkit` run `node` w/o CLI, others by sh/init.d)
 
-* modular (and has minimal set of dependencies)
+* modular (and has minimal set of dependencies):
+  - there are app modules for launching/working with `mongodb` and `lftp`
+  - ExtJS applications can be easily converted/adopted to be app module
+  - stand alone example module and converted/adopted ExtJS applications (in `supro-demo`)
 
-* simple localization
+* distributed use: authentication, authorization, user management module
 
-* rapid development, code-as-you-go for both UI and backend logic;
+* simple local use: without auth*n at all
+
+* simple localization: JS in files, per-app module devision
+
+* rapid APP and API development, code-as-you-go for both UI and backend logic;
   reloading of UI component (view + controller + l10n) reloads its API handlers
 
 * only business logic like in VBA/MS Excel (or similar IDEs)
@@ -27,6 +36,11 @@ developer's POV:
 * rich UI (components framework)
 
 * simple req/res API (CRUD with manual if-based routing). Supports `Ext.data.Store` contract.
+
+* wes (waiting events): realtime events from server (server push, sse) by simple xhr long pulling for:
+  - global app controller
+  - stores `App.store.WES`
+  - individual models in the store: `model.on('datachanged',...)`
 
 user's POV:
 
