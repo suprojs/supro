@@ -46,6 +46,7 @@ sed.exe
 sh.exe
 sleep.exe
 ssh.exe
+stat.exe
 strace.exe
 tail.exe
 tar.exe
