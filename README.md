@@ -8,6 +8,8 @@ ideas and amount of code to just start developing desktop-like
 applications that help an organization running its business.
 (E.g. mini-ERP like MS Excel/VBA).
 
+[live and ziped `supro-demo`](https://github.com/suprojs/supro-demo)
+
 developer's POV:
 
 * Full stack JavaScript: Node.JS 0.10, connect 2.9, ExtJS 4.2
@@ -20,7 +22,7 @@ developer's POV:
 * modular (and has minimal set of dependencies):
   - there are app modules for launching/working with `mongodb` and `lftp`
   - ExtJS applications can be easily converted/adopted to be app module
-  - stand alone example module and converted/adopted ExtJS applications (in `supro-demo`)
+  - stand alone example module and converted/adopted ExtJS applications (in [`supro-demo`](https://github.com/suprojs/supro-demo))
 
 * distributed use: authentication, authorization, user management module
 
@@ -53,6 +55,8 @@ user's POV:
 * user status maintained in actual online/offline UI state (away, busy, etc.)
 
 * basic user communication by chat app
+
+[wiki page of links to similar and/or inspected ExtJS-based projects](https://github.com/suprojs/supro/wiki/ExtJS-Links)
 
 Please see wiki for links and more info.
 
