@@ -1,7 +1,10 @@
-module.exports = function sendFile(name, absolute){
+module.exports = function sendFile(name, absolute, start, end){
     return function sendFile(r__, res){
     var fs = require('fs')
-       ,fstream = fs.createReadStream((absolute ? '' : __dirname + '/../../') + name)
+       ,fstream = fs.createReadStream(
+            (absolute ? '' : __dirname + '/../../') + name,
+            { start: start, end: end }
+        )
 
         fstream.on('open',
         function on_fstream_open(fd){
