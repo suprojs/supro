@@ -56,8 +56,6 @@ user's POV:
 
 * basic user communication by chat app
 
-[wiki page of links to similar and/or inspected ExtJS-based projects](https://github.com/suprojs/supro/wiki/ExtJS-Links)
-
-Please see wiki for links and more info.
+[Please see wiki for links and more info.](https://github.com/suprojs/supro/wiki)
 
 **С**истема **У**правления **П**родажами **Р**азмеров **О**буви / **О**дежды
