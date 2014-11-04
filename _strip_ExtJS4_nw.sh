@@ -19,7 +19,12 @@ PATH="./bin/:$PATH" # if there are no needed commands (i.e. `dd` in mingw/git di
 cd "$CWD"
 
 [ -f extjs.txt ] || {
-    echo 'Error: no "extjs.txt" file present (run `node-webkit` first time)'
+    echo '
+Error: no "extjs.txt" file present.
+Run `node-webkit` first time or manually write PATH of ExtJS4 distro into it,
+e.g.:
+../extjs-4.2/
+'
     exit 1
 }
 
