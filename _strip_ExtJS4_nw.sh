@@ -1,6 +1,7 @@
 #!/bin/sh
 # cleanup whitespace and leaked in comments of our git version of `ext-all-debug.js`
 # save ~1.4M of file size
+# otherwise use `ext-all-debug.js` from same path as output/source
 
 set -e
 
@@ -36,11 +37,16 @@ OUTPUT=`dd <./extjs.txt 2>/dev/null`
     exit 1
 }
 EXTJS4='../../../#_projects/extjs4/extjs/'
+[ -f "$EXTJS4/.git/HEAD" ] && {
+    HEAD=`sed 's/ref: //;q' < "$EXTJS4/.git/HEAD"`
+    HEAD=`sed 'q'           < "$EXTJS4/.git/$HEAD"`
+} || {
+    echo "no git found in '$EXTJS4', use default source path: '$OUTPUT'"
+    HEAD='no_git_found'
+    EXTJS4=$OUTPUT
+}
 # output e.g. "/d/extjs-4.2/ext-all-nw.js" NOTE: this is mingw path
 OUTPUT="${OUTPUT}ext-all-nw.js"
-HEAD=`sed 's/ref: //;q' < "$EXTJS4/.git/HEAD"`
-HEAD=`sed 'q'           < "$EXTJS4/.git/$HEAD"`
-
 echo "
 PWD:    '$PWD'
 OUTPUT: '$OUTPUT'
