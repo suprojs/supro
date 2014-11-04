@@ -25,6 +25,7 @@ Run `node-webkit` first time or manually write PATH of ExtJS4 distro into it,
 e.g.:
 ../extjs-4.2/
 '
+    trap '' 0
     exit 1
 }
 
@@ -34,9 +35,9 @@ OUTPUT=`dd <./extjs.txt 2>/dev/null`
     echo "Error: no output '$OUTPUT' directory present"
     exit 1
 }
+EXTJS4='../../../#_projects/extjs4/extjs/'
 # output e.g. "/d/extjs-4.2/ext-all-nw.js" NOTE: this is mingw path
 OUTPUT="${OUTPUT}ext-all-nw.js"
-EXTJS4='../../../#_projects/extjs4/extjs'
 HEAD=`sed 's/ref: //;q' < "$EXTJS4/.git/HEAD"`
 HEAD=`sed 'q'           < "$EXTJS4/.git/$HEAD"`
 
@@ -47,7 +48,7 @@ EXTJS4: '$EXTJS4'
 HEAD:   '$HEAD'
 "
 
-FSIZE=`dd < "$EXTJS4/ext-all-debug.js" 2>&1 1>/dev/null | sed '3{s/ .*$//;q};d'`
+FSIZE=`dd < "${EXTJS4}ext-all-debug.js" 2>&1 1>/dev/null | sed '3{s/ .*$//;q};d'`
 # delete whitespace
 # delete leaked in comments (usually after some REs: 'compileCRe', 'tagRe', etc.)
 #   use simple '/^[/*]/d' for that as lines are whitespace clean
@@ -60,10 +61,10 @@ sed '
 /^[[:blank:]]*$/d
 /^[[:blank:]]/s/[[:blank:]]*//
 /^[/*]/d
-' < "$EXTJS4/ext-all-debug.js" >"$OUTPUT"
+' < "${EXTJS4}ext-all-debug.js" >"$OUTPUT"
 
 FSIZE=$((($FSIZE - `dd < "$OUTPUT" 2>&1 1>/dev/null | sed '3{s/ .*$//;q};d'`)/1024))
 echo "size diff: $FSIZE kibytes"
 
 trap '' 0
-exit
+exit 0
