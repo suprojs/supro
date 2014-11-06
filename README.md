@@ -35,7 +35,7 @@ developer's POV:
 
 * only business logic like in VBA/MS Excel (or similar IDEs)
 
-* rich UI (components framework)
+* rich UI (unlike VBA/MS Excel) by ExtJS components framework
 
 * simple req/res API (CRUD with manual if-based routing). Supports `Ext.data.Store` contract.
 
