@@ -189,27 +189,25 @@ Ext.define('App.store.WES',{
                 }
             }
             skip_store = !this.informStore, highlight = this.highlightModel
-            if(Array.isArray(data = json.data)){
-                for(j = 0; j < data.length; ++j){
-                    if((model = this.getById(data[j].id))){
-                        skip_store && (model.editing = true)
-                        if((updated = model.set(data[j]))){
-                            if(view) node = Ext.fly(// if grid view is available
-                                view.getNode(view.getRowId(model))
-                            )
-                            // inform interested parties, go in if event is OK
-                            if(model.fireEventArgs('datachanged',[model, updated, node])){
-                                 highlight && node && node.highlight('#77FF77',{
-                                    attr: 'backgroundColor',
-                                    duration: 512
-                                })
-                            }
+            if(Array.isArray(data = json.data)) for(j = 0; j < data.length; ++j){
+                if((model = this.getById(data[j].id))){
+                    skip_store && (model.editing = true)
+                    if((updated = model.set(data[j]))){
+                        if(view) node = Ext.fly(// if grid view is available
+                            view.getNode(view.getRowId(model))
+                        )
+                        // inform interested parties, go in if event is OK
+                        if(model.fireEventArgs('datachanged',[model, updated, node])){
+                             highlight && node && node.highlight('#77FF77',{
+                                attr: 'backgroundColor',
+                                duration: 512
+                            })
                         }
-                        skip_store && (model.editing = false)
                     }
+                    skip_store && (model.editing = false)
                 }
-                data && data.length && this.fireEventArgs('datachanged')
             }
+            data && data.length && this.fireEventArgs('datachanged')
         }
     }
 })
