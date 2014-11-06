@@ -174,9 +174,13 @@ var defaults
 Ext.define('App.store.WES',{
     extend: Ext.data.ArrayStore,
     view: null,// grid or panel with grid somewhere down
+    highlightModel: true,
+    // is used to optimize cell changes
+    informStore: true,// on model change don't re-render of cells / rows
     listeners:{
         wes4store: function(json){//{ store: 'storeId', data:[{model}, {model}]}
         var view, data, model, updated, j
+           ,node, skip_store, highlight
 
             if(this.view){
                 if(!(view = this.view.view)){// is not grid with view
@@ -184,21 +188,24 @@ Ext.define('App.store.WES',{
                     view && (view = view.view)
                 }
             }
+            skip_store = !this.informStore, highlight = this.highlightModel
             if(Array.isArray(data = json.data)){
                 for(j = 0; j < data.length; ++j){
                     if((model = this.getById(data[j].id))){
+                        skip_store && (model.editing = true)
                         if((updated = model.set(data[j]))){
+                            if(view) node = Ext.fly(// if grid view is available
+                                view.getNode(view.getRowId(model))
+                            )
                             // inform interested parties, go in if event is OK
-                            if(model.fireEventArgs('datachanged',[model, updated])){
-                                // if grid view available, highlight row
-                                view && Ext.fly(
-                                    view.getNode(view.getRowId(model))
-                                ).highlight('#77FF77',{
+                            if(model.fireEventArgs('datachanged',[model, updated, node])){
+                                 highlight && node && node.highlight('#77FF77',{
                                     attr: 'backgroundColor',
                                     duration: 512
                                 })
                             }
                         }
+                        skip_store && (model.editing = false)
                     }
                 }
                 data && data.length && this.fireEventArgs('datachanged')
