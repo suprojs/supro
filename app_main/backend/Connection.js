@@ -76,20 +76,17 @@ function create_backend_request(conn){
         return conn.request(options)
 
         function callbackExtAjax(opts, success, xhr){
-        var json
+        var json = (xhr.getResponseHeader &&
+                ~String(xhr.getResponseHeader('Content-Type'))
+                .indexOf('application/json')
+                ? Ext.decode(xhr.responseText) : xhr.responseText
+            )
 
-            if(success){
-                if(~String(xhr.getResponseHeader('Content-Type'))
-                   .indexOf('application/json')){
-                    json = Ext.decode(xhr.responseText)
-                } else {// string is valid JSON
-                    json = xhr.responseText
-                }
-            } else {
+            if(!success && !xhr.responseText){
                 json = {
                     err: xhr.timedout ? 'timedout':
-                         xhr.timedout ? 'aborted' : xhr.responseText
-                    }
+                         xhr.timedout ? 'aborted' : xhr.status
+                }
                 console.error(json, xhr)
             }
             return callback(!success || !json, json, xhr)
