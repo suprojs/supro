@@ -415,7 +415,7 @@ function load_config(app){// loaded only by main process -- node-webkit
         } else if(app.process.env.HOMEDRIVE && app.process.env.HOMEPATH){
             cfg = app.process.env.HOMEDRIVE +  app.process.env.HOMEPATH
         }
-        cfg = cfg + '/.enjsms.js'//FIXME: app specific part
+        cfg = cfg + '/.supro.js'
         try {
             fs.statSync(cfg)
         } catch (ex){
