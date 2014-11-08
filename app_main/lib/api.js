@@ -8,6 +8,7 @@ module.exports = { /* API setup */
      * performance hint: placeholders tell V8 about future structure
      **/
     db: null,// mongodb if `supromongod` is configured
+    lftp: null,// distributed system using "Sophisticated file transfer program"
     // supplied API:
     rbac: null,// userman's RBAC for app modules
     wes: null// userman: waiting events (from backend to UI)

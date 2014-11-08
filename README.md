@@ -30,7 +30,7 @@ developer's POV:
 
 * simple localization: JS in files, per-app module devision
 
-* rapid APP and API development, code-as-you-go for both UI and backend logic;
+* rapid (hot swap) APP and API development, code-as-you-go for both UI and backend logic;
   reloading of UI component (view + controller + l10n) reloads its API handlers
 
 * only business logic like in VBA/MS Excel (or similar IDEs)
