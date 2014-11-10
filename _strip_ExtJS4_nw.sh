@@ -22,9 +22,13 @@ cd "$CWD"
 [ -f extjs.txt ] || {
     echo '
 Error: no "extjs.txt" file present.
-Run `node-webkit` first time or manually write PATH of ExtJS4 distro into it,
+Run `node-webkit` first time. It will search for configured ExtJS path.
+Or manually write PATH of ExtJS4 distro into it.
 e.g.:
 ../extjs-4.2/
+
+Such ExtJS4 distro is located in SUPRO git repo and can be cloned:
+$ git clone git://github.com/suprojs/extjs-4.2
 '
     trap '' 0
     exit 1
