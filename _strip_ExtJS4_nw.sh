@@ -31,19 +31,20 @@ e.g.:
 }
 
 OUTPUT=`dd <./extjs.txt 2>/dev/null`
-
 [ -d "$OUTPUT" ] || {
     echo "Error: no output '$OUTPUT' directory present"
     exit 1
 }
-EXTJS4='../../../#_projects/extjs4/extjs/'
+
+EXTJS4=$OUTPUT
 [ -f "$EXTJS4/.git/HEAD" ] && {
     HEAD=`sed 's/ref: //;q' < "$EXTJS4/.git/HEAD"`
     HEAD=`sed 'q'           < "$EXTJS4/.git/$HEAD"`
 } || {
     echo "no git found in '$EXTJS4', use default source path: '$OUTPUT'"
     HEAD='no_git_found'
-    EXTJS4=$OUTPUT
+    trap '' 0
+    exit 1
 }
 # output e.g. "/d/extjs-4.2/ext-all-nw.js" NOTE: this is mingw path
 OUTPUT="${OUTPUT}ext-all-nw.js"
