@@ -85,7 +85,7 @@ Ext.define('App.view.desktop.Status',{
 '</div><br><a target="blank" href="' + (
     App.cfg.backend.url ?
         App.cfg.backend.url + '">HTTP Remote Application' :
-        '/extjs/docs/index.html' + '">ExtJS Doc<br>w/o examples'
+        '/extjs/docs/index.html' + '">ExtJS SUPRO Docs'
     ) +
 '</a>'
         }
