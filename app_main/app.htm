@@ -47,21 +47,30 @@
 
         function window_error(errEvent){
             con.error(errEvent)
-            if(w.Ext){
-                if(app.btn){// desktop app module quick launch button fail
-                    app.btn.setLoading(false)
+            if(w.Ext){// possible desktop app module loading cleanup
+                if(app.btn){
+                    app.btn.setLoading(false)// quick launch button fail
                     app.btn = null
                 }
-                return Ext.Msg.show({
-                   title: l10n.errun_title,
-                   buttons: Ext.Msg.OK,
-                   icon: Ext.Msg.ERROR,
-                   msg: '<b>' +
+                return setTimeout(// defer to get out of initComponent() context
+                function ext_window_panel_loading(){
+                var wdw = Ext.WindowManager.getActive()// or window / panel
+
+                    if(wdw.loadMask){
+                        Ext.destroy(wdw.loadMask)
+                        wdw.loadMask = null
+                    }
+                    Ext.Msg.show({
+                       title: l10n.errun_title,
+                       buttons: Ext.Msg.OK,
+                       icon: Ext.Msg.ERROR,
+                       msg: '<b>' +
 l10n.errun_file + (errEvent.filename || '"app_front.js" || "extjs_load.js"') + '<br><br>' +
 (errEvent.error ? errEvent.error.stack ? l10n.errun_stack + '</b>' + errEvent.error.stack
-                  .replace(/</g, '&lt;').replace(/\r*\n/g, '<br>')
-                  : errEvent.error + '</b>' : errEvent.message + '</b>')
-                })
+                      .replace(/</g, '&lt;').replace(/\r*\n/g, '<br>')
+                      : errEvent.error + '</b>' : errEvent.message + '</b>')
+                    })
+                }, 128)
             }
             d.write(
 '<pre><div style="color:white;background-color:red;">' +
