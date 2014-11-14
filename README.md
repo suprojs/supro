@@ -37,7 +37,9 @@ developer's POV:
 
 * rich UI (unlike VBA/MS Excel) by ExtJS components framework
 
-* simple req/res API (CRUD with manual if-based routing). Supports `Ext.data.Store` contract.
+* simple req/res API (CRUD with manual if-based routing). Supports `Ext.data.Store` contract
+
+* excessive error handling in both UI and backend with integrated UI/l10n even under `Ext.data.Store` contract
 
 * wes (waiting events): realtime events from server (server push, sse) by simple xhr long pulling for:
   - global app controller
