@@ -110,6 +110,12 @@ var defaults
                         } else {
                             console.warn('`wes4store` not found: ' + o.store)
                         }
+                    } else if(o.err){
+                        console.error(o)
+                        Ext.globalEvents.fireEventArgs(
+                            'wes4UI',
+                            [ false, l10n[o.err] || o.err ]
+                        )
                     } else {
                         console.warn('`wes4store`: no `store` argument of event')
                     }
