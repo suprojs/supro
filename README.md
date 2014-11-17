@@ -8,6 +8,8 @@ ideas and amount of code to just start developing desktop-like
 applications that help an organization running its business.
 (E.g. mini-ERP like MS Excel/VBA).
 
+The toolset to be closer to what ["Manifesto for Agile Software Development"](http://agilemanifesto.org/) is about.
+
 [live and ziped `supro-demo`](https://github.com/suprojs/supro-demo)
 
 developer's POV:
