@@ -82,6 +82,9 @@ l10n.errun_file + (errEvent.filename || '"app_front.js" || "extjs_load.js"') + '
  errEvent.error.stack.replace(/</g, '&lt;'):
  errEvent.error
 ) +
+'<br><br><center>' +
+  '<input value="' + l10n.reload + '" type="button" onclick="test.clun()"/>' +
+'</center>' +
 '</div></pre>'
             )
             w.alert && w.alert(l10n.uncaughtException  + errEvent.message)

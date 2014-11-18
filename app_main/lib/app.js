@@ -98,9 +98,12 @@ var api      = require('./api.js')
         return mwConfig(req, res, next)
     }
 
-    function mwUncaughtExceptions(req, res, next){
+    function mwUncaughtExceptions(req, res){
         if(req.json){
-            return res.json(uncaughtExceptions)
+            return res.json(
+                'clear' == req.json ? uncaughtExceptions.splice(0):
+                                      uncaughtExceptions
+            )
         }
         return res.txt(uncaughtExceptions.join('\n====\n'))
     }

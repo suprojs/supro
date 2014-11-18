@@ -2,6 +2,11 @@
 // backend by UI testing boilerplate
 
 test = {
+    clun: function clear_uncaughtExceptions(){
+        test.post('/uncaughtExceptions', 'clear')
+        location.reload()
+    },
+
     auth: function auth(){
         test.postxt('/login', 'dev')
         test.postxt('/auth', 'dev\\ndeveloper.local\\n9d4e1e23bd5b727046a9e3b4b7db57bd8d6ee684')
