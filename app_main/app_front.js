@@ -404,8 +404,8 @@ function backend_ctl_killed(e){
 }
 
 function load_config(app){// loaded only by main process -- node-webkit
-    var cfg
-    var fs = require('fs')
+var cfg
+var fs = require('fs')
 
     if((cfg = app.process._nw_app.argv[0])){// cmd line
         cfg = 'config/' + cfg
@@ -419,11 +419,11 @@ function load_config(app){// loaded only by main process -- node-webkit
         try {
             fs.statSync(cfg)
         } catch (ex){
+            con.log('config in home was not found: ' + cfg)
             cfg = null
         }
     }
-    if(!cfg)// default
-        cfg = 'config/cfg_default.js'
+    !cfg && (cfg = 'config/cfg_default.js')// default
 
     try {
         app.config = (new Function(
@@ -436,6 +436,7 @@ function load_config(app){// loaded only by main process -- node-webkit
         cfg = l10n.errload_config_read + cfg
         app.w.window.alert(cfg)
         doc.write(cfg.replace(/\n/g, '<br>'))
+
         return false
     }
 
@@ -445,7 +446,6 @@ function load_config(app){// loaded only by main process -- node-webkit
         connectjs: app.versions.connectjs,
         nw: app.process.versions['node-webkit']
     }
-
     con.log('reading config: ' + cfg + ' done')
 
     return check_extjs_path()
@@ -517,11 +517,13 @@ function check_extjs_path(){// find local ExtJS in and above cwd './'
     if(!d){
         app.config.extjs.path = extjs_path
         con.log('ExtJS path found: "' + extjs_path + '" (for "app_main/app.htm")')
+
         return true
     }
     con.error('ExtJS path not found')
     doc.getElementById('e').style.display = "block"
     doc.getElementById('d').innerHTML = d.replace(/\n/g, '<br>')
+
     return false
 }
 
