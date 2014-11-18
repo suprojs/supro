@@ -12,6 +12,10 @@ test = {
         test.postxt('/auth', 'dev\\ndeveloper.local\\n9d4e1e23bd5b727046a9e3b4b7db57bd8d6ee684')
     },
 
+    logout: function logout(){
+        test.get('/logout')
+    },
+
     order: function order(subapi, obj){
         test.get('/shoesupro/lib/logic/order/' + (subapi || ''), obj)
     },
