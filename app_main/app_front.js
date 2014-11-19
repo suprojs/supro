@@ -166,14 +166,11 @@ function spawn_backend(app, restart){
 
     app.process.env.NODEJS_CONFIG = JSON.stringify(app.config)
     backend = app.c_p.spawn(
-        'node'
-        ,[ app.config.backend.file ]
-        ,{
-             detached: true
-            ,stdio:[ 'ignore'
-                ,fs.openSync(log ,'a+')
-                ,fs.openSync(log ,'a+')
-            ]
+        process.cwd() + '/node',
+        [ app.config.backend.file ],
+        {
+            detached: true,
+            stdio:['ignore', fs.openSync(log ,'a+'), fs.openSync(log ,'a+')]
         }
     )
     if(!backend.pid || backend.exitCode){
