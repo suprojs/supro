@@ -20,6 +20,7 @@ config = {
             OBJ:OBJ
         },
         supromongod:{
+            db_path: '/data/supromongod/' + OBJ + '/',
             db_name: DB// as in depended modules
         },
     // auth module overwrites default and sets up per-user auth module loading
