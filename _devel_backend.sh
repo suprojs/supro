@@ -1,6 +1,8 @@
 #!/bin/sh
 
-# any param "$1" will redirect node's output: 1>>log/stdout 2>>log/stderr
+# * any param "$1" will redirect node.js' output i.e:
+#   1>>log/app_back_stdout.txt 2>>log/app_back_stderr.txt
+# * if env $NODEJS_CONFIG is exported it is used and no hardcoded file is read
 
 set -e
 PATH=.:bin:$PATH
@@ -25,11 +27,17 @@ Normal Exit${1:- (backend is running)}
 
 trap 'normal_exit' HUP TERM INT
 
-echo '
-^ reading config in $ENV'
-NODEJS_CONFIG=`dd <./config/cfg_mongo_lftp.js 2>/dev/null`
-echo '^ exporting it for childs'
-export NODEJS_CONFIG
+if [ "$NODEJS_CONFIG" ]
+then
+    echo '
+^ config is already exported in "$NODEJS_CONFIG"'
+else
+    echo '
+^ reading config in $ENV from file'
+    NODEJS_CONFIG=`dd <./config/cfg_mongo_lftp.js 2>/dev/null`
+    echo '^ exporting it for childs'
+    export NODEJS_CONFIG
+fi
 
 BACKEND_PORT=${NODEJS_CONFIG##*ctl_port:}
 BACKEND_PORT=${BACKEND_PORT## }
@@ -54,11 +62,12 @@ _lftp_http() { # $1=timeout $2=cmd
     { # http head request with contentlength=0 reply
         echo "[lftp->nodeJS:$JSAPPCTLPORT] sending '$2'"
         lftp -c '
-set net:timeout 2;
-set cmd:long-running 2;
-set net:max-retries 2;
-set net:reconnect-interval-base '"$1"';
-set net:reconnect-interval-multiplier 1;
+set cmd:long-running 2
+set net:idle 2
+set net:timeout 2
+set net:max-retries 2
+set net:reconnect-interval-base '"$1"'
+set net:reconnect-interval-multiplier 1
 
 cd http://127.0.0.1:'"$BACKEND_PORT"'/ && cat '"$2"' && exit 0 || exit 1
 '
