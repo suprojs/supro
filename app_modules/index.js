@@ -23,7 +23,13 @@ var m, mpath
         mpath += '.js'
         try {// to load the module
             modules[m] = require(mpath)(api, cfg.modules[m])
-            modules[m].app_use && app_use.push(modules[m].app_use)
+            if(modules[m].app_use){
+                if(app_use){
+                    app_use.push(modules[m].app_use)
+                } else log(
+'!Error app module[' + m + ']: `cfg.app_use` is used if this module is loaded before auth one (e.g. "userman")'
+                )
+            }
             if(api.rbac && app_use){// handle modules loaded before 'auth' one
                 for(a = 0; a < app_use.length; ++a){
                     app_use[a]()
