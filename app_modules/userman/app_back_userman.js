@@ -230,7 +230,10 @@ log('!disallow "' + perm + '" by not in Can.Static and in Can.API: ' + Can.API[i
                     perm = ''
                     break
                 }
+            } else if(Can.Static.hasOwnProperty(perm.slice(0, idx))){
+                perm = ''// disallow protected components if no session/auth done yet
             }
+
             if(perm){
 log('.allow by not in Can.Static and not in Can.API if not *.js: ' + perm)
                 return next()// allow stuff that is NOT listed there
