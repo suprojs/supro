@@ -1,7 +1,7 @@
 //`new Function(...){`
 if(local.log_dir){
     api_text(ret, api, local, req, res, next)
-} else {// directoty is not ready
+} else {// directory is not ready
     setTimeout(api_text, 1024, ret, api, local, req, res, next)
 }
 return true// async anyway
@@ -23,13 +23,6 @@ var d, f
 
     if('GET' == req.method && req.url.query.file){
     //'http://localhost:3007/um/lib/chat/text?file=2014-07'
-        /* lame direct eating memory way :
-         *fs.readFile(local.log_dir + '/' + req.url.query.file + '.txt',
-         *   function (err, data){
-         *       if(err) throw new Error(err)
-         *       res.txt(data)
-         *   }
-        )*/
         return api.connect.sendFile(
             local.log_dir + '/' + req.url.query.file + '.txt', true
         )(req, res)// call middleware
@@ -64,7 +57,7 @@ var d, f
             function on_error_log_file(err){
                 local.log_file.end()
                 local.log_file = null
-                next(err)
+                return next(err)
             }
         )
     }
