@@ -90,6 +90,14 @@ var chat_api = { 'user': null, 'text': null, 'deve': load_chat_api }
                     tmp && (chat_api[m] = tmp)
                 }
             }
+            api.lftp && api.lftp.on('um', chat_api_lftp_on)
+        }
+
+        function chat_api_lftp_on(obj, send, cb){
+            for(var i = 0; i < send.length; ++i){
+                chat_api.text(obj, api, local, send[i])
+            }
+            return cb()
         }
     }
 }

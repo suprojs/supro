@@ -21,7 +21,7 @@ var d, f
         throw new Error('Chat: no `log_dir` available')// handled by `connect`
     }
 
-    if('GET' == req.method && req.url.query.file){
+    if(req && 'GET' == req.method && req.url.query.file){
     //'http://localhost:3007/um/lib/chat/text?file=2014-07'
         return api.connect.sendFile(
             local.log_dir + '/' + req.url.query.file + '.txt', true
@@ -63,13 +63,23 @@ var d, f
     }
 
     function append_log(){// limit is '4mb' in `app_main\lib\middleware\postTextPlain.js`
-    var msg = JSON.stringify(req.json) + '\n'
+    var msg, o = req.json
 
+        if(api.lftp){
+            if(res){// is originating from here
+                o.usr = o.usr.slice(0, 4) + api.lftp.OBJ + ':' + o.usr.slice(4)
+                api.lftp.send('um', o)
+            } else if('GLOB' == api.lftp.OBJ){// broadcast to all but original object
+                if(0 != o.usr.slice(4).indexOf(ret + ':')){
+                    api.lftp.send('um', o)
+                }
+            }
+        }
+        msg = JSON.stringify(o) + '\n'
         api.wes.broadcast('chatmsg@um', msg)
         local.log_file.write('{"d":"' + d.toISOString() + '",' + msg.slice(1))
 
-        ret.success = true
-        return res.json(ret)
+        return res && (ret.success = true, res.json(ret))
     }
 
     function pad(n){
