@@ -1,5 +1,3 @@
-Ext.Loader.require(['App.store.Status', 'App.view.desktop.BackendTools'])
-
 Ext.define('App.view.desktop.StatusGrid',{
     extend: Ext.grid.Panel,
     singleton: true,

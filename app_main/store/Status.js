@@ -1,8 +1,6 @@
 /**
  * Store for System's `model.Status`
  */
-
-Ext.require('App.model.Status')//loading Models manually, then [M]VC
 Ext.define('App.store.Status',{
 	extend: Ext.data.Store,
     singleton: true,// single instance for status
@@ -43,10 +41,3 @@ Ext.define('App.store.Status',{
         Ext.resumeLayouts(true)
     }
 })
-
-App.sts = function(op, args, res, time){//global status logger
-    App.store.Status.insert(0, new App.model.Status({
-        created: time ? time : new Date,
-        op: op, args: args, res: res
-    }))
-}

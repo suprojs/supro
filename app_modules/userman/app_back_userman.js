@@ -188,9 +188,9 @@ function log(){}//!!!dev skip check noise
         *
         * into `Can.backend` can hash index
         */
-        idx = req.url.indexOf('.js?')
-log('basic auth:', req.url)
         perm = req.url
+log('basic auth:', perm)
+        idx = perm.indexOf('.js?')
         if(req.session && (can = req.session.can)){// auth
             if(~idx){// *.js files
                 perm = perm.slice(0, idx)

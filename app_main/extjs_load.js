@@ -107,6 +107,7 @@ var t
         delete app.backend_shutdown
     }
     App.cfg = app.config
+    App.sts = add_app_status
     App.backendURL = App.cfg.backend.url ?
                     'http://127.0.0.1:' + App.cfg.backend.job_port : ''
     App.create = sub_app_create
@@ -142,8 +143,7 @@ var t
         'App.backend.Connection',  // `req`<->`res` with backend
         'App.store.CRUD',          // our CRUD for `Ext.data.*`
         'App.view.Window',         // provide core View Class(es)
-        'App.view.Viewport',
-        'App.view.desktop.Status'  // provide status
+        'App.view.Viewport',       // provide view.Desktop with status
     ], App.cfg.extjs.launch.js || [ ])// more stuff from backend, if exists
     // create shorter ref. for extjs/ui config options of all app modules
     App.cfg.modules = App.cfg.extjs.modules
@@ -323,6 +323,18 @@ err.sourceClass + '</b><br>sourceMethod: <b>' +
 err.sourceMethod + '</b>'
     })
     return !con.warn(err)
+}
+
+function add_app_status(op, args, res, time){//global status logger
+    op = {
+        created: time ? time : new Date,
+        op: op, args: args, res: res
+    }
+    if(App.store.Status){
+        App.store.Status.insert(0, new App.model.Status(op))
+    } else {
+        con.log('App.sts', op)
+    }
 }
 
 })(document, window, window.console)

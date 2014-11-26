@@ -27,7 +27,7 @@ Ext.define('App.view.desktop.Shortcuts',{
            ,App.view.items_Shortcuts
         )
 
-        me.callParent(arguments)
+        me.callParent()
         delete App.view.items_Shortcuts
     }
 })
@@ -47,23 +47,29 @@ Ext.define('App.view.Desktop',
     function init_Desktop(){
     var me = this
 
+        me.callParent()
         me.on({
         'boxready':{
             'single': true,// once on load
             fn: initDesktopStatus
         }})
-
-        me.callParent()
         return
 
         function initDesktopStatus(){
-        var ss = Ext.create('App.view.desktop.Status')
-            me.add(ss)// for `constrain` + resizing of parent
-            Ext.defer(wait_desktop_layout, 256)
-            return
+            return Ext.Loader.require([// load components after auth
+                'App.model.Status',
+                'App.store.Status',
+                'App.view.desktop.Status',
+                'App.view.desktop.BackendTools'
+                ],
+                wait_desktop_layout
+            )
 
             function wait_desktop_layout(){// layouts are not always available
             var r = me.getRegion()
+               ,ss = new App.view.desktop.Status
+
+                me.add(ss)// for `constrain` + resizing of parent
                 ss.show()// floating Component show() manually
                 App.store.Status.showReadAllCount()// custom manual setup
                 Ext.tip.QuickTipManager.register({
