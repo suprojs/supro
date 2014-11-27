@@ -150,6 +150,7 @@ Ext.define('App.um.controller.Login',{
                 }
                 defer = setTimeout(function deferReqRoles(){
                     defer = 0
+                    role.reset()
                     App.User.login(newUserId, function getSessionInfo(err, ret){
                         if(err) return
 

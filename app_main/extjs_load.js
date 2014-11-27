@@ -143,7 +143,7 @@ var t
         'App.backend.Connection',  // `req`<->`res` with backend
         'App.store.CRUD',          // our CRUD for `Ext.data.*`
         'App.view.Window',         // provide core View Class(es)
-        'App.view.Viewport',       // provide view.Desktop with status
+        'App.view.Viewport'        // provide view.Desktop with status
     ], App.cfg.extjs.launch.js || [ ])// more stuff from backend, if exists
     // create shorter ref. for extjs/ui config options of all app modules
     App.cfg.modules = App.cfg.extjs.modules
