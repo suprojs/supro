@@ -57,8 +57,6 @@ Ext.define('App.view.Desktop',
 
         function initDesktopStatus(){
             return Ext.Loader.require([// load components after auth
-                'App.model.Status',
-                'App.store.Status',
                 'App.view.desktop.Status',
                 'App.view.desktop.BackendTools'
                 ],

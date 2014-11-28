@@ -139,8 +139,10 @@ var t
     Ext.Loader.setPath('Ext.uxo', App.app.appFolder + '/uxo')
 
     t = Ext.Array.push([
-        'App.model.Base',          // loading Models manually, then [M]VC
         'App.backend.Connection',  // `req`<->`res` with backend
+        'App.model.Base',          // loading Models manually, then [M]VC
+        'App.model.Status',
+        'App.store.Status',
         'App.store.CRUD',          // our CRUD for `Ext.data.*`
         'App.view.Window',         // provide core View Class(es)
         'App.view.Viewport'        // provide view.Desktop with status
