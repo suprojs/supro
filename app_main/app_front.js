@@ -87,9 +87,13 @@ function node_webkit(app, con){
 
     setup_tray(app.tray ,app.w)
 
-    // long xhr pooling gets messages from backend
-    load_config(app) && http.get(//TODO: use `agent:false`
-        "http://127.0.0.1:" + app.config.backend.ctl_port
+    load_config(app) && http.get(// check if backend node.js is already running
+    {
+        hostname: '127.0.0.1',
+        port: app.config.backend.ctl_port,
+        path: '/',
+        agent: false
+    }
         ,backend_is_running
     ).on('error'
         ,backend_ctl_errors
@@ -117,10 +121,10 @@ function backend_is_running(res){
 }
 
 function backend_ctl_errors(e){
-    if("ECONNRESET" == e.code){//TODO: use `agent:false` to remove this
-        con.log('backend_ctl_errors: prev. backend connection has been reset, ignore')
-        return
-    }
+    /*if("ECONNRESET" == e.code){// if `agent: true` peer has closed by its timeout
+     *   con.log('backend_ctl_errors: prev. backend connection has been reset, ignore')
+     *   return
+    }*/
 
     if(app.config.extjs){// run setup only first time after ctl check
         spawn_backend(app)
@@ -225,7 +229,12 @@ function check_backend(check_ok, check_he){
         return
     }
     http.get(
-        "http://127.0.0.1:" + app.config.backend.ctl_port
+    {
+        hostname: '127.0.0.1',
+        port: app.config.backend.ctl_port,
+        path: '/',
+        agent: false
+    }
         ,check_ok ? check_ok : backend_ctl_alive
     ).on('error'
         ,check_he ? check_he : backend_ctl_dead
@@ -247,11 +256,6 @@ function backend_ctl_alive(res, callback){
 }
 
 function backend_ctl_dead(e){
-    if(e && "ECONNRESET" == e.code){
-        con.log('backend_ctl_dead: prev. backend connection has been reset, ignore')
-        return
-    }
-
     con.log('check: backend is dead')
 
     if('undefined' == typeof App){// init
@@ -274,14 +278,7 @@ function restart(){
     }
 
     function check_he(e){
-        if(e){
-            if(e && "ECONNRESET" == e.code){
-                con.log('reload: prev. backend connection has been reset, ignore')
-                return
-            }
-            con.error('check_he(error):')
-            con.dir(e)
-        }
+        e && con.error('check_he(error):', e)
 
         if(app.config.backend.pid)
             app.config.backend.pid = null
@@ -295,7 +292,12 @@ function restart(){
     function request_cmd_exit(){
         con.log('request_cmd_exit ctl_port: ' + app.config.backend.ctl_port)
         http.get(
-            "http://127.0.0.1:" + app.config.backend.ctl_port + '/cmd_exit'
+        {
+            hostname: '127.0.0.1',
+            port: app.config.backend.ctl_port,
+            path: '/cmd_exit',
+            agent: false
+        }
             ,reload_ok_spawn
         ).on('error' ,check_he)
     }
@@ -313,14 +315,15 @@ function restart(){
 }
 
 function shutdown(){
-    http.get({
+    http.get(
+    {
         hostname: '127.0.0.1',
         port: app.config.backend.ctl_port,
         path: '/cmd_exit',
         agent: false
     }, function(res){
         App.sts(l10n.stsShutdown, l10n.stsStopSystem, l10n.stsOK)
-        //TODO check if still is up or grep for pid
+        //TODO check if that process is still up or grep for pid to be sure
     }).on('error', function(e){
         con.error("Shutdown error: " + e.message)
         App.sts(l10n.stsShutdown, e.message, l10n.stsOK)
@@ -333,7 +336,12 @@ function terminate(){
     )
 
     return http.get(// get current pid
-        "http://127.0.0.1:" + app.config.backend.ctl_port
+    {
+        hostname: '127.0.0.1',
+        port: app.config.backend.ctl_port,
+        path: '/',
+        agent: false
+    }
         ,backend_get_current_pid
     ).on('error' ,backend_ctl_killed)
 
@@ -369,7 +377,12 @@ function defer_request_check_kill(err){
     setTimeout(
         function send_check_request(){
             http.get(
-                "http://127.0.0.1:" + app.config.backend.ctl_port
+            {
+                hostname: '127.0.0.1',
+                port: app.config.backend.ctl_port,
+                path: '/',
+                agent: false
+            }
                 ,backend_ctl_not_killed
             ).on('error' ,backend_ctl_killed)
         }
@@ -383,12 +396,8 @@ function backend_ctl_not_killed(income){
 }
 
 function backend_ctl_killed(e){
-    if(e && "ECONNRESET" == e.code){
-        con.log('backend_ctl_killed: prev. backend connection has been reset, ignore')
-        return
-    }
+var m, log = 'backend is killed'
 
-    var m, log = 'backend is killed'
     if(app.config.backend.pid){
         app.config.backend.pid = null
         m =  l10n.stsKilled
