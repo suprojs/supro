@@ -18,25 +18,6 @@
     }
     return
 
-function run_frontend(){
-    var fs = require('fs')
-
-    try {
-        fs.statSync(app.config.extjs.path.slice(3) + 'ext-all-nw.js')
-    } catch(ex){
-        throw new Error(l10n.extjsNotFound)
-    }
-
-    try {
-        (new Function(fs.readFileSync('app_main/app_front_http.js', 'utf8')))()
-    } catch(ex){
-        throw new Error(
-            'ERROR app_main/app_front_http.js\n' +
-            l10n.errload_config_read + '\n' + ex.stack
-        )
-    }
-}
-
 function check_versions(cb){
     app.c_p.exec('node --version',
     function(err, stdout){
@@ -202,26 +183,6 @@ function spawn_backend(app, restart){
     return true
 }
 
-function get_remote_ip(){
-    app.c_p.exec('ipconfig',
-    function(err, stdout){
-    var url
-        if(!err){// NOTE: RE can be specific to Russian MS Windows
-            err = stdout.match(/^[\s\S]*IPv4-[^:]*: ([^\n]*)\n/)
-            if(err){
-                url = app.config.backend.url
-                app.config.backend.url = app.config.backend.url
-                   .replace(/127\.0\.0\.1/, err[1])
-                if('DIRECT' != gui.App.getProxyForURL(app.config.backend.url)){
-                    app.w.window.alert(l10n.via_proxy(app.config.backend.url))
-                    app.config.backend.url = url// restore 'localhost'
-                }
-            }
-        }
-        run_frontend()
-    })
-}
-
 function check_backend(check_ok, check_he){
     con.log('check backend port: ' + app.config.backend.ctl_port)
     if(!check_ok && !app.config.backend.pid){// not restart, check if dead
@@ -266,6 +227,46 @@ function backend_ctl_dead(e){
         }, app.config.backend.init_timeout || 1234)
     } else {// keep UI, if loaded
         App.sts(l10n.stsCheck, l10n.stsAlive, l10n.stsHE)
+    }
+}
+
+
+function get_remote_ip(){
+    app.c_p.exec('ipconfig',
+    function(err, stdout){
+    var url
+        if(!err){// NOTE: RE can be specific to Russian MS Windows
+            err = stdout.match(/^[\s\S]*IPv4-[^:]*: ([^\n]*)\n/)
+            if(err){
+                url = app.config.backend.url
+                app.config.backend.url = app.config.backend.url
+                   .replace(/127\.0\.0\.1/, err[1])
+                if('DIRECT' != gui.App.getProxyForURL(app.config.backend.url)){
+                    app.w.window.alert(l10n.via_proxy(app.config.backend.url))
+                    app.config.backend.url = url// restore 'localhost'
+                }
+            }
+        }
+        run_frontend()
+    })
+}
+
+function run_frontend(){
+var fs = require('fs')
+
+    try {
+        fs.statSync(app.config.extjs.path.slice(3) + 'ext-all-nw.js')
+    } catch(ex){
+        throw new Error(l10n.extjsNotFound)
+    }
+
+    try {
+        (new Function(fs.readFileSync('app_main/app_front_http.js', 'utf8')))()
+    } catch(ex){
+        throw new Error(
+            'ERROR app_main/app_front_http.js\n' +
+            l10n.errload_config_read + '\n' + ex.stack
+        )
     }
 }
 
@@ -410,8 +411,7 @@ var m, log = 'backend is killed'
 }
 
 function load_config(app){// loaded only by main process -- node-webkit
-var cfg
-var fs = require('fs')
+var cfg, fs = require('fs')
 
     if((cfg = app.process._nw_app.argv[0])){// cmd line
         cfg = 'config/' + cfg
@@ -458,9 +458,9 @@ var fs = require('fs')
 }
 
 function check_extjs_path(){// find local ExtJS in and above cwd './'
-    var fs = require('fs'), pe = '../', d = '', i, p
-       ,ef = app.config.backend.extjs.pathFile
-       ,extjs_path
+var fs = require('fs'), pe = '../', d = ''
+   ,ef = app.config.backend.extjs.pathFile
+   ,extjs_path, i, p
 
     /* lookup extjs.txt first */
     try{
