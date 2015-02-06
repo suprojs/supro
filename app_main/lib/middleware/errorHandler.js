@@ -4,8 +4,9 @@ var idx
     if(!err) return next()
     if (err.status) res.statusCode = err.status
     if (res.statusCode < 400) res.statusCode = 500
+
     log('errorHandler: ', err.stack || err)
-    log('URL: ', req.url)
+    log('URL: ', req.originalUrl)// magic place in `connect` for original URL (actual can be parsed)
     log('data: ', req.json || 'null')// log JSON data (from stores, etc.)
 
     if('string' == typeof err){
@@ -27,7 +28,7 @@ var idx
     }
 
     return res.json({
-        url: req.url, err: err.stack || err,// frontend must wrap this in pretty UI
+        url: req.originalUrl, err: err.stack || err,// frontend must wrap this in pretty UI
         success: false, data: err.stack || err// compatible with 'App.proxy.CRUD'
     })
 }
