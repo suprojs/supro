@@ -17,6 +17,7 @@
         "extjs",
         "nodejs",
         "node.js",
+        "nw.js",
         "node-webkit"
     ],
     "webkit": {
@@ -35,6 +36,10 @@
         "frame": true
     },
     "main": "app_main/app.htm",
+    "scripts": {
+        "install": "echo ==== && echo Everything is here already. && echo ====",
+        "start": "nw"
+    },
     "engines": {
         "cygwin": "1.7.15",
         "lftp": "4.3.7",
