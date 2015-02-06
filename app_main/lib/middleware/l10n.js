@@ -15,12 +15,12 @@ function make_mwL10n(api, dirname, postfix){
         try{// client requested l10n
             s = dirname + '/l10n' + s
             require('fs').statSync(s)
-            api.connect.sendFile(s, true)(req, res)
+            api.connect.sendFile(s, true)(req, res, next)
         } catch(ex){// or fallback
             api.connect.sendFile(
                 dirname + '/l10n/' + api.cfg.lang + postfix,
                 true// absolute path is provided
-            )(req, res)
+            )(req, res, next)
         }
     }
 }

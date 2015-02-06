@@ -25,7 +25,7 @@ var d, f
     //'http://localhost:3007/um/lib/chat/text?file=2014-07'
         return api.connect.sendFile(
             local.log_dir + '/' + req.url.query.file + '.txt', true
-        )(req, res)// call middleware
+        )(req, res, next)// call middleware
     }
     // POST `req.txt`: <olecom>{\t}a simple chat message. (with some html around)
     //'http://localhost:3007/um/lib/chat/text'
