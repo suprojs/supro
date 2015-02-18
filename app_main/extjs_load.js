@@ -117,6 +117,7 @@ var t
     App.sts = add_app_status
     App.backendURL = App.cfg.backend.url ?
                     'http://127.0.0.1:' + App.cfg.backend.job_port : ''
+    App.undefine = sub_app_undefine
     App.create = sub_app_create
     App.reload = sub_app_reload_devel_view
     App.getHelpAbstract = get_help_abstract
@@ -190,6 +191,12 @@ var me, m, idx, tail
     }
 
     return me && (m = me[msg]) ? m : msg
+}
+
+function sub_app_undefine(className){
+    Ext.undefine(className)
+    Ext.Loader.isFileLoaded[Ext.Loader.getPath(className)] = false
+    delete Ext.Loader.isClassFileLoaded[className]
 }
 
 function sub_app_create(ns, btn, cfg){
