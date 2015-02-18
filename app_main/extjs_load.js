@@ -38,7 +38,15 @@ var path, extjs, t
 
         clearInterval(extjs)
         app.extjs_helper = css_load
+
         extjs = path + 'locale/ext-lang-' + l10n.lang + '.js'
+        Ext.Loader.setConfig({
+            enabled: true,
+            scriptCharset: 'utf8',
+            paths: {
+                'Ext.ux': path + 'examples/ux'
+            }
+        })
         Ext.Loader.loadScript({
             url: extjs,
             onError: function fail_load_locale(){
@@ -50,7 +58,6 @@ var path, extjs, t
             'ExtJS locale: ' + l10n.lang + '\n ' +
             'ExtJS is at <' + path + '>'
         )
-        Ext.Loader.setPath('Ext.ux', path + 'examples/ux')
 
         if(app.config.backend.url){// `nw` context`
            /* patch ExtJS Loader to work from "file://" in `node-webkit`
