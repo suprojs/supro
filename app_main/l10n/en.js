@@ -9,13 +9,13 @@ l10n = { lang: 'en',
     ,errapi: 'Error loading data by API call:'
     ,errload: 'Loading failed due to errors.'
     ,errload_no_app:
-        'Installation error! File not found: "app_front.js".\n' +
-        'Check of configuration is needed.'
+'Installation error! File not found: "app_front.js".\n' +
+'Check of configuration is needed.'
     ,errload_config_read:
-        'Config file reading error!'
+'Config file reading error!'
     ,errload_config_log_not_dir:
-        'Error: fail to read log directory.\n' +
-        'Config option:: '
+'Error: fail to read log directory.\n' +
+'Config option:: '
     ,errload_config_log_mkdir: 'Error: fail to create log directory.'
     ,errload_spawn_backend: 'Error starting backend! Error code: '
     ,errload_check_backend: '\n' +
@@ -25,7 +25,6 @@ l10n = { lang: 'en',
     ,errun_title: 'ERROR in program execution'
     ,errun_file: 'File: '
     ,errun_stack: 'Error and call stack: '
-    ,err_crud_proxy: 'CRUD Proxy (or Reader or Model) exception!'
     ,tray:{
         title: 'SUPRO'
         ,winvis: 'SUPRO window is visible'
@@ -77,7 +76,7 @@ name_example
     ,stsKilling: 'KILL/TERMINATE `nodejs` (hangs)'
     ,stsShutdown: 'SHUTDOWN main `node.js`'
     ,stsBackendPid: function(pid){
-        return '' + pid + ' - PID of the main nodejs process of the system'
+        return '' + pid + ' - PID of the main `node.js` process of the system'
     }
     ,stsBackendXHR: "connection to the main nodejs process"
     ,stsOK: 'OK'
@@ -114,7 +113,7 @@ name_example
 
     // fronend error messages
     ,emptyTextGrid: '--== No data ==--'
-    ,err_crud_proxy: 'Request failed. Fatal. Call for developer.'
+    ,err_crud_proxy: 'Network/Backend request failed. Fatal. Call for developer/admin.'
 
     // backend error codes
     ,'!session': 'Session has ended. New login required. Unsaved data move to MS Excel.'
@@ -129,9 +128,9 @@ name_example
     ,'!hste': 'failed history end'
     ,'error index': 'Duplicate SKU insert or other Index error'
     ,MongoError: 'FATAL Mongo Error. Call for developer.'
-    ,TypeError: 'Programming error. Call for developer.'
-    ,ReferenceError: 'Programming error. Call for developer.'
-    ,Error: 'Programming error. Call for developer.'
+    ,TypeError: 'Programming error (TypeError). Call for developer.'
+    ,ReferenceError: 'Programming error (ReferenceError). Call for developer.'
+    ,Error: 'Programming error (Error). Call for developer.'
     // backend applicaiton errors (non fatal or wrong input)
     //,'~exists': 'Already exists.'
 
