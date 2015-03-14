@@ -16,7 +16,7 @@ config = {
     // order matters: before auth module there are no restrictions to config
 
     // NOTE config: one level copy of this properties into default settings
-        suprolftpd:{
+        suprolftpd:{// hardcoded data path is '$PWD/data/suprolftpd/'
             OBJ:OBJ
         },
         supromongod:{
@@ -62,7 +62,7 @@ config = {
        ,example: true
        ,pingback: true
        ,shoesupro:{
-           OBJ:OBJ,
+           OBJ:OBJ,    // same as in `suprolftpd`
            db_name: DB,// same as in `supromongod`
            dependencies:{ userman: '+', supromongod: '+', suprolftpd: '+' }
         }
