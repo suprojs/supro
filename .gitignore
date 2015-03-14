@@ -12,3 +12,4 @@ data
 config/_*
 app_modules/*
 !app_modules/userman
+!app_modules/example
