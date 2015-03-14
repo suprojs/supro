@@ -382,6 +382,8 @@ Ext.define('App.um.controller.Login',{
     destroy: function destroy(){
     /* in case of logout event from backend, this
      * `App.um.view.Login` is shown again without reloading of all Viewport
+     * TODO: uninstall `l10n_set_and_change()` handler,
+     *        redo all with event delegate and no ExtJS put it into HTML spash
      */
         App.um.view.Login.destroy()
         App.um.view.Login = null// GC

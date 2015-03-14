@@ -209,6 +209,7 @@ log('.allow "' + perm + '" by can.API: ' + can.API[i])
                     }
                 }
             } else {// secured permission for all API: '/*/lib'
+log('.allow by "/*/lib" "' + perm + '"')
                 return next()// allow API
             }
             // all other falls thru
