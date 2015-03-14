@@ -4,6 +4,7 @@
 #   1>>log/app_back_stdout.txt 2>>log/app_back_stderr.txt
 # * if env $NODEJS_CONFIG is exported it is used and no hardcoded file is read
 
+cd "${0%/*}" 2>/dev/null
 set -e
 PATH=.:bin:$PATH
 
