@@ -28,7 +28,6 @@ cygwin1.dll
 cygwind-0.dll
 cygz.dll
 date.exe
-dd.exe
 du.exe
 find.exe
 gawk.exe
@@ -46,7 +45,6 @@ sed.exe
 sh.exe
 sleep.exe
 ssh.exe
-stat.exe
 strace.exe
 tail.exe
 tar.exe
