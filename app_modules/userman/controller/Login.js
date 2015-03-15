@@ -42,9 +42,8 @@ Ext.define('App.um.controller.Login',{
         App.User = App.um.model.User// must be required first from app module
         App.User.internalId = ''// reset to be used as User.id copy while offline
         // action
-        user.disable()// mark to check exixting session
+        user.disable()// mark to check existing session
         user.onTriggerClick = onSessionShutdownClick
-        user.focus()
         user.on({
             /* using `ref`s, but this is equivalent to:
                 this.listen component:{
@@ -61,12 +60,11 @@ Ext.define('App.um.controller.Login',{
             change: reqRole
         })
         role.on({
-            specialkey: gotoPass// double keypress needed
-           ,change: enablePass
+            change: me.enablePass
         })
         pass.on({
-            specialkey: gotoAuth
-           ,change: enableAuth
+            specialkey: authenticate// one ENTER keypress auth in password
+           ,change: me.enableAuth
         })
         auth.on({
             click: authenticate
@@ -105,6 +103,7 @@ Ext.define('App.um.controller.Login',{
             if(err) return
 
             user.enable()// mark as ready
+            user.focus()
             if(ret.can){
                 user.emptyText = ret.user.id
                 user.applyEmptyText()
@@ -120,6 +119,7 @@ Ext.define('App.um.controller.Login',{
                 }
                 auth.setText(l10n.um.loginCurrentSession)
                 auth.enable()// auth is ok in this session
+                auth.focus()
             }
         }
 
@@ -144,12 +144,14 @@ Ext.define('App.um.controller.Login',{
 
         function reqRole(field, newUserId){
             if(defer) clearTimeout(defer)
+
             if(newUserId){
                 if(!auth.disabled && newUserId != user.emptyText){
                     onSessionShutdownClick()
                 }
                 defer = setTimeout(function deferReqRoles(){
                     defer = 0
+                    if(!role.eventsSuspended) role.suspendEvents()
                     role.reset()
                     App.User.login(newUserId, function getSessionInfo(err, ret){
                         if(err) return
@@ -182,7 +184,7 @@ Ext.define('App.um.controller.Login',{
                             })
                         }
                         role.store.loadRecords(models, false)
-
+                        role.resumeEvents()
                         if(role.disabled){
                             role.enable()
                         }
@@ -199,7 +201,9 @@ Ext.define('App.um.controller.Login',{
                 auth.disable()
             }
         }
-        function authenticate(field){
+        function authenticate(field, ev){
+            if(ev && 'keydown' == ev.type && ev.getKey() != ev.ENTER) return
+
             // prevent session activation and stall on sudden page reload/crash
             /* NOTE: there is no way to match reload or window/tab close
              *       in the browser.
@@ -218,6 +222,8 @@ Ext.define('App.um.controller.Login',{
             }
 
             if(field){// from button call arguments: `field, ev`
+                auth.eventsSuspended = 1// prevent multiple auth calls to backend
+                auth.focus()
                 App.um.view.Login.fadeInProgress(do_auth)
             } else {// from direct call
                 App.cfg.extjs.fading = false
@@ -255,6 +261,7 @@ Ext.define('App.um.controller.Login',{
                         auth.setText(l10n.um.loginConflict)
                     } else {// continue (e.g. wrong password)
                         user.selectText()
+                        auth.eventsSuspended = 0
                     }
                     return App.um.view.Login.fadeOutProgress()
                 }
@@ -295,22 +302,18 @@ Ext.define('App.um.controller.Login',{
                 (role.disabled ? auth : role).focus()
             }
         }
-        function gotoPass(_, ev){
-            if(ev.getKey() == ev.ENTER){
-                pass.focus()
-            }
-        }
-        function gotoAuth(_, ev){
-            if(ev.getKey() == ev.ENTER){
-                auth.focus()
-            }
-        }
-        function enablePass(_, value){
-            pass.enable()
-        }
-        function enableAuth(){
-            auth.enable()
-        }
+    },
+    enablePass: function(_, value){
+    var pass = App.um.view.Login.pass
+
+        pass.enable()
+            setTimeout(function(){
+        pass.focus()}, 256)// defer focus after combo is collapsed
+    },
+    enableAuth: function(_, value){
+    var auth = App.um.view.Login.auth
+
+        value ? auth.enable() : auth.disable()
     },
     relogin: function relogin(){
     var user, role, pass, auth
@@ -320,7 +323,6 @@ Ext.define('App.um.controller.Login',{
         role = App.um.view.Login.role
         pass = App.um.view.Login.pass
         auth = App.um.view.Login.auth
-        auth.enable()
 
         user.onTriggerClick = destroy
         user.emptyText = App.User.id.replace(/....([^ ]+) .*/,'$1')
@@ -328,28 +330,23 @@ Ext.define('App.um.controller.Login',{
         user.enable()
         user.setHideTrigger(false)
 
-
         role.setValue(l10n.um.roles[App.User.can.__name] || App.User.can.__name)
         role.disable()
+        // one ENTER keypress auth in password
+        pass.on({ specialkey: reloaginUser, change: me.enableAuth })
+        auth.on({ click: reloaginUser })
+        me.enablePass()
 
-        pass.enable()
-        pass.on({
-            specialkey: function gotoAuth2(_, ev){
-                if(ev.getKey() == ev.ENTER){
-                    auth.focus()
-                }
-            }
-        })
+        return
 
-        pass.setValue(' ')// crutch to activate input field:
-        setTimeout(function(){
-            pass.setValue('')
-            pass.focus()
-        }, 128)
+        function reloaginUser(_, ev){
+            if(ev && 'keydown' == ev.type && ev.getKey() != ev.ENTER) return
 
-        auth.on({ click: function(){
+            auth.eventsSuspended = 1// prevent multiple auth calls to backend
+            auth.focus()
             App.um.view.Login.fadeInProgress(function(){
             App.User.login(App.User.get('id'), function(err, ret){
+                me.enablePass()// focus pass after failed login
                 if(err) return
             App.User.auth(
                 App.User.get('id'),
@@ -365,6 +362,7 @@ Ext.define('App.um.controller.Login',{
                             auth.disable()
                             auth.setText(l10n.um.loginConflict)
                         }
+                        auth.eventsSuspended = 0
                         return App.um.view.Login.fadeOutProgress()
                     }
 
@@ -372,8 +370,7 @@ Ext.define('App.um.controller.Login',{
             return App.um.view.Login.fadeOut(destroy)
                 }
             )})})
-        }})
-        return
+        }
 
         function destroy(){
             me.destroy()
