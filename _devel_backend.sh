@@ -6,6 +6,7 @@
 
 cd "${0%/*}" 2>/dev/null
 set -e
+
 PATH=.:bin:$PATH
 
 trap 'echo "
@@ -35,7 +36,7 @@ then
 else
     echo '
 ^ reading config in $ENV from file'
-    NODEJS_CONFIG=`sed '' <./config/cfg_mongo_lftp.js 2>/dev/null`
+    NODEJS_CONFIG=`sed '' <./config/cfg_mongo_lftp.js`
     echo '^ exporting it for childs'
     export NODEJS_CONFIG
 fi
