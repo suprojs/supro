@@ -2,12 +2,21 @@
  * common part for `nw` && `connectjs` front ends
  */
 
-var app// FIXME: check if this can be just `App`, one global var is needed
+var App // one global Application variable / namespace
 
 (function gc_wrapper(doc, w, con){
-    app = {
-        config: null,
+    App = {
+        cfg: null,
         mod:{ btn: void 0, wnd: void 0 },// error access for: launch button && window
+        backendURL: '',
+
+        sts: void 0,//add_app_status
+        undefine: void 0,// sub_app_undefine
+        create: void 0,// sub_app_create
+        unload: void 0,// sub_app_unload
+        reload: void 0,// sub_app_reload_devel_view
+        getHelpAbstract: void 0,// get_help_abstract
+
         extjs_helper: extjs_load_gc_wrapped
     }
     return
@@ -17,13 +26,13 @@ var app// FIXME: check if this can be just `App`, one global var is needed
 function extjs_load_gc_wrapped(){
 var path, extjs, t
 
-    extjs = app.config.extjs
+    extjs = App.cfg.extjs
     path = extjs.path
     css_load(path + 'resources/css/ext-all.css')
 
     if(extjs.launch && extjs.launch.css){
         for(t = 0; t < extjs.launch.css.length; ++t){
-            css_load(extjs.launch.css[t], app.config.backend.url)
+            css_load(extjs.launch.css[t], App.cfg.backend.url)
         }
     }
 
@@ -37,7 +46,7 @@ var path, extjs, t
         if(!w.Ext) return// waiting if xhr HEAD check is done
 
         clearInterval(extjs)
-        app.extjs_helper = css_load
+        App.extjs_helper = css_load
 
         extjs = path + 'locale/ext-lang-' + l10n.lang + '.js'
         Ext.Loader.setConfig({
@@ -61,12 +70,14 @@ var path, extjs, t
             'ExtJS is at <' + path + '>'
         )
 
-        if(app.config.backend.url){// `nw` context`
-           /* patch ExtJS Loader to work from "file://" in `node-webkit`
+        if(App.cfg.backend.url){// `nw` context`
+            App.backendURL = 'http://127.0.0.1:' + App.cfg.backend.job_port
+
+           /* patch ExtJS Loader to work from "file://" in `nw.js`/`node-webkit`
             * also `debugSourceURL` removed in `ext-all-debug.js#loadScriptFile()`
             * it crushes `eval` there it's critical (plus there are more patches)
             *
-            * `app.config.backend.url` has external IP (for remote HTTP)
+            * `App.cfg.backend.url` has external IP (for remote HTTP)
             **/
             Ext.Loader._getPath = Ext.Loader.getPath
             Ext.Loader.getPath = function getPath(className){
@@ -79,7 +90,7 @@ var path, extjs, t
 
         Ext.application({
             name: 'App',
-            appFolder: app.config.extjs.appFolder || '.',
+            appFolder: App.cfg.extjs.appFolder || '.',
             controllers:[ 'Main' ],// loads App.controller.Main
             launch: extjs_launch
         })
@@ -103,22 +114,7 @@ var el = doc.createElement('link')
 function extjs_launch(){
 var t
 
-    // global `App` object is available now
-    if(app.backend_check){
-        App.doCheckBackend = app.backend_check
-        App.doRestartBackend = app.backend_restart
-        App.doTerminateBackend = app.backend_terminate
-        App.doShutdownBackend = app.backend_shutdown
-
-        delete app.backend_check
-        delete app.backend_restart
-        delete app.backend_terminate
-        delete app.backend_shutdown
-    }
-    App.cfg = app.config
     App.sts = add_app_status
-    App.backendURL = App.cfg.backend.url ?
-                    'http://127.0.0.1:' + App.cfg.backend.job_port : ''
     App.undefine = sub_app_undefine
     App.create = sub_app_create
     App.unload = sub_app_unload
@@ -170,7 +166,7 @@ var t
 
     if(false !== App.cfg.createViewport){// if no auth app_module
         App.User = { can: { }}// dummy auth object
-        app.extjs_helper = null// mark for GC
+        App.extjs_helper = null// mark for GC
         Ext.globalEvents.fireEvent('createViewport')
     }// else userman's: `App.um.controller.Login->createViewportAuth()`
 
@@ -220,7 +216,7 @@ function sub_app_create(ns, btn, cfg){
  *       create or reload, thus ExtJS will not crash inside some class init stage
  *       which may lead to page/framework reload
  **/
-    btn && (app.mod.btn = btn).setLoading(true)
+    btn && (App.mod.btn = btn).setLoading(true)
 
     if(!(~ns.indexOf('.app.'))){
         ns = 'App.' + ns// if class name from "App" (this) namespace

@@ -16,7 +16,7 @@ var xhr = new XMLHttpRequest
         if(4 != req.readyState) return
 
         if(200 != req.status) throw new Error(
-            ~String(req.responseURL).indexOf('ext-all')?
+            ~String(req.responseURL).indexOf('ext-all') ?
             l10n.extjsNotFound : l10n.errload_config_read
         )
 
@@ -25,11 +25,11 @@ var xhr = new XMLHttpRequest
             extjs_config = JSON.parse(req.responseText)
             if(url){
         // `nw` context
-                url = app.config.extjs.path// flip path
-                app.config.extjs = extjs_config
-                app.config.extjs.path = url// restore it back
-                app.config.extjs.appFolder = ('http://127.0.0.1:' +
-                    app.config.backend.job_port
+                url = App.cfg.extjs.path// flip path
+                App.cfg.extjs = extjs_config
+                App.cfg.extjs.path = url// restore it back
+                App.cfg.extjs.appFolder = ('http://127.0.0.1:' +
+                    App.cfg.backend.job_port
                 )
                 check_backend()
                 return
@@ -40,7 +40,7 @@ var xhr = new XMLHttpRequest
             return
         }
 
-        app.config = {
+        App.cfg = {
             extjs: extjs_config,
             backend:{// record start time
                 time: new Date,
@@ -51,7 +51,7 @@ var xhr = new XMLHttpRequest
 
         req.open(// check for network availability of ExtJS
             'HEAD'
-           ,(url || '') + app.config.extjs.path + 'ext-all-nw.js'
+           ,(url || '') + App.cfg.extjs.path + 'ext-all-nw.js'
            ,true
         )
         req.send()
@@ -60,7 +60,7 @@ var xhr = new XMLHttpRequest
         function check_backend(){
             req.open(// check if all is OK on backend startup
                 'GET'
-               ,(app.config.extjs.appFolder || '') + '/uncaughtExceptions'
+               ,(App.cfg.extjs.appFolder || '') + '/uncaughtExceptions'
                ,true
             )
             req.onreadystatechange = run_extjs_helper
@@ -73,8 +73,8 @@ var xhr = new XMLHttpRequest
             if(res.target.responseText){// backend uncaughtExceptions
                 throw new Error('!' + res.target.responseText)
             }
-            app.extjs_helper()
+            App.extjs_helper()
             return
         }
     }
-})(app.config && app.config.backend.url)
+})(App.cfg && App.cfg.backend.url)

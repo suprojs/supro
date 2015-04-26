@@ -12,7 +12,7 @@ Ext.define('App.view.Window',
     tools: void 0,
     initComponent:// anti-MVC pattern, doing all here, but this is MVVM damn!
     function initSubAppWindow(){
-    var me = app.mod.wnd = this
+    var me = App.mod.wnd = this
 
         if(!me.wmId) throw new Error('no `wmId` property in: ' + me.$className)
 

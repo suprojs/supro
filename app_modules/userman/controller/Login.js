@@ -215,7 +215,7 @@ Ext.define('App.um.controller.Login',{
              **/
             Ext.EventManager.onWindowUnload(do_logout)// `browser`
             if(App.backendURL){// `nw`
-                app.w.on('close', function nw_close(){
+                App.w.on('close', function nw_close(){
                     App.User.logoutUI()
                     this.close(true)
                 })
@@ -286,9 +286,9 @@ Ext.define('App.um.controller.Login',{
             }
             if(App.User.modules){// per user/role UI module setup
                 if((f = App.User.modules.css)) for(i = 0; i < f.length; ++i){
-                    app.extjs_helper(f[i], App.backendURL)// css loading
+                    App.extjs_helper(f[i], App.backendURL)// css loading
                 }
-                app.extjs_helper = null// mark for GC
+                App.extjs_helper = void 0// mark for GC
                 Ext.syncRequire(App.User.modules.js)
             }
 

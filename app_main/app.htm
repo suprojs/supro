@@ -67,9 +67,9 @@ l10n.errun_file + (errEvent.filename || '"app_front.js" || "extjs_load.js"') + '
                       : errEvent.error + '</b>' : errEvent.message + '</b>')
                     })
 
-                    app.mod.wnd && App.unload(app.mod.wnd)// panel load fail
-                    app.mod.btn && app.mod.btn.setLoading(false)// quick launch button fail
-                    app.mod.btn = app.mod.wnd = void 0
+                    App.mod.wnd && App.unload(App.mod.wnd)// panel load fail
+                    App.mod.btn && App.mod.btn.setLoading(false)// quick launch button fail
+                    App.mod.btn = App.mod.wnd = void 0
 
                 }, 128)
             }
