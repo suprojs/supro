@@ -94,6 +94,7 @@ l10n.errun_file + (errEvent.filename || '"app_front.js" || "extjs_load.js"') + '
         function startup(file){
         var b = new XMLHttpRequest
             // sync loading of initial stuff
+            // <script src=""> is not used to handle possible connection errors
             b.open('GET', file, false)
             b.send()
             if(b.responseText){
@@ -117,20 +118,26 @@ l10n.errun_file + (errEvent.filename || '"app_front.js" || "extjs_load.js"') + '
 </head>
 <body style="color:black;background:#FFFFFF url(css/supro.png) center no-repeat;margin:0;height:100%">
 <center id='startup'>
+
 <noscript><br/>
 <h2 style="color:red">
 Error: NO JavaScript. Sorry!<br/>
 Без включенного JavaScript ждать нечего!
-</h2></noscript>
+</h2>
+</noscript>
+
 <a href="http://www.sencha.com/products/extjs/">
 <img src="css/powered.gif" title="ExtJS" alt="ExtJS"/>
 </a><br/>
 <img src='css/loading.gif'/><br/>
-<a href='credits_node-webkit.html'>node-webkit credits</a><br/><br/>
+<a href='credits_node-webkit.html'>nw.js (former node-webkit) credits</a><br/><br/>
+
 <center id="e" style="background-color:red;color:white;display:none">
 <h2 id="d"></h2><br>
 </center>
+
 </center>
+
 <textarea id="grid_copy_buffer" onfocus="this.select()" style="position:absolute; top:-8px; width:1px;height:1px;">
 copy|paste
 </textarea>
