@@ -12,7 +12,9 @@ Ext.define('App.view.Window',
     tools: void 0,
     initComponent:// anti-MVC pattern, doing all here, but this is MVVM damn!
     function initSubAppWindow(){
-    var me = this
+    var me = app.mod.wnd = this
+
+        if(!me.wmId) throw new Error('no `wmId` property in: ' + me.$className)
 
         me.tools = [
         {
@@ -31,11 +33,11 @@ Ext.define('App.view.Window',
         }]
 
         if(!me.constrainTo) me.constrainTo = Ext.getCmp('desk').getEl()
-        me.callParent()
+        Ext.window.Window.prototype.initComponent.call(me)//me.callParent()
 
         me.wm = Ext.getCmp('wm').add({
             text: '<img height=16 width=16 src="' + me.wmImg + '"/>',
-            itemId: me.wmId || '',
+            itemId: me.wmId,
             enableToggle: true,
             pressed: true,
             tooltip: me.wmTooltip,
