@@ -8,9 +8,11 @@ App.view.items_Shortcuts = Ext.Array.push(App.view.items_Shortcuts || [ ],[
 '<br/>' + l10n.ex.modname
    ,height: 110 ,minWidth: 92
    ,tooltip: l10n.ex.tooltip
+   ,itemId: 'example.view.Supro'
    ,handler:
     function launch_example(btn){
-    var tb = Ext.getCmp('wm').items.getByKey('example.view.Supro')
+    var tb = Ext.getCmp('wm').items.getByKey(btn.itemId)
+
         if(tb){
             tb.toggle(true)
         } else {

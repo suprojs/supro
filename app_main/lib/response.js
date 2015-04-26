@@ -38,8 +38,8 @@ http.ServerResponse.prototype.js =
 function res_js(code){
     if(!code){
         code = ';/* No Code or Unauthorized */;'
-    } else if('string' != typeof obj){
-        code = code.toString()
+    } else if('string' != typeof code){
+        code = '' + code
     }
     this.setHeader('Content-Length', Buffer.byteLength(code))
     this.writeHead(this.statusCode, this.ContentTypes.AppJS)

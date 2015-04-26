@@ -5,7 +5,7 @@ Ext.define('App.example.view.Supro',
     wmImg: App.backendURL + '/css/example/yd.png',
     wmTooltip: l10n.ex.tooltip,
     wmId: 'example.view.Supro',
-    id: 'example-view-Supro',
+    id: 'example.view.Supro',
     width: 777, height: 477,// initial
     layout: 'border',
     items:[

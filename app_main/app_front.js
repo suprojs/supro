@@ -63,7 +63,9 @@ function node_webkit(app, con){
     app.w = gui.Window.get()
 
     app.w.window.extjs_doc = function open_local_extjs_doc(){
-        gui.Window.open('http://localhost:3007/extjs/docs/index.html')
+        gui.Window.open(
+'http://localhost:' + app.config.backend.job_port + '/extjs/docs/index.html'
+        )
     }
 
     setup_tray(app.tray ,app.w)

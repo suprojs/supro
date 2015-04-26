@@ -9,30 +9,35 @@ Ext.define('App.view.Window',
     maximizable: true,
     __resizeLock: false,// see `setHeight()` below
     layout: 'fit',
-    tools:[
-    {
-        type: 'refresh',
-        tooltip:// developer's stuff must have no `l10n`
-'view developent reload: <b>l10n</b>, <b>view</b> && <b>controller</b><br>' +
-'<b style="color:red">NOTE</b>: no models or stores etc. are reloaded<br>' +
-'hook to <b>thisView.on("destroy")</b> event to reload anything else',
-        callback: App.reload
-    },
-    {
-        type: 'help',
-        tooltip: 'Get Help Abstract',
-        callback: App.getHelpAbstract
-    }],
+    tools: void 0,
     initComponent:// anti-MVC pattern, doing all here, but this is MVVM damn!
     function initSubAppWindow(){
-    var me = this
+    var me = app.mod.wnd = this
+
+        if(!me.wmId) throw new Error('no `wmId` property in: ' + me.$className)
+
+        me.tools = [
+        {
+            type: 'refresh',
+            tooltip: ''// developer's stuff must have no `l10n`
++'view developent reload: <b>l10n</b>, <b>view</b> && <b>controller</b><br>'
++'<b style="color:red">NOTE</b>: no models or stores etc. are reloaded<br>'
++'hook to <b>thisView.on("destroy")</b> event to reload anything else<br>'
++'<b>Classes:</b><br>' + (me.__ctl || '') + '<br>' + me.$className,
+            callback: App.reload
+        },
+        {
+            type: 'help',
+            tooltip: 'Get Help Abstract',
+            callback: App.getHelpAbstract
+        }]
 
         if(!me.constrainTo) me.constrainTo = Ext.getCmp('desk').getEl()
-        me.callParent()
+        Ext.window.Window.prototype.initComponent.call(me)//me.callParent()
 
         me.wm = Ext.getCmp('wm').add({
             text: '<img height=16 width=16 src="' + me.wmImg + '"/>',
-            itemId: me.wmId || '',
+            itemId: me.wmId,
             enableToggle: true,
             pressed: true,
             tooltip: me.wmTooltip,

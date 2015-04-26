@@ -7,7 +7,7 @@ var app// FIXME: check if this can be just `App`, one global var is needed
 (function gc_wrapper(doc, w, con){
     app = {
         config: null,
-        btn: null,// quick launch buttons to access when error
+        mod:{ btn: void 0, wnd: void 0 },// error access for: launch button && window
         extjs_helper: extjs_load_gc_wrapped
     }
     return
@@ -42,6 +42,8 @@ var path, extjs, t
         extjs = path + 'locale/ext-lang-' + l10n.lang + '.js'
         Ext.Loader.setConfig({
             enabled: true,
+            garbageCollect: true,
+            preserveScripts: false,
             scriptCharset: 'utf8',
             paths: {
                 'Ext.ux': path + 'examples/ux'
@@ -119,6 +121,7 @@ var t
                     'http://127.0.0.1:' + App.cfg.backend.job_port : ''
     App.undefine = sub_app_undefine
     App.create = sub_app_create
+    App.unload = sub_app_unload
     App.reload = sub_app_reload_devel_view
     App.getHelpAbstract = get_help_abstract
 
@@ -195,8 +198,13 @@ var me, m, idx, tail
 
 function sub_app_undefine(className){
     Ext.undefine(className)
-    Ext.Loader.isFileLoaded[Ext.Loader.getPath(className)] = false
-    delete Ext.Loader.isClassFileLoaded[className]
+    if(Ext.Boot){// ExtJS 5
+        Ext.Boot.scripts[window.location.protocol + '//' + window.location.host + '/' +
+            Ext.Loader.getPath(className)] = void 0
+    } else {// ExtJS 4
+        Ext.Loader.isFileLoaded[Ext.Loader.getPath(className)] = void 0
+        delete Ext.Loader.isClassFileLoaded[className]
+    }
 }
 
 function sub_app_create(ns, btn, cfg){
@@ -208,8 +216,11 @@ function sub_app_create(ns, btn, cfg){
  * - and fast class setup (config only, full require load by shortcut):
  *     App.cfg['CarTracker.app.Application'] = { // fast init
  *     }
+ * NOTE: syntax errors are better checked by IDE/external tools before sub app
+ *       create or reload, thus ExtJS will not crash inside some class init stage
+ *       which may lead to page/framework reload
  **/
-    btn && (app.btn = btn).setLoading(true)
+    btn && (app.mod.btn = btn).setLoading(true)
 
     if(!(~ns.indexOf('.app.'))){
         ns = 'App.' + ns// if class name from "App" (this) namespace
@@ -266,8 +277,27 @@ function sub_app_create(ns, btn, cfg){
     }
 }
 
+function sub_app_unload(panel){
+var ai
+try {
+    panel.destroy && panel.destroy()// models, stores and backend can be reloaded there
+    if(panel.__ctl){// in case of failed init manual destroying of controller
+        ai = App.getApplication()
+        ai.eventbus.unlisten(panel.__ctl)
+        ai.controllers.removeAtKey(panel.__ctl)
+        App.undefine(panel.__ctl)
+    }
+    panel = panel.$className
+    App.undefine(panel)
+    // NOTE:
+    // though this unload is full, if JS crash was inside some e.g. panel layouting,
+    // then all subsequent panels will be broken in UI/DOM,
+    // even if after reloading there will be no JS syntax or runtime errors
+} catch(ex){ }
+}
+
 function sub_app_reload_devel_view(panel, tool, event){
-var url, url_l10n
+var url, url_l10n, wmId
 
     if(!panel.wmId){
         con.warn(url = "window doesn't support development mode")
@@ -279,30 +309,35 @@ var url, url_l10n
         })
         return
     }
+    wmId = panel.wmId
+    App.unload(panel)
 
-    panel.destroy()// models, stores and backend can be reloaded there
-
-    url_l10n = App.backendURL + '/l10n/' + panel.wmId
+    url_l10n = App.backendURL + '/l10n/' + wmId
               .replace(/([^.]+)[.].*$/, l10n.lang + '_$1.js')
 
     Ext.Loader.loadScript({
         url: url_l10n
        ,onLoad: function l10n_reloaded(){
-            Ext.Loader.removeScriptElement(url_l10n)
-            url = App.backendURL + '/' + panel.wmId.replace(/[.]/g, '/') + '.js'
+            url = App.backendURL + '/' + wmId.replace(/[.]/g, '/') + '.js'
             Ext.Loader.loadScript({
                 url: url
                ,onLoad: view_loaded
+               ,onError: function(){
+                    console.error('view was not loaded')
+               }
             })
         }
+       ,onError: function() {
+            console.error('l10n was not loaded')
+       }
     })
 
     return
 
     function view_loaded(){
-        Ext.Loader.removeScriptElement(url)
+    var cfg
 
-        if((url_l10n = App.cfg['App.' + panel.wmId]) && url_l10n.__noctl){
+        if((cfg = App.cfg['App.' + wmId]) && cfg.__noctl){
             ctl_not_loaded()
             return
         }
@@ -313,12 +348,10 @@ var url, url_l10n
         })
     }
     function ctl_loaded(){
-        Ext.Loader.removeScriptElement(url)
-        App.create(panel.wmId.replace(/view[.]/, 'controller.'))
+        App.create(wmId.replace(/view[.]/, 'controller.'))
     }
     function ctl_not_loaded(){
-        Ext.Loader.removeScriptElement(url)
-        App.create(panel.wmId, null,{
+        App.create(wmId, null,{
             constrainTo: Ext.getCmp('desk').getEl()
         })
     }

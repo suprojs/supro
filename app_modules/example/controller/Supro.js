@@ -11,7 +11,7 @@ var id = 'App.example.controller.Supro'
     init:
     function controllerSuproInit(){
     var me = this
-       ,supro = new App.example.view.Supro
+       ,supro = new App.example.view.Supro({ __ctl: id })
 
         me.supro = supro
 

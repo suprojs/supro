@@ -80,10 +80,10 @@ Ext.define('App.view.desktop.Status',{
 'connectjs:,' + App.cfg.backend.versions.connectjs +
 'node-webkit:,'+ App.cfg.backend.versions.nw : '')
             ).replace(/\n/g,'</b><br>').replace(/,/g, '<br><b>') +
-'</div><br><a target="blank" href="' + (
+'</div><br><a ' + (
     App.cfg.backend.url ?
-        App.cfg.backend.url + '">HTTP Remote Application' :
-        '/extjs/docs/index.html' + '">ExtJS SUPRO Docs'
+        'onclick="extjs_doc()" href="#">HTTP Remote Application' :
+        'target="blank" href="/extjs/docs/index.html">ExtJS SUPRO Docs'
     ) +
 '</a>'
         }
