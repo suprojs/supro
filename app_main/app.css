@@ -20,9 +20,6 @@ css:
 }
 */
 
-/* "Yellow dollar sign" from Feifei http://www.favicon.cc/?action=icon&file_id=586714 */
-body { background: #FFFFFF url(css/supro.png) no-repeat center !important }
-
 .x-gray-toolbar-default {
   border-color: #bcb0b0;
   border-width: 1px 1px 2px 1px;
