@@ -7,6 +7,7 @@
 cd "${0%/*}" 2>/dev/null
 set -e
 
+# though git for windows is preferred a bundle of cygwin executables can be here
 PATH=.:bin:$PATH
 
 trap 'echo "
@@ -41,6 +42,14 @@ else
     export NODEJS_CONFIG
 fi
 
+# JS config sample to parse:
+#    backend:{
+#        file: './app_main/app_back.js',
+#        job_port: 3007,// app/api
+#        ctl_port: 3008,// controlling
+#        ctl_on_done: null,// set app module handlers for ctl close/app exit
+#        init_timeout: 123
+#    }
 BACKEND_PORT=${NODEJS_CONFIG##*ctl_port:}
 BACKEND_PORT=${BACKEND_PORT## }
 BACKEND_PORT=${BACKEND_PORT%%,*}
@@ -60,6 +69,7 @@ echo '
 ^ ctlport: "'"$BACKEND_PORT"'"
 '
 
+# lftp way of http access (obsolete): `_lftp_http 1 'cmd_exit'`
 _lftp_http() { # $1=timeout $2=cmd
     { # http head request with contentlength=0 reply
         echo "[lftp->nodeJS:$JSAPPCTLPORT] sending '$2'"
@@ -77,6 +87,10 @@ cd http://127.0.0.1:'"$BACKEND_PORT"'/ && cat '"$2"' && exit 0 || exit 1
     return $?
 }
 
+_http() { # $1=cmd $2=timeout
+    node './_http.js' "http://127.0.0.1:$BACKEND_PORT/$1" "$2"
+}
+
 [ "$1" ] && {
     echo 'Logging in "./log/"'
     [ -d './log/' ] || {
@@ -90,7 +104,7 @@ cd http://127.0.0.1:'"$BACKEND_PORT"'/ && cat '"$2"' && exit 0 || exit 1
 $BACKEND 1>&7 2>&8 &
 
 while echo '
-Press "Enter" key to reload, "CTRL+D" stop backend || CTRL+C to break...
+Press "Enter" key to reload, "CTRL+D" stop backend || "CTRL+C" to break...
 
 NOTE: config is not reloaded (stop + start required)!
 '
@@ -100,13 +114,13 @@ do
 Stop backend (y/n)? '
         read A && {
             [ 'y' = "$A" ] && {
-                _lftp_http 1 'cmd_exit'
+                _http 'cmd_exit'
                 A='.'
                 normal_exit "$A"
             }
         } || normal_exit
     }
 
-    _lftp_http 1 'cmd_exit' || :
+    _http 'cmd_exit' || :
     $BACKEND 1>&7 2>&8 &
 done
