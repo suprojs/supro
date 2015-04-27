@@ -69,6 +69,7 @@ echo '
 ^ ctlport: "'"$BACKEND_PORT"'"
 '
 
+# lftp way of http access (obsolete): `_lftp_http 1 'cmd_exit'`
 _lftp_http() { # $1=timeout $2=cmd
     { # http head request with contentlength=0 reply
         echo "[lftp->nodeJS:$JSAPPCTLPORT] sending '$2'"
@@ -84,6 +85,10 @@ cd http://127.0.0.1:'"$BACKEND_PORT"'/ && cat '"$2"' && exit 0 || exit 1
 '
     } 0</dev/null
     return $?
+}
+
+_http() { # $1=cmd $2=timeout
+    node './_http.js' "http://127.0.0.1:$BACKEND_PORT/$1" "$2"
 }
 
 [ "$1" ] && {
@@ -109,13 +114,13 @@ do
 Stop backend (y/n)? '
         read A && {
             [ 'y' = "$A" ] && {
-                _lftp_http 1 'cmd_exit'
+                _http 'cmd_exit'
                 A='.'
                 normal_exit "$A"
             }
         } || normal_exit
     }
 
-    _lftp_http 1 'cmd_exit' || :
+    _http 'cmd_exit' || :
     $BACKEND 1>&7 2>&8 &
 done
