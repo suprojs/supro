@@ -7,6 +7,7 @@
 cd "${0%/*}" 2>/dev/null
 set -e
 
+# though git for windows is preferred a bundle of cygwin executables can be here
 PATH=.:bin:$PATH
 
 trap 'echo "
@@ -41,6 +42,14 @@ else
     export NODEJS_CONFIG
 fi
 
+# JS config sample to parse:
+#    backend:{
+#        file: './app_main/app_back.js',
+#        job_port: 3007,// app/api
+#        ctl_port: 3008,// controlling
+#        ctl_on_done: null,// set app module handlers for ctl close/app exit
+#        init_timeout: 123
+#    }
 BACKEND_PORT=${NODEJS_CONFIG##*ctl_port:}
 BACKEND_PORT=${BACKEND_PORT## }
 BACKEND_PORT=${BACKEND_PORT%%,*}
@@ -90,7 +99,7 @@ cd http://127.0.0.1:'"$BACKEND_PORT"'/ && cat '"$2"' && exit 0 || exit 1
 $BACKEND 1>&7 2>&8 &
 
 while echo '
-Press "Enter" key to reload, "CTRL+D" stop backend || CTRL+C to break...
+Press "Enter" key to reload, "CTRL+D" stop backend || "CTRL+C" to break...
 
 NOTE: config is not reloaded (stop + start required)!
 '
