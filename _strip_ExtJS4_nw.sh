@@ -2,7 +2,10 @@
 
 [ "$1" = '?' -o "$1" = '-h' -o "$1" = '--help' ] && exec sed '' <<'!'
 # '$1':
-# * 'justsplit': split `ext-all-debug.js` into EXTJSLITE and EXTJSREST and exit
+# * 'justsplit': split `ext-all-debug.js` into EXTJSLITE and EXTJSREST,
+#           process mini init and fast load
+# * 'lite': process mini init and fast load using existing EXTJSLITE and EXTJSREST
+#           this is useful for development of fast loading logic
 # * 'strip': don't split
 # * ''/'*': do all
 # cleanup whitespace and leaked in comments of our git's `ext-all-debug.js`
@@ -188,17 +191,16 @@ HEAD:   '$HEAD'
 PWD:    '$PWD'
 " >&2
 
-[ "$1" = "strip" ] || {
-    split_extjs '-debug.js'
-    add_loadMiniInit "$EXTJS4$EXTJSLITE-debug.js"
+[ "$1" = 'strip' ] || {
+    [ "$1" = 'lite' ] || split_extjs '-debug.js'
     strip_whitespace "$EXTJS4$EXTJSLITE-debug.js" "${EXTJS4}$EXTJSLITE-nw.js"
+    add_loadMiniInit "$EXTJS4$EXTJSLITE-nw.js"
     # copy copyright/license header into the rest file
     sed '22q' <"$EXTJS4$EXTJSLITE-debug.js"  >"${EXTJS4}$EXTJSREST-nw.js"
     sed ''    <"$EXTJS4$EXTJSREST-debug.js" >>"${EXTJS4}$EXTJSREST-nw.js"
     mv  "${EXTJS4}$EXTJSREST-nw.js" "$EXTJS4$EXTJSREST-debug.js"
     strip_whitespace "$EXTJS4$EXTJSREST-debug.js" "${EXTJS4}$EXTJSREST-nw.js"
-
-    [ "$1" = "justsplit" ] && {
+    [ "$1" = 'justsplit' -o "$1" = 'lite' ] && {
         trap '' 0
         exit 0
     }

@@ -69,8 +69,13 @@ config = {
     },
     extjs:{
         path: 'extjs-4.2/',// find and provide this path; 'extjs/' is for web
-        launch:  null,/*{ css:[ ], js:[ ]} loaded by `extjs_launch()` */
+        launch:  null,/*{ css:[ ], js:[ ]} loaded after ExtJS ready */
         modules: null,/*{ css:[ ], js:[ ]} */
+        load: 'lite',// 'lite' || ''/'all' see `load_config_then_check_ExtJS()`
+        loadMiniInit: 'lite',// '' || 'lite' all init files >>'ext-lite-nw.js'
+        // load this initial file (all classes); will work only `this.load == 'all'`
+        // or if empty any `this.load` -- classes/files one by one
+        loadMiniApp: '',
         fading:  true// visual effects for content appearance
     },
     backend:{
