@@ -89,6 +89,33 @@ OUTPUT: '$2'
 #        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^= ${oIFS%%?[/.]*}
 }
 
+css(){
+    echo "
+/$1/{
+  r app_main/$1
+  a \
+  /*]]>*/</style>
+  c \
+  <style>/*<![CDATA[ $1 */
+}"
+}
+
+strip_css_html(){
+    echo "
+= strip HTML =
+INPUT:  '$1'
+OUTPUT: '$2'
+" >&2
+    # include css as CDATA
+    sed "`css app.css`" <"$1" | sed "
+/^[[:blank:]]*$/d
+/^[[:blank:]]/s/[[:blank:]]*//
+# remove file loading
+/^startup('extjs/s_.*_startup('/extjs/ext-lite-nw.js')_
+" >"$2"
+
+}
+
 #### split ####
 
 sed_skip_class(){
@@ -190,6 +217,9 @@ EXTJS4: '$EXTJS4'
 HEAD:   '$HEAD'
 PWD:    '$PWD'
 " >&2
+
+# process HTML
+strip_css_html 'app_main/app.htm' 'app_main/app-mini.htm'
 
 [ "$1" = 'strip' ] || {
     [ "$1" = 'lite' ] || split_extjs '-debug.js'
