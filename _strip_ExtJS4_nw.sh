@@ -27,6 +27,8 @@ EXTJSLITE='ext-lite'
 EXTJSREST='ext-rest'
 EXTJSCLASSES='extjs-classes.txt'
 
+MINIIINITFILES='extjs-mini-init-files.txt'
+
 CWD="./$0"
 CWD="${CWD%/*}" # get path to supro dir where this script must be in
 #PATH="./bin/:$PATH" use `mingw/git` distro minimum (i.e. no `dd`, `stat`)
@@ -145,6 +147,22 @@ REST:  '$EXTJS4$EXTJSREST$1'
 " <"$EXTJS4$JSFILE" >"$EXTJS4$EXTJSLITE$1"
 }
 
+add_loadMiniInit(){
+    # read and append init files
+    [ -f "$MINIIINITFILES" ] && {
+        # no processing for now, pure lines of 'paths/to/files.js'
+        MINIIINITFILES=`sed '' <"$MINIIINITFILES"`
+        echo "
+= Fast load appending to '$1' =
+$MINIIINITFILES"
+        # strip front whitespace
+        sed '
+/^[[:blank:]]*$/d
+/^[[:blank:]]/s/[[:blank:]]*//
+' $MINIIINITFILES >>"$1"
+    } || :
+}
+
 #### main run ####
 
 OUTPUT=`sed '' <./extjs.txt`
@@ -172,6 +190,7 @@ PWD:    '$PWD'
 
 [ "$1" = "strip" ] || {
     split_extjs '-debug.js'
+    add_loadMiniInit "$EXTJS4$EXTJSLITE-debug.js"
     strip_whitespace "$EXTJS4$EXTJSLITE-debug.js" "${EXTJS4}$EXTJSLITE-nw.js"
     # copy copyright/license header into the rest file
     sed '22q' <"$EXTJS4$EXTJSLITE-debug.js"  >"${EXTJS4}$EXTJSREST-nw.js"
