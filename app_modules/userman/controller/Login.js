@@ -135,14 +135,15 @@ Ext.define('App.um.controller.Login',{
                     user.focus()
                 }
             })
+            // disable auth first, thus no event can trigger auth
+            auth.disable()
+            auth.setText(l10n.um.loginOk)
             user.emptyText = l10n.um.loginUserBlank
             user.reset()
             user.focus()
             user.setHideTrigger(true)
             role.store.removeAll(true)
             role.reset()
-            auth.disable()
-            auth.setText(l10n.um.loginOk)
         }
 
         function reqRole(field, newUserId){
@@ -166,12 +167,12 @@ Ext.define('App.um.controller.Login',{
 
                         if(!ret.roles.length){// no user or roles
                             if(!role.disabled){// if UI has something already
+                                auth.disable()
                                 role.store.removeAll(true)
                                 role.reset()
                                 role.disable()
                                 pass.reset()
                                 pass.disable()
-                                auth.disable()
                             }
                             return
                         }
@@ -196,12 +197,12 @@ Ext.define('App.um.controller.Login',{
                 return
             }
             if(!role.disabled){// empty user id
+                auth.disable()
                 role.store.removeAll(true)
                 role.reset()
                 role.disable()
                 pass.reset()
                 pass.disable()
-                auth.disable()
             }
         }
         function authenticate(field, ev){
@@ -255,13 +256,13 @@ Ext.define('App.um.controller.Login',{
                     // reload if no session (e.g. backend reloaded)
                     if(res.status && 402 === res.status) location.reload(true)
                     if(res.status && 409 === res.status){// race inside session
+                        auth.disable()
+                        auth.setText(l10n.um.loginConflict)
                         user.setHideTrigger(true)
                         user.addCls('redwhite')
                         user.disable()
                         role.disable()
                         pass.disable()
-                        auth.disable()
-                        auth.setText(l10n.um.loginConflict)
                     } else {// continue (e.g. wrong password)
                         user.selectText()
                         auth.eventsSuspended = 0
@@ -368,11 +369,11 @@ Ext.define('App.um.controller.Login',{
                         if(res.status && 402 === res.status){
                             App.denyMsg()
                         } else if(res.status && 409 === res.status){
+                            auth.disable()
+                            auth.setText(l10n.um.loginConflict)
                             user.setHideTrigger(false)
                             role.disable()
                             pass.disable()
-                            auth.disable()
-                            auth.setText(l10n.um.loginConflict)
                         }
                         auth.eventsSuspended = 0
                         return App.um.view.Login.fadeOutProgress()
