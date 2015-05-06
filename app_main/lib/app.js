@@ -44,7 +44,9 @@ var api      = require('./api.js')
     require('../../app_modules/')(cfg, api)
 
     /* backend static files for HTTP users */
-    app.use('/', connect['static'](__dirname + '/../', { index: 'app.htm' }))
+    app.use('/', connect['static'](__dirname + '/../', {
+        index: cfg.extjs.loadMiniInit ? 'app-mini.htm' : 'app.htm'
+    }))
 
     app.use('/uncaughtExceptions', mwUncaughtExceptions)
     app.use('/test.js', sendFile('test.js'))
