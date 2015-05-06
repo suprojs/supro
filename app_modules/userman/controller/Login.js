@@ -130,7 +130,10 @@ Ext.define('App.um.controller.Login',{
                 icon: Ext.Msg.INFO,
                 buttons: Ext.Msg.OK,
                 title: l10n.um.logoutTitle,
-                msg: l10n.um.logoutMsg(user.emptyText)
+                msg: l10n.um.logoutMsg(App.User.name, App.User.can.__name, true),
+                fn: function(){
+                    user.focus()
+                }
             })
             user.emptyText = l10n.um.loginUserBlank
             user.reset()
