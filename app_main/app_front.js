@@ -439,12 +439,8 @@ var cfg, fs = require('fs')
         '; return config ;'
         ))()
     } catch(ex){
-        con.error('ERROR load_config:' + (cfg = (' ' + cfg + '\n' + ex.stack)))
-        cfg = l10n.errload_config_read + cfg
-        app.w.window.alert(cfg)
-        doc.write(cfg.replace(/\n/g, '<br>'))
-
-        return false
+        ex.message += '\n\n' + l10n.errload_config_parse
+        throw new Error(ex)
     }
 
     app.cfg.backend.time = null
