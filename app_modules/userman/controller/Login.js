@@ -298,8 +298,17 @@ Ext.define('App.um.controller.Login',{
         }
 
         function gotoRoles(_, ev){
-            if(ev.getKey() == ev.ENTER){
-                (role.disabled ? auth : role).focus()
+        var key = ev.getKey()
+
+            if(key == ev.ENTER || key == ev.DOWN || key == ev.RIGHT){
+                if(role.disabled){
+                    auth.focus()
+                } else {
+                    role.focus().expand()
+                        setTimeout(function(){
+                    role.picker.highlightItem(role.picker.getNode(0));
+                        }, 32)
+                }
             }
         }
     },
