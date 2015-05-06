@@ -1,12 +1,6 @@
 #login-view {
+/* background is in CSS (for correct and easy image path) */
 background: url(login.png) no-repeat right 68px;
-position: relative; top: -50px; height: 244px;
-}
-
-#login-dd {
-cursor: move;
-text-shadow: #CCC 2px 3px 0;
-font: 3em serif;
 }
 
 .login-shutdown {

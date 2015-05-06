@@ -65,48 +65,62 @@ App.view.items_Bar = Ext.Array.push(App.view.items_Bar || [ ],[
     }
 ])
 
+var themeLogin = {
+    width: 354,
+    height: 304
+}
+
 Ext.define('App.um.view.LoginWindow',{
     xtype: 'app-login',
     extend: Ext.container.Container,
     layout: 'fit',
-    constrain: true,
+    constrain: true, floating: true,
+    shadow: false,// mini: no extjs shadow, use CSS
     /* draggable: true, by 'login-dd' in constructor() */
     modal: false,
     form: null, user: null, role: null, pass: null, auth: null,
-    floating: true, shadow: false
-    ,style: 'opacity: 0; background-color: #FFFFFF;'
-          + 'padding: 14px; width: 354px; height: 313px;'
-          + 'box-shadow:0px 10px 20px #111;'
+    style: ''
++'opacity: 0; background-color: #FFFFFF;'
++'padding: 14px;'
++'width: ' + themeLogin.width + 'px; height: ' + themeLogin.height + 'px;'
++'box-shadow:0px 10px 20px #111;'
     ,items: [{
         xtype: 'component'
        ,style: 'width: 100%; height: 100%;'
-       ,html:
-'<div id="progress-bar"' +
-' style="background: url(css/progress-bar.gif) no-repeat center 33px;' +
-'  opacity: 0;' +
-'  text-align: center;' +
-'  width: 100%;' +
-'  height: 50px;">' +
-'  <div style="text-shadow: #CCC 2px 3px 0;font: 2.2em serif;margin-bottom:22px;">'
-+ l10n.um.auth +
-'</div><a href="/">' + l10n.reload + '</a></div>' +
-'<div id="login-view">' +
-'  <div id="login-dd">'
-+ l10n.app +
-'</div>'
-+ l10n.welcome +
-'<div id="login-form"></div>'
-+ l10n.um.loginInfo +
-'<br/><br/>&copy; 2014 olecom@gmail.com' +
-'<br/><div id="l10n" style="background-color: #D3D3D3; padding-top: 4px; margin-top: 4px;">' +
-'&nbsp;<span class="ru">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>' +
-'&nbsp;<span class="en">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>' +
-'&nbsp;<span class="l10n-reset"><abbr title="' + l10n.um.l10nReset + '">&nbsp;&nbsp;&nbsp;</abbr></span>' +
-'</div>' +
-'</div>' //login
-    }]
+       ,html:''
++'<div id="progress-bar"'
++'  style="background: url(css/progress-bar.gif) no-repeat center 33px;'
++'          opacity: 0;'
++'          text-align: center;'
++'          width: 100%;'
++'          height: 50px;">'
 
-    ,id: 'login',
++'  <div style="text-shadow: #CCC 2px 3px 0;font: 2.2em serif; margin-bottom:22px;">'
++     l10n.um.auth
++'  </div>'
++'  <a href="/">' + l10n.reload + '</a>'
++'</div>'
++'<div id="login-view"'// background is in CSS (for correct and easy image path)
++'  style="position: relative; top: -50px; height: 244px;">'
+
++'  <div id="login-dd"'
++'    style="cursor: move; text-shadow: #CCC 2px 3px 0; font: 3em serif;">'
++     l10n.app
++'  </div>'
++   l10n.welcome
+
++'  <div id="login-form">'
++'  </div>'
++   l10n.um.loginInfo
++'  <br/><br/>&copy; 2014 olecom@gmail.com<br/>'
++'  <div id="l10n" style="background-color: #D3D3D3; padding-top: 4px; margin-top: 4px;">'
++'    &nbsp;<span class="ru">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>'
++'    &nbsp;<span class="en">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>'
++'    &nbsp;<span class="l10n-reset"><abbr title="' + l10n.um.l10nReset + '">&nbsp;&nbsp;&nbsp;</abbr></span>'
++'  </div>'
++'</div>'// login-view
+    }],
+    id: 'login',
     constructor: function constructorLogin(config){
     var me = this
 
@@ -154,7 +168,7 @@ Ext.define('App.um.view.LoginWindow',{
         me.fadeOutProgress = function(cb){
             Ext.get('progress-bar').fadeOut(t)
             Ext.get('login-view').fadeIn(t)
-            a.height = 297
+            a.height = 297// <-> themeLogin.height
             if(cb) a.callback = cb
             login.animate(a)
             a.callback = null
