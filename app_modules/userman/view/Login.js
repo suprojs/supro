@@ -123,17 +123,26 @@ Ext.define('App.um.view.LoginWindow',{
     id: 'login',
     constructor: function constructorLogin(config){
     var me = this
+       ,ddId
 
         me.callParent([config])
-        /* after initComponent()
+        /*
+         * after initComponent()
          * Movable Container: make drag handler on top, not whole area
+         * open code `Ext.panel.Panel.prototype.initSimpleDraggable.call(me)`
          */
-        me.draggable = me.header = { id: 'login-dd' }// + 'cursor: move'
-        Ext.panel.Panel.prototype.initSimpleDraggable.call(me)
-        me.draggable = me.header = null
+        ddId = '#login-dd'
+        me.dd = new Ext.util.ComponentDragger(me,{
+            id: ddId.slice(1),
+            el: me.el,
+            constrain: me.constrain,
+            constrainTo: me.constrainTo,
+            delegate: ddId
+        })
+        me.relayEvents(me.dd,['dragstart', 'drag', 'dragend'])
  	},
     destroy: function(){
-        this.form.destroy()
+        Ext.destroy(this.dd, this.form)
         this.form = null
         this.callParent()
     },
