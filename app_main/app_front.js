@@ -451,6 +451,10 @@ var cfg, fs = require('fs')
     }
     con.log('reading config: ' + cfg + ' done')
 
+    if(app.cfg.extjs.load || app.cfg.extjs.loadMiniInit){
+        cfg = l10n.errload_fast_config_nwjs
+        throw new Error(cfg)
+    }
     return check_extjs_path()
 }
 

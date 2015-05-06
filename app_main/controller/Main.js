@@ -17,6 +17,9 @@ Ext.define('App.controller.Main',{
 
         return
 
+        /*
+         * `nw.js` context: live update of versions when backend was restarted/updated
+         */
         function updateVersions(){
         var el = Ext.get('versions'), _2 = { opacity: 0 }
 
@@ -26,10 +29,10 @@ Ext.define('App.controller.Main',{
                 callback: function versionFadeOut(){
                     el.setHTML(('-= versions =-\n'+
 'extjs:,' + Ext.versions.extjs.version + '\n' +
-           (App.cfg.backend.url ?
+           (App.backendURL ?
 'nodejs:,' + App.cfg.backend.versions.node +
 'connectjs:,' + App.cfg.backend.versions.connectjs +
-'node-webkit:,'+ App.cfg.backend.versions.nw : '')
+'nw.js:,'+ App.cfg.backend.versions.nw : '')
                 ).replace(/\n/g,'</b><br>').replace(/,/g, '<br><b>')
                     )
                     _2.opacity = 1
