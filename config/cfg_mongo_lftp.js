@@ -1,6 +1,16 @@
 // local vars to share in hash (kind of macro preprocessing)
 var OBJ = 'GLOB'// differentiate instances of distributed SUPRO
 var DB  = 'supro_' + OBJ
+
+// TODO: connect this with 'extjs-mini-init-files.txt'
+var fastLoad = [
+    'app_main/extjs_load.js',
+    'app_main/backend/Connection.js',
+    // NOTE: when disabling 'userman' update 'extjs-mini-init-files.txt' by hands
+    'app_modules/userman/crypto/SHA1.js',
+    'app_modules/userman/Login.js'
+]
+
 // global config
 config = {
 /* NOTE: this is not JSON just JavaScript
@@ -12,6 +22,7 @@ config = {
     log: 'log/',
 
     //TODO: uid gid new ids for process after start or partial init
+    //TODO: connect `fastLoad` with 'extjs-mini-init-files.txt'
     modules:{// cfg for stack of things from 'app_modules'
     // order matters: before auth module there are no restrictions to config
 

@@ -32,10 +32,7 @@ var app = api.app
 
     files = [// files as class names are loaded by `Ext.syncRequire()`
         '/um/crypto/SHA1',
-        /* (l10n) M V C loading */
-        '/um/model/User',// + client's requested `l10n`
-        '/um/view/Login',
-        '/um/controller/Login'
+        '/um/Login'
     ]
 
     for(f = 0; f < files.length; f++){// provide [files] before auth middleware
