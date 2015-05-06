@@ -16,6 +16,8 @@
 
         if(!w.l10n) return d.write(s) && w.alert(s)
         _startTime = new Date().getTime()
+        localStorage.devSUPRO = '' // enable fast minimized loading
+        localStorage.devSUPRO = '1'// disable minimized loading (developing)
 
         w.addEventListener('error', window_error)// show any errors early
 

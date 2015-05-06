@@ -22,7 +22,13 @@ var xhr = new XMLHttpRequest
 
         if(/config/.test(req.responseURL) ||      // Firefox
           (!req.responseURL && req.responseText)){// node-webkit
+        // check config request
             extjs_config = JSON.parse(req.responseText)
+
+            if('1' === localStorage.devSUPRO){// development tools see 'app.htm'
+                extjs_config.load = extjs_config.loadMiniInit = ''
+            }
+
             if(url){
         // `nw` context
                 url = App.cfg.extjs.path// flip path

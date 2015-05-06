@@ -110,6 +110,7 @@ OUTPUT: '$2'
     sed "`css app.css`" <"$1" | sed "
 /^[[:blank:]]*$/d
 /^[[:blank:]]/s/[[:blank:]]*//
+/^localStorage.devSUPRO = '1'/d
 # remove file loading
 /^startup('extjs/s_.*_startup('/extjs/ext-lite-nw.js')_
 " >"$2"
@@ -189,6 +190,7 @@ $MINIIINITFILES"
         sed '
 /^[[:blank:]]*$/d
 /^[[:blank:]]/s/[[:blank:]]*//
+/^[/*]/d
 ' $MINIIINITFILES >>"$1"
     } || :
 }

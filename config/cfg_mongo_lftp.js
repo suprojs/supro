@@ -72,6 +72,8 @@ config = {
         launch:  null,/*{ css:[ ], js:[ ]} loaded after ExtJS ready */
         modules: null,/*{ css:[ ], js:[ ]} */
         load: 'lite',// 'lite' || ''/'all' see `load_config_then_check_ExtJS()`
+        // for development `loadMiniInit` is overriden
+        // by `localStorage.devSUPRO = '1'` in 'app.htm'
         loadMiniInit: 'lite',// '' || 'lite' all init files >>'ext-lite-nw.js'
         // load this initial file (all classes); will work only `this.load == 'all'`
         // or if empty any `this.load` -- classes/files one by one
