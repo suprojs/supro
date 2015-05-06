@@ -15,6 +15,7 @@
     var b, s = "FATAL ERROR: no language! File './l10n/ru.js' or similar."
 
         if(!w.l10n) return d.write(s) && w.alert(s)
+        _startTime = new Date().getTime()
 
         w.addEventListener('error', window_error)// show any errors early
 
@@ -31,15 +32,15 @@
             d.head.appendChild(b)
         }
 
-
         w.addEventListener('load', function pre_onload(e){
         var b = d.createElement('b')
 
             b.innerHTML = l10n.loading
             d.getElementById('startup').appendChild(b)
+            b = void 0
             e.target.removeEventListener(e.type, pre_onload)
 
-            startup('extjs_load.js')// preload ExtJS stuff
+            startup('extjs_load.js')// preload ExtJS stuff; todo rename to 'App.js'
             startup('app_front.js')// via http this is 'app_front_http.js'
         })
 
@@ -47,16 +48,12 @@
 
         function window_error(errEvent){
             con.error(errEvent)
-            if(w.Ext){// possible desktop app module loading cleanup
+            if(w.Ext && w.Ext.Msg){// possible desktop app module loading cleanup
                 return setTimeout(// defer to get out of initComponent() context
                 function ext_window_panel_loading(){
-                var wdw = Ext.WindowManager.getActive()// or window / panel
+                var wdw
 
-                    if(wdw.loadMask){
-                        Ext.destroy(wdw.loadMask)
-                        wdw.loadMask = null
-                    }
-                    Ext.Msg.show({
+                    Ext.Msg && Ext.Msg.show({
                        title: l10n.errun_title,
                        buttons: Ext.Msg.OK,
                        icon: Ext.Msg.ERROR,
@@ -66,6 +63,14 @@ l10n.errun_file + (errEvent.filename || '"app_front.js" || "extjs_load.js"') + '
                       .replace(/</g, '&lt;').replace(/\r*\n/g, '<br>')
                       : errEvent.error + '</b>' : errEvent.message + '</b>')
                     })
+
+                    wdw = Ext.WindowManager && Ext.WindowManager.getActive()// or window / panel
+                    if(wdw && wdw.loadMask){
+                        Ext.destroy(wdw.loadMask)
+                        wdw.loadMask = void 0
+                    }
+
+                    if(!w.App || !w.App.mod) return
 
                     App.mod.wnd && App.unload(App.mod.wnd)// panel load fail
                     App.mod.btn && App.mod.btn.setLoading(false)// quick launch button fail
@@ -115,9 +120,9 @@ l10n.errun_file + (errEvent.filename || '"app_front.js" || "extjs_load.js"') + '
         }
     })(window, document, window.console)
     </script>
-    <script type="text/javascript" src="test.js" charset="utf-8"></script>
+    <!-- script type="text/javascript" src="test.js" charset="utf-8"></script-->
 </head>
-<body style="color:black;background:#FFFFFF url(css/supro.png) center no-repeat;margin:0;height:100%">
+<body style="overflow:hidden;color:black;background:#FFFFFF url(css/supro.png) center no-repeat;margin:0;height:100%">
 <center id='startup'>
 
 <noscript><br/>
