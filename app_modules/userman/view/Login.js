@@ -185,21 +185,15 @@ Ext.define('App.um.view.LoginWindow',{
 
         me.form = Ext.widget({// build login form
             renderTo: 'login-form',
-            xtype: 'form',
-            url: '',
-            frame:false,
+            xtype: 'container',// mini: no need of `basicForm`, `panel`, etc.
             width: '100%',
-            buttonAlign:'left',
-            border:false,
-            //defaultType: 'textfield',
-            hideLabels: true,
-            cls: 'transparent',
             margin: '20px 0 0 0',
             items:[{
                 /* ExtJS 5 deprecated: 'Ext.form.field.Text'.triggers */
                 xtype: 'triggerfield',
                 triggerCls: 'login-shutdown',
                 name: 'user',
+                msgTarget: 'none',// mini: prevent default 'qtip'
                 emptyText: l10n.um.loginUserBlank,
                 width: 177,
                 allowBlank: true,
@@ -213,11 +207,15 @@ Ext.define('App.um.view.LoginWindow',{
                 name: 'role',
                 width: 177,
                 queryMode: 'local',
+                msgTarget: 'none',// mini: prevent default 'qtip'
                 value: l10n.um.role,
                 triggerAction: 'all',
                 editable: false,
                 displayField: 'role',
                 valueField: '=',
+                listConfig:{
+                    shadow: false// mini: prevent default 'shadow'
+                },
                 store: Ext.create(Ext.data.Store,{
                     fields: [ 'role', '=' ]
                 }),
@@ -228,6 +226,7 @@ Ext.define('App.um.view.LoginWindow',{
                 emptyText: '*******',
                 width: 133,
                 inputType: 'password',
+                msgTarget: 'none',// mini: prevent default 'qtip'
                 allowBlank: false,
                 disabled: true
             },{
