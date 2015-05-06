@@ -118,7 +118,7 @@ var api      = require('./api.js')
         cfg.extjs.path = __dirname + '/../../' + cfg.extjs.path
         app.use('/extjs/',                  connect['static'](cfg.extjs.path))
         app.use('/extjs/docs/extjs-build/', connect['static'](cfg.extjs.path))
-        cfg.extjs.path = 'extjs/'// switch local to external http path
+        cfg.extjs.path = '/extjs/'// switch local to external http path
         app.use('/app.config.extjs.json', use_mwConfig)// provide isolated cfg
     }
 }
