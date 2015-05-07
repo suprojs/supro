@@ -38,7 +38,7 @@ var id = 'App.um.controller.Chat'
         })
         users.load()
         // select user of current session
-        uname = '<b style="color:#DAA520">' + App.User.get('id') + '</b>&nbsp;|&nbsp;'
+        uname = '<b style="color:#DAA520">' + App.User.id + '</b>&nbsp;|&nbsp;'
 
         // = text =
         // * chat room *

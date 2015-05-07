@@ -54,7 +54,7 @@ Ext.define('App.um.view.Chat',
         },
         {
             xtype: 'textfield',
-            fieldLabel: '<b>' + App.User.get('id') + '</b>>',
+            fieldLabel: '<b>' + App.User.id + '</b>>',
             labelSeparator: '',
             labelWidth: 'auto',
             padding: '0 0 0 5',

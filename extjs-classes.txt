@@ -7,6 +7,23 @@
 # 'Ext.state.*' -- move all matching into the rest part
 # '~Ext.direct.*' -- purge classes
 
+## purge (before anything else) ##
+
+~Ext.direct.*
+~Ext.flash.*
+~Ext.app.domain.Direct
+~Ext.data.DirectStore
+~Ext.data.JsonPStore
+~Ext.data.XmlStore
+#? replace with phony singleton
+~Ext.data.flash.BinaryXhr
+~Ext.data.reader.Xml
+~Ext.data.writer.Xml
+~Ext.data.JsonP
+~Ext.data.proxy.JsonP
+~Ext.data.proxy.Direct
+~Ext.data.BufferStore
+
 #= global =#
 
 Ext.Ajax
@@ -121,22 +138,5 @@ Ext.window.*
 
 Ext.draw.*
 Ext.chart.*
-
-## purge ##
-
-~Ext.direct.*
-~Ext.flash.*
-~Ext.app.domain.Direct
-~Ext.data.DirectStore
-~Ext.data.JsonPStore
-~Ext.data.XmlStore
-#? replace with phony singleton
-~Ext.data.flash.BinaryXhr
-~Ext.data.reader.Xml
-~Ext.data.writer.Xml
-~Ext.data.JsonP
-~Ext.data.proxy.JsonP
-~Ext.data.proxy.Direct
-~Ext.data.BufferStore
 
 # eof

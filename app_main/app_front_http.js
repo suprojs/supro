@@ -29,6 +29,8 @@ var xhr = new XMLHttpRequest
 
             if('1' === localStorage.devSUPRO){// development tools see 'app.htm'
                 extjs_config.load = extjs_config.loadMiniInit = ''
+            } else {// config has no 'mini' setup, but 'app-mini.htm' was requested
+                extjs_config.load = extjs_config.loadMiniInit = 'lite'
             }
 
             extjs_config.load = (extjs_config.path + 'ext-'

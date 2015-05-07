@@ -75,13 +75,13 @@ Ext.define('App.view.desktop.Status',{
            ,html: (l10n.stsMsg + '<b id="stscount">0/0</b><br><div id="versions">' +
 '-= versions =-\n'+
 'extjs:,' + Ext.versions.extjs.version + '\n' +
-           (App.cfg.backend.url ?
+           (App.backendURL ?
 'nodejs:,' + App.cfg.backend.versions.node +
 'connectjs:,' + App.cfg.backend.versions.connectjs +
-'node-webkit:,'+ App.cfg.backend.versions.nw : '')
+'nw.js:,'+ App.cfg.backend.versions.nw : '')
             ).replace(/\n/g,'</b><br>').replace(/,/g, '<br><b>') +
 '</div><br><a ' + (
-    App.cfg.backend.url ?
+    App.backendURL ?
         'onclick="extjs_doc()" href="#">HTTP Remote Application' :
         'target="blank" href="/extjs/docs/index.html">ExtJS SUPRO Docs'
     ) +

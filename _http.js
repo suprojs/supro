@@ -1,4 +1,4 @@
-var ctl, http = require('http'), res = '';
+var ctl, http = require('http'), res = ''
 
 ctl = http.get(// requesting info from remote api
     process.argv[2],// 'url:port/cmd'
@@ -17,7 +17,7 @@ function get_chunk(chunk){
     res += chunk
 }
 function ret_data(e){
-    e && console.log('error: ', e);
+    e && console.log('error: ', e)
     setImmediate(function(){
         console.log('res: "' + res + '"')
         process.exit(e ? 1 : 0)

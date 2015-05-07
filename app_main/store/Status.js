@@ -2,7 +2,7 @@
  * Store for System's `model.Status`
  */
 Ext.define('App.store.Status',{
-	extend: Ext.data.Store,
+    extend: Ext.data.Store,
     singleton: true,// single instance for status
     storeId: 'app-status',
     model: App.model.Status,

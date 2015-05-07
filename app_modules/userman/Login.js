@@ -619,11 +619,9 @@ var bar = App.view.items_Bar, i, f
     for(i = 0; i < bar.length; ++i){// search user status item
         f = bar[i]
         if('um.usts' == f.id){
-            f.tooltip = l10n.um.userStatus + ':<br><b>' + App.User.get('id') + '</b>'
+            f.tooltip = l10n.um.userStatus + ':<br><b>' + App.User.id + '</b>'
             f.text = (
-                '<i>' +
-                    App.User.get('name') +
-                '</i> (<b>' + App.User.can.__name + '</b>)'
+                '<i>' + App.User.name + '</i> (<b>' + App.User.can.__name + '</b>)'
             )
             break
         }
@@ -792,18 +790,20 @@ function changeUserStatus(status){
 }
 
 function logoutCtl(){
-    App.app && App.app.suspendEvents(false)
-    Ext.globalEvents.suspendEvents(false)
     Ext.Msg.alert({
         buttons: Ext.Msg.YESNO,
         icon: Ext.Msg.QUESTION,
         title: l10n.um.logoutTitle,
         msg: l10n.um.logoutMsg(
-            App.User.id,
+            App.User.name,
             l10n.um.roles[App.User.can.__name] || App.User.can.__name
         ),
         fn: function(btn){
-            if('yes' == btn) App.User.logout(reload)
+            if('yes' == btn){
+                App.app && App.app.suspendEvents(false)
+                Ext.globalEvents.suspendEvents(false)
+                App.User.logout(reload)
+            }
         }
     })
 }
