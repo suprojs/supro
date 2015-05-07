@@ -10,6 +10,16 @@ var fastLoad = [
     'app_modules/userman/crypto/SHA1.js',
     'app_modules/userman/Login.js'
 ]
+// TODO: add to config
+var defLoad = [// `App` default classes to load without auth restrictions
+    'App.proxy.CRUD',
+    'App.model.Base',          // loading Models manually, then [M]VC
+    'App.model.Status',
+    'App.store.Status',
+    'App.store.CRUD',          // our CRUD for `Ext.data.*`
+    'App.view.Window',         // provide core View Class(es)
+    'App.view.Viewport'        // provide view.Desktop with status
+]
 
 // global config
 config = {
@@ -86,9 +96,6 @@ config = {
         // for development `loadMiniInit` is overriden
         // by `localStorage.devSUPRO = '1'` in 'app.htm'
         loadMiniInit: 'lite',// '' || 'lite' all init files >>'ext-lite-nw.js'
-        // load this initial file (all classes); will work only `this.load == 'all'`
-        // or if empty any `this.load` -- classes/files one by one
-        loadMiniApp: '',
         fading:  true// visual effects for content appearance
     },
     backend:{

@@ -1,19 +1,20 @@
 /*
  * common part for `nw` && `connectjs` front ends
+ * one global Application variable / namespace
  */
 
-var App // one global Application variable / namespace
+var App
 
-;(function gc_wrapper(doc, w, con){
+;(function gc_wrapper(doc, w, l10n, con){
     App || (App = {
         // data
         cfg:{
-            createViewport: true,//XXX TODO remove all this
             extjs: null,
             modules: null,
             backend: null
         },
-        mod:{ btn: void 0, wnd: void 0 },// error access for: launch button && window
+        // error access for: launch button && window
+        mod:{ btn: void 0, wnd: void 0 },
         backendURL: '',
         // singletons
         User: void 0,
@@ -33,12 +34,82 @@ var App // one global Application variable / namespace
     })
     return
 
+function Ext_application(){
+    Ext.application({
+        name: 'App',
+        appFolder: App.cfg.extjs.appFolder,
+        enableQuickTips: true,// true by default but this is not loaded in 'lite'
+        controllers:[ 'Main' ],// loads `App.controller.Main`
+        launch: launchApp
+    })
+}
+
+function Ext_Error_handle(err){
+    con.warn(err)
+    err && err.msg && Ext.Msg.show({
+        title: l10n.errun_title,
+        buttons: Ext.Msg.OK,
+        icon: Ext.Msg.ERROR,
+        msg: '<b>' +
+err.msg.slice(0, 177) + '...</b><br><br>sourceClass: <b>' +
+err.sourceClass + '</b><br>sourceMethod: <b>' +
+err.sourceMethod + '</b>'
+    })
+    return true
+}
+
+function launchApp(){
+var tmp
+
+    con.log('Ext.application.launch: OK')
+    // add first System Status message
+    tmp = App.cfg.backend
+    App.sts(tmp.op, tmp.msg, l10n.stsOK, tmp.time)
+    tmp.op = tmp.msg = tmp.time = void 0// GC
+
+    // createViewport
+    if(App.cfg.extjs.fading){
+        tmp = Ext.getBody()
+        // very strange composition to get gears to fadeOut and viewport to fadeIn
+        tmp.fadeOut({duration: 777 ,callback:
+        function fadingViewport(){
+            Ext.fly('startup').remove()
+            tmp.show()
+            Ext.create('App.view.Viewport')
+            tmp.fadeIn({
+                easing: 'easeIn',
+                duration: 1024
+            })
+            tmp = void 0
+        }
+        })
+    } else {
+        Ext.fly('startup').remove()
+        Ext.create('App.view.Viewport')
+    }
+
+    // catch possible errors once before events from `wes`
+    if('developer.local' != App.User.can.__name &&
+       'admin.local'      != App.User.can.__name){
+        return
+    }
+    if(App.um && App.um.wes){
+        check_uncaughtExceptions()
+    } else {//check periodically without `wes`
+        setInterval(check_uncaughtExceptions, 2048)
+    }
+}
+
 function extjs_load(){
 var path, extjs, el, f
 
+    if(App.cfg.backend.url){// `nw` context`
+        App.backendURL = 'http://127.0.0.1:' + App.cfg.backend.job_port
+    }
     App.extjs_helper = void 0// GC
     extjs = App.cfg.extjs
     path = extjs.path
+
     // direct DOM loading of base CSS
     el = doc.createElement('link')
     el.setAttribute('rel', 'stylesheet')
@@ -48,16 +119,11 @@ var path, extjs, el, f
         for(f = 0; f < extjs.launch.css.length; ++f){
             el = doc.createElement('link')
             el.setAttribute('rel', 'stylesheet')
-            el.setAttribute('href', (App.cfg.backend.url || '') + extjs.launch.css[f])
+            el.setAttribute('href', App.backendURL + extjs.launch.css[f])
             doc.head.appendChild(el)
         }
     }
     con.log('config.extjs.load: "' + extjs.load + '"')
-
-    /* settting up ExtJS for the Application */
-    if(App.cfg.backend.url){// `nw` context`
-        App.backendURL = 'http://127.0.0.1:' + App.cfg.backend.job_port
-    }
 
     if(!w.Ext){// ExtJS is not available yet (this is not a fast loading)
         // main script file was checked by HEAD request
@@ -75,6 +141,7 @@ var path, extjs, el, f
     wait_and_setup_extjs()
     return
 
+    /* settting up ExtJS for the Application */
     function wait_and_setup_extjs(){
         if(!w.Ext) return
 
@@ -101,8 +168,8 @@ var path, extjs, el, f
         )
         Ext.Loader.setConfig({
             enabled: true,
-            garbageCollect: true,
-            preserveScripts: false,
+            garbageCollect: !!App.cfg.extjs.loadMiniInit,// fast load mini || true,
+            preserveScripts: !App.cfg.extjs.loadMiniInit,// fast load mini || false
             disableCaching: true,// don't change; backend parsing uses '?' in `qs`
             scriptCharset: 'utf8',
             paths:{
@@ -130,16 +197,17 @@ var path, extjs, el, f
         * > l10n.so.stuff
         **/
         tmp = l10n
-        l10n = l10n_provider
+        l10n = w.l10n = l10n_provider
         l10n._ns = ''
         Ext.apply(l10n, tmp)
+
         /* patch ExtJS by its own l10n file */
-        file = path + 'locale/ext-lang-' + l10n.lang + '.js'
+        tmp = path + 'locale/ext-lang-' + l10n.lang + '.js'
         Ext.Loader.loadScript({
-            url: file,
+            url: tmp,
             //onLoad:this loading is not tied to further code
             onError: function fail_load_locale(){
-                throw new Error('Error loading locale file:\n' + file)
+                throw new Error('Error loading locale file:\n' + tmp)
             }
         })
 
@@ -202,7 +270,8 @@ var path, extjs, el, f
         *       if auth app_module was loaded
         **/
         if(App.User){
-            return App.User.loginView(extjs_rest)
+            App.User.loginView(extjs_rest)
+            return
         }
         // no auth app module configured
         App.User = { can: { }}// dummy auth object
@@ -210,7 +279,76 @@ var path, extjs, el, f
     }
 
     function extjs_rest(){// load per user modules (if any) create Viewport finally
+    var defLoad, files, el, i
+
         con.log('Load the rest...')// load the rest of js and classes
+
+        defLoad = [
+            'App.proxy.CRUD',
+            'App.model.Base',          // loading Models manually, then [M]VC
+            'App.model.Status',
+            'App.store.Status',
+            'App.store.CRUD',          // our CRUD for `Ext.data.*`
+            'App.view.Window',         // provide core View Class(es)
+            'App.view.Viewport'        // provide view.Desktop with status
+        ]
+        if(App.cfg.extjs.loadMiniInit){
+            defLoad.unshift(path + 'ext-rest-nw')// ->'/extjs/ext-rest-nw.js'
+        }
+
+        if(App.User.modules){// per user/role UI module setup
+            if((files = App.User.modules.css)) for(i = 0; i < files.length; ++i){
+                el = doc.createElement('link')
+                el.setAttribute('rel', 'stylesheet')
+                el.setAttribute('href', App.backendURL + files[i])
+                doc.head.appendChild(el)
+            }
+            el = App.User.modules.js
+            if(el && el.length){
+                files = defLoad.concat(el)
+                el.splice(0)// GC
+            }
+        }
+        if(files.length){
+            i = 0
+            loadRestScripts()
+        } else {
+            Ext_application()
+        }
+        return
+
+        function loadRestScripts(elp){
+        var file
+
+            elp && (el = elp)
+            el && (el.innerHTML = (file = files[i++]))// show progress
+
+            file = Ext.Loader.getPath(file)
+            con.log(file)
+
+            Ext.Loader.loadScript({
+                url: file,
+                onLoad: onLoad,
+                onError: onError
+            })
+        }
+
+        function onLoad(){
+            if(i >= files.length){// all is done
+                el = void 0
+                return Ext_application()
+            }
+            return loadRestScripts()
+        }
+
+        function onError(){
+            con.error('Error loading a file required by configuration!')
+            if(i >= files.length){// all is done
+                el = void 0
+                return Ext_application()
+            }
+            return loadRestScripts()
+        }
     }
 }// extjs_load
 
@@ -360,12 +498,12 @@ var url, url_l10n, wmId
                 url: url
                ,onLoad: view_loaded
                ,onError: function(){
-                    console.error('view was not loaded')
+                    con.error('view was not loaded')
                }
             })
         }
        ,onError: function() {
-            console.error('l10n was not loaded')
+            con.error('l10n was not loaded')
        }
     })
 
@@ -398,21 +536,8 @@ function get_help_abstract(panel, tool, event){
     con.warn('abstract method')
 }
 
-function Ext_Error_handle(err){
-    con.warn(err)
-    err && err.msg && Ext.Msg.show({
-        title: l10n.errun_title,
-        buttons: Ext.Msg.OK,
-        icon: Ext.Msg.ERROR,
-        msg: '<b>' +
-err.msg.slice(0, 177) + '...</b><br><br>sourceClass: <b>' +
-err.sourceClass + '</b><br>sourceMethod: <b>' +
-err.sourceMethod + '</b>'
-    })
-    return true
-}
-
-function add_app_status(op, args, res, time){//global status logger
+//global status logger
+function add_app_status(op, args, res, time){
     op = {
         created: time ? time : new Date,
         op: op, args: args, res: res
@@ -424,4 +549,24 @@ function add_app_status(op, args, res, time){//global status logger
     }
 }
 
-})(document, window, window.console);
+function check_uncaughtExceptions(){
+    App.backend.req('/uncaughtExceptions',{/* dummy hash to get JSON */},
+    function(err, data){
+        con.log('uncaughtExceptions err: ', err)
+        if(data && data.length){
+            con.table(data)
+            Ext.Msg.alert({
+                buttons: Ext.Msg.OK,
+                icon: Ext.Msg.ERROR,
+                title: 'uncaught@global on start',
+                msg: Ext.encode(data).replace(/\\n/g, '<br>'),
+                fn: function(btn){
+                    con.log(btn)
+                    //if('yes' == btn)...
+                }
+            })
+        }
+    })
+}
+
+})(document, window, l10n, window.console);

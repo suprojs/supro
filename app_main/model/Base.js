@@ -98,7 +98,6 @@ Ext.define('App.model.BaseR',{
 
 Ext.define('App.model.BaseCRUD',{
     extend: Ext.data.Model,
-    requires:[ 'App.proxy.CRUD' ],
    /* idProperty is the internal ID of model in `data.Store` <--> backend link
     * in general MongoDB's default `_id` (any DB doc has it) is OK here
     *

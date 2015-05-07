@@ -498,7 +498,7 @@ var defer
                 if(err) return
 
                 if(ret.can){
-                    view.fadeOut(createViewportAuth)
+                    view.fadeOut(finishAuth)
                     return// auth is ok in this session
                 }
 
@@ -588,7 +588,7 @@ function doAuth(){
 
 function callbackAuth(err, json, res){
     if(!err){
-        return view.fadeOut(createViewportAuth)
+        return view.fadeOut(finishAuth)
     } else {
         App.User.logoutUI = Ext.emptyFn// prevent shutdown
         // reload if no session (e.g. backend reloaded)
@@ -609,7 +609,7 @@ function callbackAuth(err, json, res){
     }
 }
 
-function createViewportAuth(){
+function finishAuth(){
 var bar = App.view.items_Bar, i, f
 
     callbackApp()// continue App start/loading

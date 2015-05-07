@@ -55,9 +55,6 @@ config = {
         modules: null,/*{ css:[ ], js:[ ]} */
         load: '',// 'lite' || ''/'all' see `load_config_then_check_ExtJS()`
         loadMiniInit: '',// '' || 'lite' all init files >>'ext-lite-nw.js'
-        // load this initial file (all classes); will work only `this.load == 'all'`
-        // or if empty any `this.load` -- classes/files one by one
-        loadMiniApp: '',
         fading:  true// visual effects for content appearance
     },
     backend:{
