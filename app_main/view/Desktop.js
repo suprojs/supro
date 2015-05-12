@@ -2,7 +2,7 @@
 Ext.define('App.view.desktop.Shortcuts',{
     extend: Ext.toolbar.Toolbar,
     xtype: 'app-shortcuts',
-    style: 'background-color:white;background-image:none;'
+    style: 'background-color:transparent;background-image:none;'
 
     //,stateId: 'dpss'
     //,stateful: true
