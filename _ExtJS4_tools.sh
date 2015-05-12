@@ -184,11 +184,11 @@ add_loadMiniInit(){
     # read and append init files
     [ -f "$MINIIINITFILES" ] && {
         # no processing for now, pure lines of 'paths/to/files.js'
-        MINIIINITFILES=`sed '' <"$MINIIINITFILES"`
+        MINIIINITFILES=`sed '/^#/d' <"$MINIIINITFILES"`
         echo "
 = Fast load appending to '$1' =
 $MINIIINITFILES"
-        # strip front whitespace
+        # strip front whitespace and C/C++ comments
         sed '
 /^[[:blank:]]*$/d
 /^[[:blank:]]/s/[[:blank:]]*//

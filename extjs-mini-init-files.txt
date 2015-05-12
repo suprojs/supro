@@ -1,3 +1,4 @@
+# general starting set of files
 app_main/extjs_load.js
 app_main/backend/Connection.js
 app_modules/userman/crypto/SHA1.js
