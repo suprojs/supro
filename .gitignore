@@ -9,6 +9,7 @@ tmp
 extjs.txt
 nbproject
 data
+extjs-4.2
 config/_*
 app_modules/*
 !app_modules/userman

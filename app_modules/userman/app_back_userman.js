@@ -310,7 +310,7 @@ log('!deny cmp:', perm)
                               r &&~u.roles.indexOf(r))
 
                 if('developer.local' === r &&
-                   '127.0.0.1' !== req.socket.remoteAddress){
+                   !~req.socket.remoteAddress.indexOf('127.0.0.1')){// ::ffff:127.0.0.1
                     ret.success = false//security: don't allow remote access
                     ret.err = '!access'
                 }
