@@ -23,6 +23,7 @@ trap "" 0
 exit 0
 ' 0 # catch errors
 
+ME="$0 $*"
 JSFILE='ext-all-debug.js'
 NWFILE="ext-all-nw.js"
 
@@ -173,6 +174,7 @@ REST:  '$EXTJS4$EXTJSREST$1'
 #' Ext.define('Ext.menu.ColorPicker', {'
 # ^ there are such lines
     sed "
+1{s,$, processed by \`supro/${ME% *}\`,;b}
 /^ Ext[.]define/s_^ __
 `process_classes ""$1""`
 " <"$EXTJS4$JSFILE" >"$EXTJS4$EXTJSLITE$1"
