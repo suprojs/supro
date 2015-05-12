@@ -249,10 +249,12 @@ strip_css_html 'app_main/app.htm' 'app_main/app-mini.htm'
     [ "$1" = 'lite' ] || split_extjs '-debug.js'
     strip_whitespace "$EXTJS4$EXTJSLITE-debug.js" "${EXTJS4}$EXTJSLITE-nw.js"
     add_loadMiniInit "$EXTJS4$EXTJSLITE-nw.js"
-    # copy copyright/license header into the rest file
-    sed '22q' <"$EXTJS4$EXTJSLITE-debug.js"  >"${EXTJS4}$EXTJSREST-nw.js"
-    sed ''    <"$EXTJS4$EXTJSREST-debug.js" >>"${EXTJS4}$EXTJSREST-nw.js"
-    mv  "${EXTJS4}$EXTJSREST-nw.js" "$EXTJS4$EXTJSREST-debug.js"
+    [ "$1" = 'lite' ] || {
+        # copy copyright/license header into the "rest" file
+        sed '22q' <"$EXTJS4$EXTJSLITE-debug.js"  >"${EXTJS4}$EXTJSREST-nw.js"
+        sed ''    <"$EXTJS4$EXTJSREST-debug.js" >>"${EXTJS4}$EXTJSREST-nw.js"
+        mv  "${EXTJS4}$EXTJSREST-nw.js" "$EXTJS4$EXTJSREST-debug.js"
+    }
     strip_whitespace "$EXTJS4$EXTJSREST-debug.js" "${EXTJS4}$EXTJSREST-nw.js"
     add_defLoad "$EXTJS4$EXTJSREST-nw.js"
     [ "$1" = 'justsplit' -o "$1" = 'lite' ] && {
