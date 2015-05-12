@@ -113,7 +113,7 @@ OUTPUT: '$2'
 /^[[:blank:]]/s/[[:blank:]]*//
 /^localStorage.devSUPRO = '1'/d
 # remove file loading
-/^startup('extjs/s_.*_startup('/extjs/ext-lite-nw.js')_
+/^startup('App.js/s_.*_startup('/extjs/ext-lite-nw.js')_
 " >"$2"
 
 }

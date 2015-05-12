@@ -4,7 +4,7 @@ var DB  = 'supro_' + OBJ
 
 // TODO: connect this with 'extjs-mini-init-files.txt'
 var fastLoad = [
-    'app_main/extjs_load.js',
+    'app_main/App.js',
     'app_main/backend/Connection.js',
     // NOTE: when disabling 'userman' update 'extjs-mini-init-files.txt' by hands
     'app_modules/userman/crypto/SHA1.js',

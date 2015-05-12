@@ -42,7 +42,7 @@
             b = void 0
             e.target.removeEventListener(e.type, pre_onload)
 
-            startup('extjs_load.js')// preload ExtJS stuff; todo rename to 'App.js'
+            startup('App.js')// preload App && ExtJS stuff
             startup('app_front.js')// via http this is 'app_front_http.js'
         })
 
@@ -60,7 +60,7 @@
                        buttons: Ext.Msg.OK,
                        icon: Ext.Msg.ERROR,
                        msg: '<b>' +
-l10n.errun_file + (errEvent.filename || '"app_front.js" || "extjs_load.js"') + '<br><br>' +
+l10n.errun_file + (errEvent.filename || '"app_front.js" || "App.js"') + '<br><br>' +
 (errEvent.error ? errEvent.error.stack ? l10n.errun_stack + '</b>' + errEvent.error.stack
                       .replace(/</g, '&lt;').replace(/\r*\n/g, '<br>')
                       : errEvent.error + '</b>' : errEvent.message + '</b>')
@@ -84,7 +84,7 @@ l10n.errun_file + (errEvent.filename || '"app_front.js" || "extjs_load.js"') + '
 '<pre><div style="color:white;background-color:red;">' +
 'Source' + (
 '!' == errEvent.error.message[0] ? ': from backend node.js service (see logs)' :
-' filename: ' + errEvent.filename || 'app_front.js" or "extjs_load.js'
+' filename: ' + errEvent.filename || 'app_front.js" or "App.js'
 ) + '<br><br>' + errEvent.message + '<br><br>== Stack: ==<br>' +
 (errEvent.error && errEvent.error.stack ?
  errEvent.error.stack.replace(/</g, '&lt;'):
