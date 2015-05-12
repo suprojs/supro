@@ -33,23 +33,63 @@ EXTJSCLASSES='extjs-classes.txt'
 
 CWD="./$0"
 CWD="${CWD%/*}" # get path to supro dir where this script must be in
-#PATH="./bin/:$PATH" use `mingw/git` distro minimum (i.e. no `dd`, `stat`)
-
+# use `mingw/git` distro minimum (i.e. no `dd`, `stat`)
+type git >/dev/null 2>&1 || {
+    PATH="./bin/:$PATH"
+    echo >&2 '
+NOTE: Use Git-MINGW32 for development under MS Winsows(R)
+      https://msysgit.github.io/
+'"Adding '$CWD/bin' to PATH
+"
+}
 cd "$CWD"
 
 [ -f extjs.txt ] || {
-    echo '
+    # whatever config, setup ExtJS 4
+    echo >&2 '
 Error: no "extjs.txt" file present.
-Run `node-webkit` first time. It will search for configured ExtJS path.
+
+Run `nw` first time. It will search for configured ExtJS path.
 Or manually write PATH of ExtJS4 distro into it.
 e.g.:
 ../extjs-4.2/
 
-Such ExtJS4 distro is located in SUPRO git repo and can be cloned:
-$ git clone git://github.com/suprojs/extjs-4.2
-'
-    trap '' 0
-    exit 1
+Such ExtJS4 distro is located in SUPRO git repo and can be cloned:'
+
+    EXTJS4=`sed '
+/"extjs":/,/^ *}/{
+  /"url"/{
+    s| *"url": *"\([^"]*\)".*|\1|
+    s|#| |p;d;q}
+  }
+  d
+' <package.json`
+    # delete branch
+    EXTJS4=${EXTJS4%% *}
+    echo >&2 '
+$ git clone '"$EXTJS4"
+
+    if type git
+    then
+        echo -n >&2 "
+Clone now?(y/n) "
+        read A
+        [ 'y' = "$A" ] && {
+            git clone "$EXTJS4" 'extjs-4.2' && {
+                echo "Writing 'extjs-4.2/' into '$PWD/extjs.txt'"
+                echo './extjs-4.2/' >extjs.txt
+            } || {
+                echo >&2 '
+`git` failed, exit.'
+                trap '' 0
+                exit 1
+            }
+        }
+        # goto ExtJS processing
+    else
+        trap '' 0
+        exit 1
+    fi
 }
 
 #### whitespace ####
