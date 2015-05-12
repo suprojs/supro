@@ -1,11 +1,11 @@
 {
     "name": "supro",
     "license": "MIT",
-    "version": "2.0.002",
-    "description": "v002@2014-11-01: SUPRO",
+    "version": "3.0.003",
+    "description": "v003@2015-05-12: SUPRO",
     "repository": {
         "type": "git",
-        "url": "ssh://git@github.com/olecom/supro"
+        "url": "git://github.com/suprojs/supro"
     },
     "maintainers": [{
         "name": "Oleg Verych",
@@ -43,8 +43,8 @@
     "engines": {
         "cygwin": "1.7.15",
         "lftp": "4.3.7",
-        "node": "0.10.33",
-        "node-webkit": "0.10.5 (node: '0.11.13-pre', Chromium: '35.0.1916.157')"
+        "node": "0.12.2",
+        "nw.js": "0.12.1 (io.js: '1.2.0', Chromium: '41.0.2272.76')"
     },
     "extjs": {
         "version": "4.2"
