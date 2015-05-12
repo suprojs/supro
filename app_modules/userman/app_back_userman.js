@@ -30,12 +30,9 @@ var app = api.app
     Roles = rbac.roles
     Users = rbac.users
 
-    files = [// files as class names are loaded by `Ext.syncRequire()`
-        '/um/crypto/SHA1',
-        /* (l10n) M V C loading */
-        '/um/model/User',// + client's requested `l10n`
-        '/um/view/Login',
-        '/um/controller/Login'
+    files = [// files as class names as in `Ext.Loader.getPath()`
+        '/um/crypto/SHA1',//'App.um.crypto.SHA1'
+        '/um/Login'       //'App.um.Login'
     ]
 
     for(f = 0; f < files.length; f++){// provide [files] before auth middleware

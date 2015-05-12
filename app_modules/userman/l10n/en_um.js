@@ -39,8 +39,9 @@ l10n.um = { lang: 'en'// localization is used only in UI for ease of updates
    ,loginCurrentSession: 'Continue session'
    ,loginConflict: 'Session is Active!'
    ,logoutTitle: 'Session'
-   ,logoutMsg: function(id, role){
-        return 'End current session?<br><br>' +
+   ,logoutMsg: function(id, role, fact){
+        return (fact ? 'Current session was ended!' : 'End current session?') +
+               '<br><br>' +
                'User: <b>"' + id + '"</b><br>'+
                'Role: <b>"' + role + '"</b>'
     }

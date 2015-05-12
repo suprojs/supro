@@ -1,0 +1,142 @@
+#!/supro/_strip_ExtJS4_nw.sh
+# classes to be removed from the initial loaded portion of ExtJS
+# syntax:
+# '#...' -- skip line of a comment
+# ' ...' -- skip line started form a whitespace
+# '!Ext.state.Stateful' -- exclude from matching pattern below; order matters
+# 'Ext.state.*' -- move all matching into the rest part
+# '~Ext.direct.*' -- purge classes
+
+## purge (before anything else) ##
+
+~Ext.direct.*
+~Ext.flash.*
+~Ext.app.domain.Direct
+~Ext.data.DirectStore
+~Ext.data.JsonPStore
+~Ext.data.XmlStore
+#? replace with phony singleton
+~Ext.data.flash.BinaryXhr
+~Ext.data.reader.Xml
+~Ext.data.writer.Xml
+~Ext.data.JsonP
+~Ext.data.proxy.JsonP
+~Ext.data.proxy.Direct
+~Ext.data.BufferStore
+
+#= global =#
+
+Ext.Ajax
+Ext.Action
+Ext.Editor
+Ext.LoadMask
+Ext.ProgressBar
+Ext.Shadow
+Ext.AbstractPlugin
+
+Ext.util.History
+Ext.util.Cookies
+Ext.util.CSS
+Ext.util.LocalStorage
+
+Ext.app.domain.Store
+
+Ext.app.*
+
+!Ext.state.Stateful
+Ext.state.*
+Ext.perf.*
+
+#= data =#
+
+Ext.data.Group
+Ext.data.PageMap
+Ext.util.LruCache
+
+Ext.data.JsonStore
+Ext.data.Operation
+Ext.data.operation.*
+
+Ext.data.Tree*
+Ext.data.Node*
+
+# crazy delete: 871123 bytes vs 996431
+# but 'Ext.view.AbstractView' has bindings to 'Ext.data.*'
+# for read-only array data views/combos etc. can be light!
+#Ext.ModelManager
+#Ext.StoreManager
+#Ext.data.*
+#Ext.util.Bindable
+
+!Ext.data.proxy.Memory
+!Ext.data.proxy.Proxy
+!Ext.data.proxy.Client
+Ext.data.proxy.*
+
+#= UI stuff =#
+
+Ext.view.Table
+Ext.button.Split
+Ext.button.Cycle
+Ext.window.MessageBox
+
+# panel and form fields #
+!Ext.layout.container.Auto
+!Ext.layout.component.BoundList
+!Ext.layout.container.Container
+!Ext.layout.container.Fit
+#!Ext.layout.container.Anchor form panels
+Ext.layout.container.*
+
+Ext.layout.component.field.TextArea
+!Ext.layout.component.Component
+!Ext.layout.component.Auto
+!Ext.layout.component.Button
+#!Ext.layout.component.Dock panels
+
+Ext.layout.component.field.TextArea
+!Ext.layout.component.field.Text
+!Ext.layout.component.field.Field
+!Ext.layout.component.field.ComboBox
+!Ext.layout.component.field.Trigger
+Ext.layout.component.*
+
+Ext.container.ButtonGroup
+Ext.container.Viewport
+
+
+Ext.form.field.TextArea
+!Ext.form.FieldAncestor
+!Ext.form.Labelable
+!Ext.form.field.Base
+!Ext.form.field.ComboBox
+!Ext.form.field.Field
+!Ext.form.field.Picker
+!Ext.form.field.Text
+!Ext.form.field.VTypes
+!Ext.form.field.Trigger
+Ext.form.*
+
+# combo
+!Ext.selection.DataViewModel
+!Ext.selection.Model
+Ext.selection.*
+
+Ext.panel.*
+Ext.picker.*
+Ext.resizer.*
+Ext.grid.*
+Ext.menu.*
+Ext.tip.*
+Ext.slider.*
+Ext.tab.*
+Ext.toolbar.*
+Ext.tree.*
+Ext.window.*
+
+#= charts =#
+
+Ext.draw.*
+Ext.chart.*
+
+# eof

@@ -44,7 +44,9 @@ var api      = require('./api.js')
     require('../../app_modules/')(cfg, api)
 
     /* backend static files for HTTP users */
-    app.use('/', connect['static'](__dirname + '/../', { index: 'app.htm' }))
+    app.use('/', connect['static'](__dirname + '/../', {
+        index: cfg.extjs.loadMiniInit ? 'app-mini.htm' : 'app.htm'
+    }))
 
     app.use('/uncaughtExceptions', mwUncaughtExceptions)
     app.use('/test.js', sendFile('test.js'))
@@ -116,7 +118,7 @@ var api      = require('./api.js')
         cfg.extjs.path = __dirname + '/../../' + cfg.extjs.path
         app.use('/extjs/',                  connect['static'](cfg.extjs.path))
         app.use('/extjs/docs/extjs-build/', connect['static'](cfg.extjs.path))
-        cfg.extjs.path = 'extjs/'// switch local to external http path
+        cfg.extjs.path = '/extjs/'// switch local to external http path
         app.use('/app.config.extjs.json', use_mwConfig)// provide isolated cfg
     }
 }

@@ -1,6 +1,31 @@
 // local vars to share in hash (kind of macro preprocessing)
 var OBJ = 'GLOB'// differentiate instances of distributed SUPRO
 var DB  = 'supro_' + OBJ
+
+// NOTE: this arrays `fastLoad` and `defLoad` are being processed
+//        by `_ExtJS4_tools.sh` for `config.extjs.loadMiniInit == 'lite'`
+var fastLoad = [
+    'App',
+    'App.backend.Connection',
+    // NOTE: when disabling 'userman' update this by hands
+    'app_modules/userman/crypto/SHA1.js',
+    'app_modules/userman/Login.js'
+]
+
+var defLoad = [// `App` default classes to load without auth restrictions
+    'App.proxy.CRUD',
+    'App.model.Base',          // loading Models manually, then [M]VC
+    'App.model.Status',
+    'App.store.Status',
+    'App.store.CRUD',          // our CRUD for `Ext.data.*`
+    'Ext.uxo.BoxReorderer',
+    'App.view.Window',         // provide core View Class(es)
+    'App.view.Bar',
+    'App.view.Desktop',
+    'App.view.Viewport',       // provide view.Desktop with status
+    'App.controller.Main'
+]
+
 // global config
 config = {
 /* NOTE: this is not JSON just JavaScript
@@ -12,6 +37,7 @@ config = {
     log: 'log/',
 
     //TODO: uid gid new ids for process after start or partial init
+    //TODO: connect `fastLoad` with 'extjs-mini-init-files.txt'
     modules:{// cfg for stack of things from 'app_modules'
     // order matters: before auth module there are no restrictions to config
 
@@ -69,8 +95,15 @@ config = {
     },
     extjs:{
         path: 'extjs-4.2/',// find and provide this path; 'extjs/' is for web
-        launch:  null,/*{ css:[ ], js:[ ]} loaded by `extjs_launch()` */
+        launch:  null,/*{ css:[ ], js:[ ]} loaded after ExtJS ready */
         modules: null,/*{ css:[ ], js:[ ]} */
+        load: 'lite',// 'lite' || ''/'all' see `load_config_then_check_ExtJS()`
+        // for development `loadMiniInit` is overriden
+        // by `localStorage.devSUPRO = '1'` in 'app.htm'
+        // @loadMiniInit: '' || 'lite'
+        // 'lite': all init files >>'ext-lite-nw.js'
+        //          and  `defLoad` >>'ext-rest-nw.js'
+        loadMiniInit: 'lite',
         fading:  true// visual effects for content appearance
     },
     backend:{

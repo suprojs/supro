@@ -12,7 +12,11 @@ l10n = { lang: 'en',
 'Installation error! File not found: "app_front.js".\n' +
 'Check of configuration is needed.'
     ,errload_config_read:
+'Config file open error!'
+    ,errload_config_parse:
 'Config file reading error!'
+    ,errload_fast_config_nwjs:
+'[FAST LOAD] config `load` || `loadMiniInit`: is not supported in `nw.js`'
     ,errload_config_log_not_dir:
 'Error: fail to read log directory.\n' +
 'Config option:: '

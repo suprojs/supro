@@ -1,25 +1,28 @@
-/* simply:
-    text: '<img height=64 width=64 src="css/usersman_shortcut.png"/><br/><br/>' +
-          'Пользователи<br/>'
-   than all this stuff:
-------
-js:
-    text: '<br/><br/><br/><br/>Пользователи'
-    ,iconCls: 'appdesktop-shortcut appdesktop-usersman'
-    ,iconAlign: 'top'
-css:
-.appdesktop-shortcut {
-    height: 64px!important;
-    margin: 10px;
-}
-.appdesktop-procman {
-    background-image: url(css/procman_shortcut.png);
-}
-.appdesktop-usersman {
-    background-image: url(css/usersman_shortcut.png);
-}
-*/
+/* TODO flag: background-color: red !important; */
 
+.sg-c { background-image:url(css/comments_delete.png); }
+.sg-e { background-image:url(css/script_link.png); }
+.sg-s { background-image:url(css/shutdown-sml.png); }
+.sg-r { background-image:url(css/arrow_refresh_small.png); }
+.sg-k { background-image:url(css/link_delete.png); }
+.sg-m { background-image:url(css/comments.png); }
+
+.redwhite { background-color: #FF0000 !important; color: #FFFFFF; }
+.new-bold-row .x-grid-cell { font-weight: bold; }
+#stscount { color: blue; }
+
+.row-unread { background-image:url(css/itemunread.png); background-repeat: no-repeat; }
+.row-read { background-image:url(css/itemread.png); background-repeat: no-repeat; }
+
+.transparent > div { background: transparent!important; }
+.ok { background-image:url(css/ok.png)!important; }
+.cancel { background-image:url(css/delete.png)!important; }
+
+.row-err { background-color: #FF9787 }
+.row-err td { background-color: #FF9787 }
+.rows-selall{background:url(css/cursor.png) no-repeat;}
+
+/* gray top bar */
 .x-gray-toolbar-default {
   border-color: #bcb0b0;
   border-width: 1px 1px 2px 1px;
@@ -89,26 +92,3 @@ css:
 .x-grid-row .x-grid-cell-inner {
 	font-family: verdana !important;
 }
-/* TODO flag: background-color: red !important; */
-
-.sg-c { background-image:url(css/comments_delete.png); }
-.sg-e { background-image:url(css/script_link.png); }
-.sg-s { background-image:url(css/shutdown-sml.png); }
-.sg-r { background-image:url(css/arrow_refresh_small.png); }
-.sg-k { background-image:url(css/link_delete.png); }
-.sg-m { background-image:url(css/comments.png); }
-
-.redwhite { background-color: #FF0000 !important; color: #FFFFFF; }
-.new-bold-row .x-grid-cell { font-weight: bold; }
-#stscount { color: blue; }
-
-.row-unread { background-image:url(css/itemunread.png); background-repeat: no-repeat; }
-.row-read { background-image:url(css/itemread.png); background-repeat: no-repeat; }
-
-.transparent > div { background: transparent!important; }
-.ok { background-image:url(css/ok.png)!important; }
-.cancel { background-image:url(css/delete.png)!important; }
-
-.row-err { background-color: #FF9787 }
-.row-err td { background-color: #FF9787 }
-.rows-selall{background:url(css/cursor.png) no-repeat;}
