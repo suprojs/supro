@@ -37,16 +37,18 @@
     },
     "main": "app_main/app.htm",
     "scripts": {
-        "install": "echo ==== && echo Everything is here already. && echo ====",
+        "install": "sh _ExtJS4_tools.sh || echo Use 'Git-MINGW32 for development under MS Winsows(R)'",
         "start": "nw"
     },
     "engines": {
+        "Git-MINGW32": "1.9.5-preview20141217",
         "cygwin": "1.7.15",
         "lftp": "4.3.7",
         "node": "0.10.33",
         "node-webkit": "0.10.5 (node: '0.11.13-pre', Chromium: '35.0.1916.157')"
     },
     "extjs": {
+        "url": "git://github.com/suprojs/extjs-4.2#master",
         "version": "4.2"
     },
     "dependencies": {
