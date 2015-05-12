@@ -54,7 +54,12 @@ config = {
         launch:  null,/*{ css:[ ], js:[ ]} loaded after ExtJS ready */
         modules: null,/*{ css:[ ], js:[ ]} */
         load: '',// 'lite' || ''/'all' see `load_config_then_check_ExtJS()`
-        loadMiniInit: '',// '' || 'lite' all init files >>'ext-lite-nw.js'
+        // for development `loadMiniInit` is overriden
+        // by `localStorage.devSUPRO = '1'` in 'app.htm'
+        // @loadMiniInit: '' || 'lite'
+        // 'lite': all init files >>'ext-lite-nw.js'
+        //          and  `defLoad` >>'ext-rest-nw.js'
+        loadMiniInit: '',
         fading:  true// visual effects for content appearance
     },
     backend:{

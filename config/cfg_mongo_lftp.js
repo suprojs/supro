@@ -17,8 +17,12 @@ var defLoad = [// `App` default classes to load without auth restrictions
     'App.model.Status',
     'App.store.Status',
     'App.store.CRUD',          // our CRUD for `Ext.data.*`
+    'Ext.uxo.BoxReorderer',
     'App.view.Window',         // provide core View Class(es)
-    'App.view.Viewport'        // provide view.Desktop with status
+    'App.view.Bar',
+    'App.view.Desktop',
+    'App.view.Viewport',       // provide view.Desktop with status
+    'App.controller.Main'
 ]
 
 // global config
@@ -95,7 +99,10 @@ config = {
         load: 'lite',// 'lite' || ''/'all' see `load_config_then_check_ExtJS()`
         // for development `loadMiniInit` is overriden
         // by `localStorage.devSUPRO = '1'` in 'app.htm'
-        loadMiniInit: 'lite',// '' || 'lite' all init files >>'ext-lite-nw.js'
+        // @loadMiniInit: '' || 'lite'
+        // 'lite': all init files >>'ext-lite-nw.js'
+        //          and  `defLoad` >>'ext-rest-nw.js'
+        loadMiniInit: 'lite',
         fading:  true// visual effects for content appearance
     },
     backend:{

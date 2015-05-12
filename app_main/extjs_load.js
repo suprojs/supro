@@ -278,12 +278,16 @@ var path, extjs, el, f
         extjs_rest()
     }
 
-    function extjs_rest(){// load per user modules (if any) create Viewport finally
+    function extjs_rest(elp){// load per user modules (if any) create Viewport finally
     var defLoad, files, el, i
 
         con.log('Load the rest...')// load the rest of js and classes
 
-        defLoad = [
+        defLoad = [ ]
+
+        if(App.cfg.extjs.loadMiniInit){// fast load mini
+            defLoad.push(path + 'ext-rest-nw')// ->'/extjs/ext-rest-nw.js'
+        } else defLoad.push(
             'App.proxy.CRUD',
             'App.model.Base',          // loading Models manually, then [M]VC
             'App.model.Status',
@@ -291,10 +295,7 @@ var path, extjs, el, f
             'App.store.CRUD',          // our CRUD for `Ext.data.*`
             'App.view.Window',         // provide core View Class(es)
             'App.view.Viewport'        // provide view.Desktop with status
-        ]
-        if(App.cfg.extjs.loadMiniInit){
-            defLoad.unshift(path + 'ext-rest-nw')// ->'/extjs/ext-rest-nw.js'
-        }
+        )
 
         if(App.User.modules){// per user/role UI module setup
             if((files = App.User.modules.css)) for(i = 0; i < files.length; ++i){
@@ -309,6 +310,7 @@ var path, extjs, el, f
                 el.splice(0)// GC
             }
         }
+        el = void 0
         if(files.length){
             i = 0
             loadRestScripts()
@@ -320,9 +322,8 @@ var path, extjs, el, f
         function loadRestScripts(elp){
         var file
 
-            elp && (el = elp)
-            el && (el.innerHTML = (file = files[i++]))// show progress
-
+            file = files[i++]
+            elp && (elp.innerHTML = file)// show progress in passed in element
             file = Ext.Loader.getPath(file)
             con.log(file)
 

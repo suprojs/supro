@@ -197,6 +197,26 @@ $MINIIINITFILES"
     } || :
 }
 
+add_defLoad(){
+    # more App classes to concat from config `defLoad`:
+    MINIIINITFILES=`sed "/^var def/,/^[]]/{
+/^  */s| *'[AE][px][pt].|app_main/|
+s|[.]|/|g
+s|'.*$|.js|p
+}
+d" < config/cfg_mongo_lftp.js`
+        echo "
+= Fast load appending more App classes/files to =
+= '$1' =
+$MINIIINITFILES"
+    # strip front whitespace and C/C++ comments
+    sed '
+/^[[:blank:]]*$/d
+/^[[:blank:]]/s/[[:blank:]]*//
+/^[/*]/d
+' $MINIIINITFILES >>"$1"
+}
+
 #### main run ####
 
 OUTPUT=`sed '' <./extjs.txt`
@@ -234,6 +254,7 @@ strip_css_html 'app_main/app.htm' 'app_main/app-mini.htm'
     sed ''    <"$EXTJS4$EXTJSREST-debug.js" >>"${EXTJS4}$EXTJSREST-nw.js"
     mv  "${EXTJS4}$EXTJSREST-nw.js" "$EXTJS4$EXTJSREST-debug.js"
     strip_whitespace "$EXTJS4$EXTJSREST-debug.js" "${EXTJS4}$EXTJSREST-nw.js"
+    add_defLoad "$EXTJS4$EXTJSREST-nw.js"
     [ "$1" = 'justsplit' -o "$1" = 'lite' ] && {
         trap '' 0
         exit 0
