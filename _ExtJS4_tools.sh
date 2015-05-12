@@ -31,8 +31,6 @@ EXTJSLITE='ext-lite'
 EXTJSREST='ext-rest'
 EXTJSCLASSES='extjs-classes.txt'
 
-MINIIINITFILES='extjs-mini-init-files.txt'
-
 CWD="./$0"
 CWD="${CWD%/*}" # get path to supro dir where this script must be in
 #PATH="./bin/:$PATH" use `mingw/git` distro minimum (i.e. no `dd`, `stat`)
@@ -181,25 +179,35 @@ REST:  '$EXTJS4$EXTJSREST$1'
 }
 
 add_loadMiniInit(){
-    # read and append init files
-    [ -f "$MINIIINITFILES" ] && {
-        # no processing for now, pure lines of 'paths/to/files.js'
-        MINIIINITFILES=`sed '/^#/d' <"$MINIIINITFILES"`
-        echo "
+    # no processing for now, pure lines of 'paths/to/files.js'
+    MINIFILES=`sed "/^var fastLoad/,/^[]]/{
+  /^  *'App'/s|.*|app_main/App.js|p
+  /^  *'App[.]/{
+    s| *'App.|app_main/|
+    s|[.]|/|g
+    s|'.*$|.js|p
+  }
+  /^  *'app/{
+    s|^  *'||
+    s|'.*$||p
+  }
+}
+d" < config/cfg_mongo_lftp.js`
+
+    echo "
 = Fast load appending to '$1' =
-$MINIIINITFILES"
-        # strip front whitespace and C/C++ comments
-        sed '
+$MINIFILES"
+    # strip front whitespace and C/C++ comments
+    sed '
 /^[[:blank:]]*$/d
 /^[[:blank:]]/s/[[:blank:]]*//
 /^[/*]/d
-' $MINIIINITFILES >>"$1"
-    } || :
+' $MINIFILES >>"$1"
 }
 
 add_defLoad(){
     # more App classes to concat from config `defLoad`:
-    MINIIINITFILES=`sed "/^var def/,/^[]]/{
+    MINIFILES=`sed "/^var defLoad/,/^[]]/{
 /^  */s| *'[AE][px][pt].|app_main/|
 s|[.]|/|g
 s|'.*$|.js|p
@@ -208,13 +216,13 @@ d" < config/cfg_mongo_lftp.js`
         echo "
 = Fast load appending more App classes/files to =
 = '$1' =
-$MINIIINITFILES"
+$MINIFILES"
     # strip front whitespace and C/C++ comments
     sed '
 /^[[:blank:]]*$/d
 /^[[:blank:]]/s/[[:blank:]]*//
 /^[/*]/d
-' $MINIIINITFILES >>"$1"
+' $MINIFILES >>"$1"
 }
 
 #### main run ####

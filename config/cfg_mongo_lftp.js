@@ -2,15 +2,16 @@
 var OBJ = 'GLOB'// differentiate instances of distributed SUPRO
 var DB  = 'supro_' + OBJ
 
-// TODO: connect this with 'extjs-mini-init-files.txt'
+// NOTE: this arrays `fastLoad` and `defLoad` are being processed
+//        by `_ExtJS4_tools.sh` for `config.extjs.loadMiniInit == 'lite'`
 var fastLoad = [
-    'app_main/App.js',
-    'app_main/backend/Connection.js',
-    // NOTE: when disabling 'userman' update 'extjs-mini-init-files.txt' by hands
+    'App',
+    'App.backend.Connection',
+    // NOTE: when disabling 'userman' update this by hands
     'app_modules/userman/crypto/SHA1.js',
     'app_modules/userman/Login.js'
 ]
-// TODO: add to config
+
 var defLoad = [// `App` default classes to load without auth restrictions
     'App.proxy.CRUD',
     'App.model.Base',          // loading Models manually, then [M]VC
