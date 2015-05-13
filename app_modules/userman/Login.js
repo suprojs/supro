@@ -1,3 +1,16 @@
+/*
+ * Authenticate a User using Login dialog
+ *
+ * @App.view.items_Bar: desktop shortcuts
+ * @App.User: global user singleton
+ * @App.um.view.Login: login dialog (with view-specific methods)
+ * @controllerLogin: login logic; login modes/branches:
+ *     1) initial page load and authentication; there is no backend session -> full
+ *     2) page load; there is a backend session -> just button press
+ *     3) when app is running backend restarts (session can be lost) -> relogin
+ *     4) when more than one client tries to authenticates inside same session
+ *        'conflict', status = 409, login is disabled
+ */
 ;(function module_Login(App, l10n){
 
 /* current l10n is required before view setup */
@@ -230,7 +243,7 @@ Ext.define('App.um.view.Login',{
         })
         me.relayEvents(me.dd,['dragstart', 'drag', 'dragend'])
         // ref. to function to be executed after login to finish `App` loading
-        callbackApp = callback
+        callbackApp = callback// if undefined do `relogin()` in `controllerLogin()`
     },
     destroy: function(){
         Ext.destroy(this.dd, this.form)
@@ -553,7 +566,7 @@ function authenticate(field, ev){
      *       this can be automated by userscripts.
      *       In Chrome `Ext.EventManager.onWindowUnload()` works.
      *
-     * node-webkit: session is destroyed only on window `close`
+     * nw.js/node-webkit: session is destroyed only on window `close`
      **/
     Ext.EventManager.onWindowUnload(doLogout)// `browser`
     if(App.backendURL){// `nw`
