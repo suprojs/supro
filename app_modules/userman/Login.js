@@ -1,3 +1,16 @@
+/*
+ * Authenticate a User using Login dialog
+ *
+ * @App.view.items_Bar: desktop shortcuts
+ * @App.User: global user singleton
+ * @App.um.view.Login: login dialog (with view-specific methods)
+ * @controllerLogin: login logic; login modes/branches:
+ *     1) initial page load and authentication; there is no backend session -> full
+ *     2) page load; there is a backend session -> just button press
+ *     3) when app is running backend restarts (session can be lost) -> relogin
+ *     4) when more than one client tries to authenticates inside same session
+ *        'conflict', status = 409, login is disabled
+ */
 ;(function module_Login(App, l10n){
 
 /* current l10n is required before view setup */
@@ -211,10 +224,9 @@ Ext.define('App.um.view.Login',{
     }],
 
     constructor: function constructorLogin(callback){
-    var me = this
-       ,ddId
-
-        me.callParent()
+    var me = this, ddId
+        //                           login      relogin
+        me.callParent([callback ? void 0 : { modal: true }])
         /*
          * after initComponent()
          * Movable Container: make drag handler on top, not whole area
@@ -230,7 +242,9 @@ Ext.define('App.um.view.Login',{
         })
         me.relayEvents(me.dd,['dragstart', 'drag', 'dragend'])
         // ref. to function to be executed after login to finish `App` loading
-        callbackApp = callback
+        callbackApp = callback// if undefined do `relogin()` in `controllerLogin()`
+        /* bind logic to the view */
+        controllerLogin()
     },
     destroy: function(){
         Ext.destroy(this.dd, this.form)
@@ -347,40 +361,17 @@ Ext.define('App.um.view.Login',{
         role = form.down('field[name=role]')
         pass = form.down('field[name=pass]')
         auth = form.down('#ok')
-        /* bind logic to the view */
-        controllerLogin()
     }
 })
 
 function controllerLogin(){
-var login
+var l10nel
 
-    //if(!view){
-    //    view = new App.um.view.Login
-      //  login = true
-    //} else {
-      //  login = false// relogin
-    //}
-
-    view.el.select("#l10n > span").each(function l10n_changers(el){
-        if(login){
-            if(0 == el.dom.className.indexOf(l10n.lang)){
-                el.dom.style.opacity = 0.5// fade out current flag
-                el.dom.style.cursor = 'not-allowed'
-            } else {
-/* TODO: uninstall `l10n_set_and_change()` handler,
-*        redo all with event delegate and no ExtJS put it into HTML spash */
-                el.dom.onclick = l10nLangClick// install changer
-            }
-            return
-        } else {// relogin: disable all
-            el.dom.style.opacity = 0.5
-            el.dom.style.cursor = 'not-allowed'
-            return
-        }
-    })
-
-    //if(!login) return relogin() xxx fix
+    l10nel = view.el
+    l10nel.select('#l10n > span').each(l10nChangers)
+    l10nel.select('#l10n').addListener('click', l10nLangClick)
+    l10nel = void 0
+    if(!callbackApp) return relogin()
 
     // data
     App.User.internalId = ''// reset to be used as User.id copy while offline
@@ -413,9 +404,22 @@ var login
     return App.User.login('?', getSessionInfo)// ask backend is a session there?
 }
 
-function l10nLangClick(){
-    if('l10n-reset' !== this.className){
-        localStorage.l10n = this.className.slice(0, 2)// first two
+function l10nChangers(el){
+    if(!callbackApp){// relogin: disable all
+        el.dom.style.opacity = 0.5
+        el.dom.style.cursor = 'not-allowed'
+    } else {// login: set current
+        if(0 == el.dom.className.indexOf(l10n.lang)){
+            el.dom.style.opacity = 0.5// fade out current flag
+            el.dom.style.cursor = 'not-allowed'
+        }
+    }
+}
+
+function l10nLangClick(evt, el, o){
+    o = el.className
+    if('l10n-reset' !== o){
+        localStorage.l10n = o.slice(0, 2)// first two
         reload()
         return
     }
@@ -553,7 +557,7 @@ function authenticate(field, ev){
      *       this can be automated by userscripts.
      *       In Chrome `Ext.EventManager.onWindowUnload()` works.
      *
-     * node-webkit: session is destroyed only on window `close`
+     * nw.js/node-webkit: session is destroyed only on window `close`
      **/
     Ext.EventManager.onWindowUnload(doLogout)// `browser`
     if(App.backendURL){// `nw`
@@ -663,11 +667,13 @@ function relogin(){
     user.setHideTrigger(false)
 
     role.setValue(l10n.um.roles[App.User.can.__name] || App.User.can.__name)
-    role.disable()
+
     // one ENTER keypress auth in password
-    pass.on({ specialkey: reloaginUser, change: enableAuth })
+    pass.on({ specialkey: reloginUser, change: enableAuth })
     auth.on({ click: reloginUser })
     enablePass()
+    Ext.WindowManager.bringToFront(view)
+    view.showUp()
 }
 
 function reloginUser(_, ev){
@@ -675,12 +681,12 @@ function reloginUser(_, ev){
 
     auth.eventsSuspended = 1// prevent multiple auth calls to backend
     auth.focus()
-    view.fadeInProgress(function(){
-    App.User.login(App.User.get('id'), function(err, ret){
+    view.fadeInProgress(function reloginTry(){
+    App.User.login(App.User.id, function(err, ret){
         enablePass()// focus pass after failed login
-        if(err) return
-    App.User.auth(
-        App.User.get('id'),
+        return err ? setTimeout(reloginTry, 1024) :// if backend isn't ready yet
+    App.User.auth(// get user 'offldev@::ffff:127.0.0.1 lhY1caqLsTBYirLR9EJMRFji'
+        App.User.id.slice(4, App.User.id.indexOf('@')),// user == 'dev'
         App.User.can.__name,
         pass.getValue(), function(err, json, res){
             if(err){
@@ -709,6 +715,7 @@ function destroy(){
  * TODO: uninstall `l10n_set_and_change()` handler,
  *        redo all with event delegate and no ExtJS put it into HTML spash
  */
+    view.el.select('#l10n').removeAllListeners()
     view = view.destroy()// assign `undefined` to `view` for GC
 }
 
@@ -736,9 +743,7 @@ var evn, cmp, s
             if(view) return// event is firing again (still no login)
 
             (cmp = Ext.getCmp('um.usts')) && cmp.setIconCls('appbar-user-offl')
-            view = new App.um.view.Login({ modal: true })
-            Ext.WindowManager.bringToFront(view)
-            //App.app.getController('App.um.controller.Login')// only strings
+            view = new App.um.view.Login
         return
         default:return
     }
