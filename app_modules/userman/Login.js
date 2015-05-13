@@ -224,10 +224,9 @@ Ext.define('App.um.view.Login',{
     }],
 
     constructor: function constructorLogin(callback){
-    var me = this
-       ,ddId
-
-        me.callParent()
+    var me = this, ddId
+        //                           login      relogin
+        me.callParent([callback ? void 0 : { modal: true }])
         /*
          * after initComponent()
          * Movable Container: make drag handler on top, not whole area
@@ -244,6 +243,8 @@ Ext.define('App.um.view.Login',{
         me.relayEvents(me.dd,['dragstart', 'drag', 'dragend'])
         // ref. to function to be executed after login to finish `App` loading
         callbackApp = callback// if undefined do `relogin()` in `controllerLogin()`
+        /* bind logic to the view */
+        controllerLogin()
     },
     destroy: function(){
         Ext.destroy(this.dd, this.form)
@@ -360,8 +361,6 @@ Ext.define('App.um.view.Login',{
         role = form.down('field[name=role]')
         pass = form.down('field[name=pass]')
         auth = form.down('#ok')
-        /* bind logic to the view */
-        controllerLogin()
     }
 })
 
@@ -393,7 +392,7 @@ var login
         }
     })
 
-    //if(!login) return relogin() xxx fix
+    if(!callbackApp) return relogin()
 
     // data
     App.User.internalId = ''// reset to be used as User.id copy while offline
@@ -676,11 +675,13 @@ function relogin(){
     user.setHideTrigger(false)
 
     role.setValue(l10n.um.roles[App.User.can.__name] || App.User.can.__name)
-    role.disable()
+
     // one ENTER keypress auth in password
-    pass.on({ specialkey: reloaginUser, change: enableAuth })
+    pass.on({ specialkey: reloginUser, change: enableAuth })
     auth.on({ click: reloginUser })
     enablePass()
+    Ext.WindowManager.bringToFront(view)
+    view.showUp()
 }
 
 function reloginUser(_, ev){
@@ -688,12 +689,12 @@ function reloginUser(_, ev){
 
     auth.eventsSuspended = 1// prevent multiple auth calls to backend
     auth.focus()
-    view.fadeInProgress(function(){
-    App.User.login(App.User.get('id'), function(err, ret){
+    view.fadeInProgress(function reloginTry(){
+    App.User.login(App.User.id, function(err, ret){
         enablePass()// focus pass after failed login
-        if(err) return
-    App.User.auth(
-        App.User.get('id'),
+        return err ? setTimeout(reloginTry, 1024) :// if backend isn't ready yet
+    App.User.auth(// get user 'offldev@::ffff:127.0.0.1 lhY1caqLsTBYirLR9EJMRFji'
+        App.User.id.slice(4, App.User.id.indexOf('@')),// user == 'dev'
         App.User.can.__name,
         pass.getValue(), function(err, json, res){
             if(err){
@@ -749,9 +750,7 @@ var evn, cmp, s
             if(view) return// event is firing again (still no login)
 
             (cmp = Ext.getCmp('um.usts')) && cmp.setIconCls('appbar-user-offl')
-            view = new App.um.view.Login({ modal: true })
-            Ext.WindowManager.bringToFront(view)
-            //App.app.getController('App.um.controller.Login')// only strings
+            view = new App.um.view.Login
         return
         default:return
     }
