@@ -365,33 +365,12 @@ Ext.define('App.um.view.Login',{
 })
 
 function controllerLogin(){
-var login
+var l10nel
 
-    //if(!view){
-    //    view = new App.um.view.Login
-      //  login = true
-    //} else {
-      //  login = false// relogin
-    //}
-
-    view.el.select("#l10n > span").each(function l10n_changers(el){
-        if(login){
-            if(0 == el.dom.className.indexOf(l10n.lang)){
-                el.dom.style.opacity = 0.5// fade out current flag
-                el.dom.style.cursor = 'not-allowed'
-            } else {
-/* TODO: uninstall `l10n_set_and_change()` handler,
-*        redo all with event delegate and no ExtJS put it into HTML spash */
-                el.dom.onclick = l10nLangClick// install changer
-            }
-            return
-        } else {// relogin: disable all
-            el.dom.style.opacity = 0.5
-            el.dom.style.cursor = 'not-allowed'
-            return
-        }
-    })
-
+    l10nel = view.el
+    l10nel.select('#l10n > span').each(l10nChangers)
+    l10nel.select('#l10n').addListener('click', l10nLangClick)
+    l10nel = void 0
     if(!callbackApp) return relogin()
 
     // data
@@ -425,9 +404,22 @@ var login
     return App.User.login('?', getSessionInfo)// ask backend is a session there?
 }
 
-function l10nLangClick(){
-    if('l10n-reset' !== this.className){
-        localStorage.l10n = this.className.slice(0, 2)// first two
+function l10nChangers(el){
+    if(!callbackApp){// relogin: disable all
+        el.dom.style.opacity = 0.5
+        el.dom.style.cursor = 'not-allowed'
+    } else {// login: set current
+        if(0 == el.dom.className.indexOf(l10n.lang)){
+            el.dom.style.opacity = 0.5// fade out current flag
+            el.dom.style.cursor = 'not-allowed'
+        }
+    }
+}
+
+function l10nLangClick(evt, el, o){
+    o = el.className
+    if('l10n-reset' !== o){
+        localStorage.l10n = o.slice(0, 2)// first two
         reload()
         return
     }
@@ -723,6 +715,7 @@ function destroy(){
  * TODO: uninstall `l10n_set_and_change()` handler,
  *        redo all with event delegate and no ExtJS put it into HTML spash
  */
+    view.el.select('#l10n').removeAllListeners()
     view = view.destroy()// assign `undefined` to `view` for GC
 }
 
