@@ -14,7 +14,8 @@ Ext.define('App.view.Window',
     function initSubAppWindow(){
     var me = App.mod.wnd = this
 
-        if(!me.wmId) throw new Error('no `wmId` property in: ' + me.$className)
+        if(me.id && !me.wmId) me.wmId = me.id
+        if(!me.wmId) throw new Error('no `wmId || id` property in: ' + me.$className)
 
         me.tools = [
         {
