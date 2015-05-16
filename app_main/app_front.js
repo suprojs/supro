@@ -454,8 +454,8 @@ var cfg, fs = require('fs')
     con.log('reading config: ' + cfg + ' done')
 
     if(app.cfg.extjs.load || app.cfg.extjs.loadMiniInit){
-        cfg = l10n.errload_fast_config_nwjs
-        throw new Error(cfg)
+    // nw.js opens `app.htm` where config is changed
+        con.warn(l10n.errload_fast_config_nwjs)
     }
     return check_extjs_path()
 }
