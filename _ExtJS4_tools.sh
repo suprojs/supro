@@ -1,16 +1,16 @@
 #!/bin/sh
 
 [ "$1" = '?' -o "$1" = '-h' -o "$1" = '--help' ] && exec sed '' <<'!'
-# '$1':
+# the first command line argument '$1' can be:
 # * 'justsplit': split `ext-all-debug.js` into EXTJSLITE and EXTJSREST,
 #           process mini init and fast load
 # * 'lite': process mini init and fast load using existing EXTJSLITE and EXTJSREST
 #           this is useful for development of fast loading logic
 # * 'strip': don't split
 # * ''/'*': do all
-# cleanup whitespace and leaked in comments of our git's `ext-all-debug.js`
-# save ~1.4M of file size
-# otherwise use `ext-all-debug.js` from same path as output/source
+# also do whitespace and leaked in comments cleanup of 'github.com/suprojs/extjs-4.2/'
+# JSFILE=`ext-all-debug.js` into NWFILE='ext-all-nw.js', save ~1.4M of file size
+# and $EXTJSLITE and $EXTJSREST fast init versions if configured
 !
 
 set -e
@@ -25,7 +25,7 @@ exit 0
 
 ME="$0 $*"
 JSFILE='ext-all-debug.js'
-NWFILE="ext-all-nw.js"
+NWFILE='ext-all-nw.js'
 
 EXTJSLITE='ext-lite'
 EXTJSREST='ext-rest'
