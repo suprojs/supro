@@ -1,7 +1,7 @@
-
-module.exports = exampleSUPRO
-
-function exampleSUPRO(api, cfg){
+/*
+ * app module backend setup routine
+ */
+module.exports = function(api, cfg){
 var n, app = api.app, name = '/example'
 
     // order of priority; serve static files, css, l10n
@@ -14,7 +14,7 @@ var n, app = api.app, name = '/example'
     app.use('/css' + name, api.connect['static'](__dirname + '/css/'))
     // style: http://$WEB_ADDRESS/css/example/css
     n = '/css' + name + '/css'
-    app.use(n, api.connect.sendFile(__dirname + name + '.css', true/* full path*/))
+    app.use(n, api.connect.sendFile(__dirname + name + '.css', true/* full path */))
     // this module stuff:
-    return { css:[ n ], js:[ name + '/app_front_example'], cfg: cfg }
+    return { css:[ n ], js:[ name + '/app_front_' + name.slice(1)], cfg: cfg }
 }
