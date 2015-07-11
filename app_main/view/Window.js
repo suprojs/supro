@@ -12,11 +12,13 @@ Ext.define('App.view.Window',
     tools: void 0,
     initComponent:// anti-MVC pattern, doing all here, but this is MVVM damn!
     function initSubAppWindow(){
+    // while loading this view, be ready to fail and cleanup in `app.htm->window_error()`
     var me = App.mod.wnd = this
 
         if(me.id && !me.wmId) me.wmId = me.id
         if(!me.wmId) throw new Error('no `wmId || id` property in: ' + me.$className)
 
+        me.icon = me.wmImg
         me.tools = [
         {
             type: 'refresh',
