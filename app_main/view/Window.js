@@ -52,6 +52,7 @@ Ext.define('App.view.Window',
             activate: me.on_activate_window,
             deactivate: me.on_deactivate_window
         })
+        App.mod.wnd = void 0// load and run is OK
 
         return
     },
