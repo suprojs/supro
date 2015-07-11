@@ -60,6 +60,7 @@ config = {
         // 'lite': all init files >>'ext-lite-nw.js'
         //          and  `defLoad` >>'ext-rest-nw.js'
         loadMiniInit: 'lite',
+        'proxy.CRUD.timeout': 1 << 15,// for slow APIs
         fading:  true// visual effects for content appearance
     },
     backend:{

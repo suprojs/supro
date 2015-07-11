@@ -15,7 +15,7 @@ Ext.define('App.proxy.CRUD',{
     pageParam: undefined,
     limitParam: undefined,// || limitParam: 'limit'
     appendId: false,// and no ID in URL tail
-    timeout: 2048,// arbitrary
+    timeout: App.cfg.extjs['proxy.CRUD.timeout'] || 2048,
     listeners:{
         exception:
         function crud_exception_proxy(proxy, res, op){
