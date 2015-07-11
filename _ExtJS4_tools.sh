@@ -184,6 +184,14 @@ sed_rm_class(){
 "
 }
 
+sed_phony_class(){
+    echo "
+/^Ext.define('$1/i\
+Ext.ns('$1');$1=Ext.emptyFn;
+"
+    sed_rm_class "$1"
+}
+
 process_classes(){
 # read lines from $RMCLASSES and construct `sed` code
     oIFS=$IFS
@@ -193,6 +201,7 @@ process_classes(){
     do case "$i" in
     '~'*) sed_rm_class "${i#?}";; # >/dev/null
     '!'*) sed_skip_class "${i#?}";; # skip
+    '-'*) sed_phony_class "${i#?}";; # put a class stub
     *) sed_mv_class "$i" "$1";;
        esac
     done
