@@ -1,5 +1,6 @@
 /*
  * JSON-optimized proxy, reader and writer
+ * TODO: document config options and JSON format for errors/success
  **/
 if(Ext.encode !== JSON.stringify) Ext.encode = JSON.stringify// ensure this one
 
@@ -12,9 +13,9 @@ Ext.define('App.proxy.CRUD',{
     //idParam: '_id',// URL param of ID mongodb's
     //totalDefault: 256, // if server or query does not support total counts, apply this
     batchActions: true,
-    startParam: undefined,// our default is empty params || startParam: 'skip'
-    pageParam: undefined,
-    limitParam: undefined,// || limitParam: 'limit'
+    startParam: void 0,// our default is empty params || startParam: 'skip'
+    pageParam: void 0,
+    limitParam: void 0,// || limitParam: 'limit'
     appendId: false,// and no ID in URL tail
     timeout: App.cfg.extjs['proxy.CRUD.timeout'] || 2048,
     listeners:{
@@ -88,25 +89,22 @@ Ext.define('App.proxy.CRUD',{
              *  me.rawData = data
              *  me.jsonData = data
              * ``` */
+
+            root = me.getRoot(data) || (Ext.isArray(data) ? data : [ ])// { } || [] replies
             result = {
                 total  : data.total || me.proxy.totalDefault || 0,
-                count  : 0,
-                records: [ ],
-                success: me.getSuccess(data),
-                message: me.messageProperty ? me.getMessage(data) : null
+                count  : root.length,
+                records: root,
+                success: !root.err,
+                message: me.messageProperty ? me.getMessage(data) : void 0
             }
 
-            if(result.success){
-                root = me.getRoot(data)// is Array or blow up
-
-                if((result.count = root.length)){
-                    Model = me.model
-                    do {
-                        data = (root[mo] = new Model(root[mo]))
-                        data.phantom && (data.phantom = false)// if no IDs from the server
-                    } while(++mo < root.length)
-                }
-                result.records = root
+            if(result.success && root.length){
+                Model = me.model
+                do {
+                    data = (root[mo] = new Model(root[mo]))
+                    data.phantom && (data.phantom = false)// if no IDs from the server
+                } while(++mo < root.length)
             }
             return new Ext.data.ResultSet(result)
         }
