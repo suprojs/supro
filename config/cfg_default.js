@@ -59,7 +59,7 @@ config = {
         // @loadMiniInit: '' || 'lite'
         // 'lite': all init files >>'ext-lite-nw.js'
         //          and  `defLoad` >>'ext-rest-nw.js'
-        loadMiniInit: '',
+        loadMiniInit: 'lite',
         fading:  true// visual effects for content appearance
     },
     backend:{

@@ -36,8 +36,8 @@ then
 ^ config is already exported in "$NODEJS_CONFIG"'
 else
     echo '
-^ reading config in "$NODEJS_CONFIG" from file'
-    NODEJS_CONFIG=`sed '' <./config/cfg_mongo_lftp.js`
+^ reading config in "$NODEJS_CONFIG" from file "./config/cfg_default.js"'
+    NODEJS_CONFIG=`sed '' <./config/cfg_default.js`
     echo '^ exporting it for childs'
     export NODEJS_CONFIG
 fi
