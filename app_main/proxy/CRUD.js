@@ -10,6 +10,7 @@ Ext.define('App.proxy.CRUD',{
 
     // proxy defaults can be overriden by store's constructor
     //idParam: '_id',// URL param of ID mongodb's
+    //totalDefault: 256, // if server or query does not support total counts, apply this
     batchActions: true,
     startParam: undefined,// our default is empty params || startParam: 'skip'
     pageParam: undefined,
@@ -88,7 +89,7 @@ Ext.define('App.proxy.CRUD',{
              *  me.jsonData = data
              * ``` */
             result = {
-                total  : data.total || 0,
+                total  : data.total || me.proxy.totalDefault || 0,
                 count  : 0,
                 records: [ ],
                 success: me.getSuccess(data),
