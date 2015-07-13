@@ -1,5 +1,7 @@
 /* TODO flag: background-color: red !important; */
 
+script_blockers { color:red; }
+
 .sg-c { background-image:url(css/comments_delete.png); }
 .sg-e { background-image:url(css/script_link.png); }
 .sg-s { background-image:url(css/shutdown-sml.png); }
