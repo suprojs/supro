@@ -265,6 +265,15 @@ var path, extjs, el, f
 '_readyTime - _startTime: ' + (new Date().getTime() - _startTime) + '\n' +
 'ExtJS + App launch: OK'
         )
+        // development reload by F2 key
+        localStorage.devSUPRO && new Ext.util.KeyMap(Ext.getBody(),{
+            key: Ext.EventObject.F2,
+            handler: function(keycode, e){
+                console.warn('dev: F2')
+                e.stopEvent()
+                App.reload(Ext.WindowManager.getActive())
+            }
+        })
        /*
         * NOTE: viewport is being created after successful login
         *       if auth app_module was loaded

@@ -23,6 +23,7 @@ Ext.define('App.view.Window',
         {
             type: 'refresh',
             tooltip: ''// developer's stuff must have no `l10n`
++'<b style="background-color:black;color:white">[F2]</b> '
 +'view developent reload: <b>l10n</b>, <b>view</b> && <b>controller</b><br>'
 +'<b style="color:red">NOTE</b>: no models or stores etc. are reloaded<br>'
 +'hook to <b>thisView.on("destroy")</b> event to reload anything else<br>'
