@@ -12,14 +12,18 @@ Ext.define('App.view.Window',
     tools: void 0,
     initComponent:// anti-MVC pattern, doing all here, but this is MVVM damn!
     function initSubAppWindow(){
+    // while loading this view, be ready to fail and cleanup in `app.htm->window_error()`
     var me = App.mod.wnd = this
 
-        if(!me.wmId) throw new Error('no `wmId` property in: ' + me.$className)
+        if(me.id && !me.wmId) me.wmId = me.id
+        if(!me.wmId) throw new Error('no `wmId || id` property in: ' + me.$className)
 
+        me.icon = me.wmImg
         me.tools = [
         {
             type: 'refresh',
             tooltip: ''// developer's stuff must have no `l10n`
++'<b style="background-color:black;color:white">[F2]</b> '
 +'view developent reload: <b>l10n</b>, <b>view</b> && <b>controller</b><br>'
 +'<b style="color:red">NOTE</b>: no models or stores etc. are reloaded<br>'
 +'hook to <b>thisView.on("destroy")</b> event to reload anything else<br>'
@@ -51,6 +55,7 @@ Ext.define('App.view.Window',
             activate: me.on_activate_window,
             deactivate: me.on_deactivate_window
         })
+        App.mod.wnd = void 0// load and run is OK
 
         return
     },

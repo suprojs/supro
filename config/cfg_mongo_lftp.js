@@ -102,8 +102,9 @@ config = {
         // by `localStorage.devSUPRO = '1'` in 'app.htm'
         // @loadMiniInit: '' || 'lite'
         // 'lite': all init files >>'ext-lite-nw.js'
-        //          and  `defLoad` >>'ext-rest-nw.js'
+        //         and `defLoad`  >>'ext-rest-nw.js'
         loadMiniInit: 'lite',
+        'proxy.CRUD.timeout': 1 << 11,
         fading:  true// visual effects for content appearance
     },
     backend:{

@@ -6,17 +6,18 @@
 # '!Ext.state.Stateful' -- exclude from matching pattern below; order matters
 # 'Ext.state.*' -- move all matching into the rest part
 # '~Ext.direct.*' -- purge classes
+# '-Ext.data.flash.BinaryXhr' = `Ext.ns('Ext.data.flash.BinaryXhr')` stub
+# (see `_ExtJS4_tools.sh->process_classes()`)
 
 ## purge (before anything else) ##
-
-~Ext.direct.*
+# replace with phony singleton
+-Ext.data.flash.BinaryXhr
 ~Ext.flash.*
+~Ext.direct.*
 ~Ext.app.domain.Direct
 ~Ext.data.DirectStore
 ~Ext.data.JsonPStore
 ~Ext.data.XmlStore
-#? replace with phony singleton
-~Ext.data.flash.BinaryXhr
 ~Ext.data.reader.Xml
 ~Ext.data.writer.Xml
 ~Ext.data.JsonP

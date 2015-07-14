@@ -190,17 +190,19 @@ function check_backend(check_ok, check_he){
         App.sts(l10n.stsCheck, l10n.stsDead, l10n.stsHE)
         return
     }
-    http.get(
-    {
-        hostname: '127.0.0.1',
-        port: app.cfg.backend.ctl_port,
-        path: '/',
-        agent: false
-    }
-        ,check_ok ? check_ok : backend_ctl_alive
-    ).on('error'
-        ,check_he ? check_he : backend_ctl_dead
-    )
+    win.setTimeout(function backend_init_check(){
+        http.get(
+        {
+            hostname: '127.0.0.1',
+            port: app.cfg.backend.ctl_port,
+            path: '/',
+            agent: false
+        }
+            ,check_ok ? check_ok : backend_ctl_alive
+        ).on('error'
+            ,check_he ? check_he : backend_ctl_dead
+        )
+    }, app.cfg.backend.init_timeout || 1234)
 }
 
 function backend_ctl_alive(res, callback){
@@ -221,7 +223,7 @@ function backend_ctl_dead(e){
     con.log('check: backend is dead')
 
     if('undefined' == typeof Ext){// init
-        win.setTimeout(function backend_init_check(){
+        win.setTimeout(function(){
             if(app.cfg.backend.pid)
                 app.cfg.backend.pid = null
             throw new Error(l10n.errload_check_backend)
@@ -452,8 +454,8 @@ var cfg, fs = require('fs')
     con.log('reading config: ' + cfg + ' done')
 
     if(app.cfg.extjs.load || app.cfg.extjs.loadMiniInit){
-        cfg = l10n.errload_fast_config_nwjs
-        throw new Error(cfg)
+    // nw.js opens `app.htm` where config is changed
+        con.warn(l10n.errload_fast_config_nwjs)
     }
     return check_extjs_path()
 }

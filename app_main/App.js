@@ -61,7 +61,7 @@ err.sourceMethod + '</b>'
 function launchApp(){
 var tmp
 
-    con.log('Ext.application.launch: OK')
+    con.log('Ext.application.launch: OK\nCreating Viewport...')
     // add first System Status message
     tmp = App.cfg.backend
     App.sts(tmp.op, tmp.msg, l10n.stsOK, tmp.time)
@@ -265,6 +265,15 @@ var path, extjs, el, f
 '_readyTime - _startTime: ' + (new Date().getTime() - _startTime) + '\n' +
 'ExtJS + App launch: OK'
         )
+        // development reload by F2 key
+        localStorage.devSUPRO && new Ext.util.KeyMap(Ext.getBody(),{
+            key: Ext.EventObject.F2,
+            handler: function(keycode, e){
+                console.warn('dev: F2')
+                e.stopEvent()
+                App.reload(Ext.WindowManager.getActive())
+            }
+        })
        /*
         * NOTE: viewport is being created after successful login
         *       if auth app_module was loaded
@@ -463,8 +472,7 @@ try {
         ai.controllers.removeAtKey(panel.__ctl)
         App.undefine(panel.__ctl)
     }
-    panel = panel.$className
-    App.undefine(panel)
+    App.undefine(panel.$className)
     // NOTE:
     // though this unload is full, if JS crash was inside some e.g. panel layouting,
     // then all subsequent panels will be broken in UI/DOM,
@@ -486,6 +494,14 @@ var url, url_l10n, wmId
         return
     }
     wmId = panel.wmId
+    con.warn('trying to reload "' + panel.$className + '";\nuse `App.reloadFailed()` to redo a failed run.' )
+    App.reloadFailed = (function(panel){
+        return function(){
+            con.warn('redo App.reload("' + panel.$className + '")')
+            App.reloadFailed = void 0
+            sub_app_reload_devel_view(panel)
+        }
+    })(panel)
     App.unload(panel)
 
     url_l10n = App.backendURL + '/l10n/' + wmId
@@ -525,11 +541,13 @@ var url, url_l10n, wmId
     }
     function ctl_loaded(){
         App.create(wmId.replace(/view[.]/, 'controller.'))
+        App.reloadFailed = void 0
     }
     function ctl_not_loaded(){
         App.create(wmId, null,{
             constrainTo: Ext.getCmp('desk').getEl()
         })
+        App.reloadFailed = void 0
     }
 }
 
@@ -555,7 +573,6 @@ function check_uncaughtExceptions(){
     function(err, data){
         con.log('uncaughtExceptions err: ', err)
         if(data && data.length){
-            con.table(data)
             Ext.Msg.alert({
                 buttons: Ext.Msg.OK,
                 icon: Ext.Msg.ERROR,
@@ -566,6 +583,7 @@ function check_uncaughtExceptions(){
                     //if('yes' == btn)...
                 }
             })
+            con.table(data)
         }
     })
 }

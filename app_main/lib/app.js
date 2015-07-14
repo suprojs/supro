@@ -54,7 +54,7 @@ var api      = require('./api.js')
     app.use(require('./middleware/errorHandler.js'))
        .use(_404)// no middleware handled request
     .listen(cfg.backend.job_port, function app_is_up_and_running(){
-        log('^ app is up and running\n' +
+        log('^ app is up and running @ port ' + cfg.backend.job_port + '\n' +
             new Date().toISOString()
         )
     })

@@ -6,7 +6,7 @@ Ext.define('Ext.uxo.component.FadeInPlugin', {
     extend: 'Ext.AbstractPlugin',
     alias: 'plugin.ux.fadeinplugin',
     requires: ['Ext.fx.Anim'],
- 
+
     init: function (component) {
     //component.show()
         Ext.apply(component, {
@@ -15,9 +15,8 @@ Ext.define('Ext.uxo.component.FadeInPlugin', {
             }
         });
         component.fadeIn = this.fadeIn.bind(component);
-        
     },
- 
+
     fadeIn: function () {
         var me = this;
         Ext.create('Ext.fx.Anim', {
