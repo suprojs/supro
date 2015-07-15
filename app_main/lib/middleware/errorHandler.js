@@ -28,8 +28,10 @@ var idx
     }
 
     return res.json({
-        url: req.originalUrl, err: err.stack || err,// frontend must wrap this in pretty UI
-        success: false, data: err.stack || err// compatible with 'App.proxy.CRUD'
+        url: req.originalUrl,
+        err: '' + (err.stack || err)// compatible with 'App.proxy.CRUD'
+        //data: undefined [not used]
+        //success: undefined [not used]
     })
 }
 

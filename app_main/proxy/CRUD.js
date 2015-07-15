@@ -23,7 +23,7 @@ Ext.define('App.proxy.CRUD',{
         function crud_exception_proxy(proxy, res, op){
         var msg, icon
 
-            try { icon = JSON.parse(res.responseText).data } catch(ex){ }
+            try { icon = JSON.parse(res.responseText).err } catch(ex){ }
             if(icon){
                 if('~' == icon[0] && proxy.storeId){
                     msg = Ext.StoreManager.lookup(proxy.storeId)
@@ -39,7 +39,7 @@ Ext.define('App.proxy.CRUD',{
                 msg = l10n.err_crud_proxy
                 icon = Ext.Msg.ERROR
             }
-            console.error(arguments), console.error(op.error)
+            console.error(proxy, res, op, op.error)
             if(!Ext.Msg.isVisible()) Ext.Msg.show({
                 title: l10n.errun_title,
                 buttons: Ext.Msg.OK,

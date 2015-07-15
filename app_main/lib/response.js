@@ -11,7 +11,8 @@ http.ServerResponse.prototype.ContentTypes = {
 }
 
 http.ServerResponse.prototype.json =
-/*  res.json({ success: true })
+/*  res.json({ data: [1, 2, 3] })
+ *  res.json({ err: 'Error Message etc.' })
  *  res.json('') -> valid JSON is empty string object: ""
  *  res.json(401, { msg: ' Authorization Required' })
  *
