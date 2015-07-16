@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# * $1 == 'mongo*' launch mongo shell with current config DB name
 # * any param "$1" will redirect node.js' output i.e:
 #   1>>log/app_back_stdout.txt 2>>log/app_back_stderr.txt
 # * if env $NODEJS_CONFIG is exported it is used and no hardcoded file is read
@@ -42,11 +43,19 @@ else
     export NODEJS_CONFIG
 fi
 
+case "$1" in
+    mongo*)
+    sh app_modules/supromongod/etc/mongo-shell.sh
+    trap '' 0
+    exit 0
+    ;;
+esac
+
 # JS config sample to parse:
 #    backend:{
 #        file: './app_main/app_back.js',
 #        job_port: 3007,// app/api
-#        ctl_port: 3008,// controlling
+# here>> ctl_port: 3008,// controlling
 #        ctl_on_done: null,// set app module handlers for ctl close/app exit
 #        init_timeout: 123
 #    }
