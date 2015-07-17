@@ -13,9 +13,14 @@ function processSETUP(global, process, uncaughtExceptions){
         pushUncaughtException(err.stack)
         try { if(__res){
     // NOTE: with many users and high load this may send errors to
-    //       the wrong end; thus this is mostly a development tool
-            __res.json({ success:false, data: err.stack })
-            __res = null
+    //       the wrong end; thus this is mostly a development tool.
+    //       But since client can send this errors back
+            __res.statusCode = 500
+            __res.json({
+                err:'' + (err.stack || err),
+                res_address: __res.socket.address()
+            })
+            __res = void 0
         }} catch(ex){ }
     })
 

@@ -2,6 +2,51 @@
  * running JavaScript inside backend
  * such effect can be impemented by any app module
  * but maybe this will have some more access to app internals (TODO)
+ *
+ * Calling convention:
+ * ```js
+ * new Function(
+ *    req.txt
+ * )(ret, api, req, res, next)
+ * ```
+ * NOTE; sync. code must not do `res.json(res || data)` by itself and must
+ *       set sync flag as: `ret._sync = true` (undefine `err`)
+ * Chrome/DevTools/Snippets example:
+
+function app_backend(){
+// `ret.err` is set by default to this notice
+// "`ret` was not handeled"
+function api_js(){
+    api.db.getCollection("_test").findOne(
+    function(err, item){
+        console.log(item)
+        ret.data = item
+        res.json((ret.err = void 0, ret))
+    })
+}
+App.backend.JS('('+ api_js.toString() +')()')
+
+//==== response: ====
+//{ _id: 55a7b7a5d4e956d805c58c36,
+//  f: 'sfdsdf',
+//  asd: Thu Jul 16 2015 16:55:16 GMT+0300 (Jordan Standard Time)
+//}
+}
+app_backend()// available in console
+
+function app_back_sync(){
+function api_js_sync(){
+    ret.data = this.toString()
+    console.log(ret)
+    // flag
+    ret._sync = true
+}
+
+App.backend.JS('('+ api_js_sync.toString() +')()')
+}
+app_back_sync()
+
+ *
  **/
 
 module.exports = pingback
@@ -11,7 +56,7 @@ var ui, App_backend_JS = 'App.backend.JS'// UI component
 
     api.app.use('/pingback'// backend API
    ,function mwPingBack(req, res, next){
-    var ret = { success: false }
+    var ret = { err: '`ret` was not handeled', _sync: void 0, data: void 0 }
 
         if(!req.session || // use auth module or not
            (req.session && req.session.can && req.session.can[App_backend_JS])){
@@ -21,10 +66,17 @@ var ui, App_backend_JS = 'App.backend.JS'// UI component
                 )(
                     ret, api, req, res, next
                 )
-                if(ret.async){
-                    return null// user code must do all further response processing
+
+                if(!ret._sync){
+                    if(res._header || res.finished){
+                        log(ret =
+'!Error `App.backend.JS`: sync code does `res.json()` and do not set `ret._sync = true`'
+                        )
+                        return next(ret)
+                    }
+                    return void 0// async: user code must do all further response processing
                 }
-                ret.success = true
+                ret.err = void 0// sync is ok
             } catch(ex){
                 return next(ex.stack)// pass to the standard error handling middleware
             }
@@ -57,7 +109,7 @@ function create_pingback(){
 /* running JavaScript inside backend via App.backend.req()
  * usage:
  * > App.backend.JS(' ret.data = { val: 123 } ')
- * >>{"success":true,"data":{"val":123}}
+ * >>{"err": "","data":{"val":123}}
  **/
 var url = App.backendURL + '/pingback'
    ,appjs = { 'Content-Type': 'application/javascript; charset=utf-8' }
@@ -78,10 +130,10 @@ var url = App.backendURL + '/pingback'
     }
 
     function default_callback(err, json){
-        if(err) return console.error(err)
-
-        console.dir(App.backend.JS.res = json)
+        App.backend.JS.res = json
+        console.dir(json)
         console.log('result is here: `App.backend.JS.res`')
+        err && console.error(json && json.err)
     }
 }
 /*
