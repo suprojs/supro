@@ -56,15 +56,27 @@ var ui, App_backend_JS = 'App.backend.JS'// UI component
 
     api.app.use('/pingback'// backend API
    ,function mwPingBack(req, res, next){
-    var ret = { err: '`ret` was not handeled', _sync: void 0, data: void 0 }
+    var local, ret = { err: '`ret` was not handeled', _sync: void 0, data: void 0 }
+
+        /*
+         * XXX WARNING: uncomment this only for early wireframing and developing
+         *               of API using this live reload in DevTools/Snippets
+         *
+         local = {
+            cfg: cfg,
+            require:{
+                fs: require('fs')
+            }
+         }
+         **/
 
         if(!req.session || // use auth module or not
            (req.session && req.session.can && req.session.can[App_backend_JS])){
             if(req.txt) try {
                 new Function(
-                   'ret, api, req, res, next', req.txt
+                   'ret, api, local, req, res, next', req.txt
                 )(
-                    ret, api, req, res, next
+                    ret, api, local, req, res, next
                 )
 
                 if(!ret._sync){
