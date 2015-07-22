@@ -723,18 +723,7 @@ function destroy(){
  * Application wide event handlers
  **/
 function backendEventsCtlLogin(success, data){
-var evn, cmp, s
-
-    App.sts(
-       'backend events',
-        success ? data.length : data,// data || res.statusText
-        success ? l10n.stsOK : l10n.stsHE,
-        s = new Date
-    )
-
-    console.log('wes: ' + s)
-    console.log(data)
-    console.table(data)
+var evn, cmp, s, uncaught
 
     if('string' == typeof data) switch (data){// simple event
         case 'Disconnect':
@@ -756,11 +745,11 @@ var evn, cmp, s
         }
         break
         case 'uncaught@global':
-            if(App.User.can['uncaught@global'] && Ext.Msg.hidden) Ext.Msg.alert(
+            if(App.User.can[uncaught = 'uncaught@global'] && Ext.Msg.hidden) Ext.Msg.alert(
                 {
                     buttons: Ext.Msg.OK,
                     icon: Ext.Msg.ERROR,
-                    title: 'uncaught@global',
+                    title: uncaught,
                     msg: data[evn].json,
                     fn: function(btn){
                         //if('yes' == btn)...
@@ -779,6 +768,14 @@ var evn, cmp, s
         break
         default:break
     }
+    App.sts(
+       'backend events',
+        success ? data.length : data,// data || res.statusText
+        success && !uncaught ? l10n.stsOK : l10n.stsHE,
+        s = new Date
+    )
+    console.log('wes: ' + s, data)
+    console.table(data)
 }
 
 function handleInitBackendWaitEvents(msg){
