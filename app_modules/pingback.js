@@ -73,22 +73,23 @@ var ui, App_backend_JS = 'App.backend.JS'// UI component
         if(!req.session || // use auth module or not
            (req.session && req.session.can && req.session.can[App_backend_JS])){
             if(req.txt) try {
-                new Function(
+                ;;new Function(
                    'ret, api, local, req, res, next', req.txt
                 )(
                     ret, api, local, req, res, next
-                )
+                );;
 
-                if(!ret._sync){
-                    if(res._header || res.finished){
-                        log(ret =
-'!Error `App.backend.JS`: sync code does `res.json()` and do not set `ret._sync = true`'
-                        )
-                        return next(ret)
-                    }
-                    return void 0// async: user code must do all further response processing
+                if(res._header || res.finished){
+                    !ret._sync && log(
+'!Error `App.backend.JS`:\n' +
+'     code does `res.json()` and does not set `ret._sync = true`\n' +
+'     or `next(err)` was called outside async code path'
+                    )
+                    return void 0
                 }
-                ret.err = void 0// sync is ok
+                if(!ret._sync){// async: code must do all further response processing
+                    return void 0
+                }// making `res.json()` below
             } catch(ex){
                 return next(ex.stack)// pass to the standard error handling middleware
             }
