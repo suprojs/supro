@@ -25,7 +25,9 @@ function res_json(status, obj){
         obj = status
     }
     if(this._header || this.finished){// error may have send `res` via next()
-        return pushUncaughtException(obj)
+        pushUncaughtException('`res.json()` when true == (res._header || res.finished)')
+        pushUncaughtException(JSON.stringify(obj))
+        return
     }
     obj = JSON.stringify(obj)
     this.setHeader('Content-Length', Buffer.byteLength(obj))
