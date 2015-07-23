@@ -303,6 +303,7 @@ Ext.define('App.um.view.Login',{
          **/
         form = me.form = Ext.widget({
             renderTo: 'login-form',
+            itemId: 'login-form',
             xtype: 'container',// mini: no need of `basicForm`, `panel`, etc.
             width: '100%',
             margin: '20px 0 0 0',
