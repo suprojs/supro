@@ -22,9 +22,7 @@ function check_versions(cb){
     function(err, stdout){
         if(err){
             con.error("ERROR spawn `node` process: " + err)
-            doc.write(l10n.errload_spawn_backend)
-            App.w.window.alert(l10n.errload_spawn_backend)
-            return
+            throw new Error(l10n.errload_spawn_backend)
         }
         App.versions.node = stdout.slice(1)
 
@@ -32,9 +30,7 @@ function check_versions(cb){
     function(err, stdout){
         if(err){
             con.error("ERROR require('connect'): " + err)
-            doc.write(l10n.errload_spawn_backend)
-            App.w.window.alert(l10n.errload_spawn_backend)
-            return
+            throw new Error(l10n.errload_spawn_backend)
         }
         App.versions.connectjs = stdout
         if(typeof Ext != 'undefined'){
@@ -52,7 +48,7 @@ function node_webkit(app, con){
     app.process.on('uncaughtException' ,function(err){
         con.error('uncaughtException:', err)
         con.error(err.stack)
-        app.w.window.alert && alert(l10n.uncaughtException  + err)
+        app.w.window.alert && alert(l10n.uncaughtException + err)
         app.w.window.alert = null
     })
 
@@ -131,9 +127,7 @@ function spawn_backend(app, restart){
         if(!fs.statSync(app.cfg.log).isDirectory()){
             con.error('ERROR log dir is not a directory')
             log = l10n.errload_config_log_not_dir + app.cfg.log
-            doc.write(log)
-            app.w.window.alert(log)
-            return false
+            throw new Error(log)
         }
     } catch(ex){
         try {
@@ -141,9 +135,7 @@ function spawn_backend(app, restart){
         } catch(ex) {
             con.error('ERROR log dir:' + (ex = (' ' + app.cfg.log + '\n' + ex)))
             log = l10n.errload_config_log_mkdir + ex
-            doc.write(log)
-            app.w.window.alert(log)
-            return false
+            throw new Error(log)
         }
     }
 
@@ -162,9 +154,7 @@ function spawn_backend(app, restart){
     if(!backend.pid || backend.exitCode){
         con.error('ERROR spawn backend exit code: ' + backend.exitCode)
         log = l10n.errload_spawn_backend + backend.exitCode
-        doc.write(log)
-        app.w.window.alert(log)
-        return false
+        throw new Error(log)
     }
     backend.unref()
 
@@ -530,9 +520,7 @@ var fs = require('fs'), pe = '../', d = ''
         return true
     }
     con.error('ExtJS path not found')
-    doc.getElementById('e').style.display = "block"
-    doc.getElementById('d').innerHTML = d.replace(/\n/g, '<br>')
-
+    throw new Error(l10n.extjsPathNotFound(d, app.cfg.extjs.path))
     return false
 }
 
