@@ -144,7 +144,7 @@ function spawn_backend(app, restart){
 
     app.process.env.NODEJS_CONFIG = JSON.stringify(app.cfg)
     backend = app.c_p.spawn(
-        process.cwd() + '/node',
+        'node',
         [ app.cfg.backend.file ],
         {
             detached: true,
