@@ -3,8 +3,8 @@
 // @author          olecom
 // @namespace       supro
 // @description     supro userman app module auto auth; setup: localStorage['supro.user' || 'supro.role' || 'supro.pass']; defaults `olecom:developer.local:pass`
-// @match           http://localhost:3007/
-// @version         0.4
+// @match           http://localhost:3007/*
+// @version         0.5
 // ==/UserScript==
 
 (function gc_setup(document){
