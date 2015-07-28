@@ -100,10 +100,15 @@ var xhr = new XMLHttpRequest
         }
 
         function run_extjs_helper(res){
-            if(4 != res.target.readyState) return
+        var el
 
-            if(res.target.responseText){// backend uncaughtExceptions
-                throw new Error('!' + res.target.responseText)
+            if(4 != res.target.readyState) return
+            // show backend 'uncaughtExceptions' if there are any
+            if(res.target.responseText){
+                el = document.getElementById('e')
+                el.innerHTML = res.target.responseText
+                el.style.display = 'block'
+                el = void 0
             }
             App.extjs_helper()// setup is done, continue ExtJS loading
             return
