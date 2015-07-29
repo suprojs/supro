@@ -10,7 +10,7 @@ function processSETUP(global, process, uncaughtExceptions){
     }
 
     process.on('uncaughtException', function(err){
-        pushUncaughtException(err.stack)
+        pushUncaughtException(err && err.stack || err)
         try { if(__res){
     // NOTE: with many users and high load this may send errors to
     //       the wrong end; thus this is mostly a development tool.
