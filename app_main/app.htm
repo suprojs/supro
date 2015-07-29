@@ -43,13 +43,38 @@
 
             b.innerHTML = l10n.loading
             d.getElementById('startup').appendChild(b)
-            b = void 0
-            e.target.removeEventListener(e.type, pre_onload)
+            w.removeEventListener('load', pre_onload)
 
-            startup('App.js')// preload App && ExtJS stuff
-            startup('app_front.js')// via http this is 'app_front_http.js'
+            b = new XMLHttpRequest
+            b.onreadystatechange = load_core_files
+            // async load of ['App.js', 'app_front.js']
+            b.open('GET', 'App.js', true)// preload App && ExtJS stuff
+            b.send()
+            return
+
+            function load_core_files(res){
+            var txt, req = res.target
+
+                if(4 != req.readyState) return
+                txt = req.responseText//        nw has it zero
+                if(!txt || !(200 == req.status || 0 == req.status)) throw new Error(
+                    l10n.errload_no_app + '<br>' + l10n.errload +'<br>URL: ' + req.responseURL
+                )
+                // sync loading of initial stuff
+                // <script src=""> is not used to handle possible connection errors
+                txt = d.createElement('script')
+                     .appendChild(d.createTextNode(txt))
+                     .parentNode
+                txt.setAttribute('type', 'application/javascript')
+                txt.setAttribute('charset', 'utf-8')
+                d.head.appendChild(txt)
+                txt = void 0
+                if(!b) return
+                b.open('GET', 'app_front.js', true)// via http this is 'app_front_http.js'
+                b.send()
+                b = void 0
+            }
         })
-
         return
 
         function window_error(errEvent){
@@ -101,28 +126,6 @@ l10n.errun_file + (errEvent.filename || '"app_front.js" || "App.js"') + '<br><br
             )
             w.alert && w.alert(l10n.uncaughtException  + errEvent.message)
             w.alert = null// show fatal error once
-        }
-
-        function startup(file){
-        var b = new XMLHttpRequest
-            // sync loading of initial stuff
-            // <script src=""> is not used to handle possible connection errors
-            b.open('GET', file, false)
-            b.send()
-            if(b.responseText){
-                if(200 != b.status && b.status !== 0){// nw has it zero
-                    throw new Error('!' + b.responseText)// backend
-                }
-                d.head.removeChild(d.head.getElementsByTagName('script')[0])
-                b = d.createElement('script')
-                     .appendChild(d.createTextNode(b.responseText))
-                     .parentNode
-                b.setAttribute('type', 'application/javascript')
-                b.setAttribute('charset', 'utf-8')
-                d.head.appendChild(b)
-            } else {
-                d.write(l10n.errload_no_app + '<br>' + l10n.errload)
-            }
         }
     })(window, document, window.console)
     </script>
